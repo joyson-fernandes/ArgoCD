@@ -1,0 +1,67 @@
+# Traefik deployment
+deployment:
+  replicas: 2
+
+# Traefik Service
+service:
+  enabled: true
+  type: LoadBalancer
+
+# HTTP
+ports:
+  web:
+    port: 8000
+    exposedPort: 80
+    protocol: TCP
+
+  # HTTPS
+  websecure:
+    port: 8443
+    exposedPort: 443
+    protocol: TCP
+
+# Kubernetes providers
+providers:
+  kubernetesCRD:
+    enabled: true
+
+  kubernetesIngress:
+    enabled: true
+
+# Don't expose the dashboard publicly by default
+api:
+  dashboard: true
+  insecure: false
+
+# Logging
+logs:
+  general:
+    level: INFO
+
+  access:
+    enabled: true
+
+# Resources
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Security
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+
+# Pod security
+podSecurityContext:
+  runAsNonRoot: true
+
+# Rolling update
+updateStrategy:
+  type: RollingUpdate
