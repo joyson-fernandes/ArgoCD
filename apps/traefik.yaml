@@ -3,7 +3,6 @@ kind: Application
 metadata:
   name: traefik
   namespace: argocd
-
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 
@@ -16,12 +15,16 @@ spec:
     - repoURL: https://traefik.github.io/charts
       chart: traefik
       targetRevision: 38.0.0
-
       helm:
         valueFiles:
-          - $values/manifests/traefik/values.yaml
+          - $values/values/traefik/values.yaml
 
-    # Your Git repository containing values.yaml
+    # Kubernetes manifests
+    - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+      targetRevision: HEAD
+      path: manifests/traefik
+
+    # Git repository containing Helm values
     - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
       targetRevision: HEAD
       ref: values
