@@ -1,11 +1,9 @@
 githubConfigUrl: "https://github.com/joyson-fernandes/portfolio-website-v2"
 
-githubConfigSecret: github-runner-secret
+githubConfigSecret:
+  github_token: "<YOUR_PAT>"
 
 runnerScaleSetName: "portfolio-runner"
 
 minRunners: 0
-maxRunners: 1
-
-containerMode:
-  type: "dind"
+maxRunners: 2
