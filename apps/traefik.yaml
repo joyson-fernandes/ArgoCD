@@ -1,0 +1,124 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - repoURL: https://traefik.github.io/charts
+      chart: traefik
+      targetRevision: "41.4.0"
+      helm:
+        # Gateway API CRDs are managed by the dedicated `gateway-api-crds`
+        # ArgoCD Application (charts/gateway-api-crds/). Skipping CRDs here
+        # prevents Traefik from re-pushing v1.5.1 standard-install on every
+        # sync, which un-serves TLSRoute v1alpha2 and crashes cilium-operator.
+        # See: charts/gateway-api-crds/README.md
+        skipCrds: true
+        valuesObject:
+          deployment:
+            replicas: 3
+            additionalVolumes:
+              - name: crowdsec-bouncer-key
+                secret:
+                  secretName: crowdsec-bouncer-key
+          additionalVolumeMounts:
+            - name: crowdsec-bouncer-key
+              mountPath: /etc/traefik/crowdsec-bouncer-key
+              readOnly: true
+          service:
+            type: LoadBalancer
+            spec:
+              loadBalancerIP: "10.0.2.232"
+          api:
+            dashboard: true
+            insecure: false
+          ingressRoute:
+            dashboard:
+              enabled: false
+          logs:
+            access:
+              enabled: true
+              format: json
+          metrics:
+            prometheus:
+              entryPoint: metrics
+              addEntryPointsLabels: true
+              addServicesLabels: true
+              service:
+                enabled: true
+              serviceMonitor:
+                enabled: true
+                namespaceSelector:
+                  any: true
+                metricRelabelings: []
+                relabelings: []
+          experimental:
+            plugins:
+              crowdsec:
+                moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+                version: v1.4.2
+          ports:
+            web:
+              port: 80
+            websecure:
+              port: 443
+            metrics:
+              port: 9100
+              expose:
+                default: false
+              exposedPort: 9100
+              protocol: TCP
+          additionalArguments:
+            - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+            - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+            - "--entrypoints.web.http.middlewares=traefik-crowdsec@kubernetescrd,traefik-rate-limit@kubernetescrd"
+            - "--entrypoints.websecure.http.middlewares=traefik-crowdsec@kubernetescrd,traefik-rate-limit@kubernetescrd,traefik-security-headers@kubernetescrd"
+          providers:
+            kubernetesIngress:
+              enabled: true
+            kubernetesCRD:
+              enabled: true
+              allowCrossNamespace: true
+              allowExternalNameServices: true
+          persistence:
+            enabled: false
+          podDisruptionBudget:
+            enabled: true
+            minAvailable: 2
+          podSecurityContext:
+            fsGroup: 65532
+            fsGroupChangePolicy: OnRootMismatch
+          affinity:
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    labelSelector:
+                      matchExpressions:
+                        - key: app.kubernetes.io/name
+                          operator: In
+                          values:
+                            - traefik
+                    topologyKey: kubernetes.io/hostname
+          updateStrategy:
+            type: RollingUpdate
+            rollingUpdate:
+              maxSurge: 1
+              maxUnavailable: 0
+    - repoURL: https://github.com/joyson-fernandes/storage.git
+      targetRevision: main
+      path: manifests/traefik
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
