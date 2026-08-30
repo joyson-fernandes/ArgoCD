@@ -1,7 +1,6 @@
 githubConfigUrl: "https://github.com/joyson-fernandes/portfolio-website-v2"
 
-githubConfigSecret:
-  github_token: "<YOUR_PAT>"
+githubConfigSecret: github-token
 
 runnerScaleSetName: "portfolio-runner"
 
