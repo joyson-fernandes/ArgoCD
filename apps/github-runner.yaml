@@ -1,29 +1,28 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: github-runner
+  name: arc-runner
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-
 spec:
   project: default
 
-  sources:
+  source:
+    repoURL: ghcr.io/actions/actions-runner-controller-charts
+    chart: gha-runner-scale-set
+    targetRevision: 0.14.2
 
-    - repoURL: ghcr.io/actions/actions-runner-controller-charts
-      chart: gha-runner-scale-set
-      targetRevision: 0.14.2
-      helm:
-        releaseName: portfolio-runner
-        valueFiles:
-          - $values/manifests/github-runner/values.yaml
+    helm:
+      values: |
+        githubConfigUrl: "https://github.com/Joysontech"
 
-    - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
-      targetRevision: main
-      ref: values
+        githubConfigSecret: github-token
+
+        runnerScaleSetName: "arc-runner-set"
+
+        minRunners: 0
+        maxRunners: 5
 
   destination:
     server: https://kubernetes.default.svc
@@ -36,3 +35,4 @@ spec:
 
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
