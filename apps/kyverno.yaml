@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno
+  namespace: argocd
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://kyverno.github.io/kyverno
+      chart: kyverno
+      targetRevision: 3.6.2
+      helm:
+        releaseName: kyverno
+        valueFiles:
+          - $values/manifests/kyverno/values.yaml
+
+    - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kyverno
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - Replace=true
+
+  ignoreDifferences:
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+      jqPathExpressions:
+        - .rules
