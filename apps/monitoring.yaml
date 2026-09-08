@@ -9,26 +9,25 @@ spec:
   source:
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    targetRevision: 78.5.0
+    targetRevision: <VERSION>
 
     helm:
       releaseName: monitoring
+      valueFiles:
+        - $values/manifests/monitoring/values.yaml
 
-      values: |
-        grafana:
-          enabled: true
-          service:
-            type: NodePort
-            nodePort: 30300
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 78.5.0
+      helm:
+        releaseName: monitoring
+        valueFiles:
+          - $values/manifests/monitoring/values.yaml
 
-        prometheus:
-          enabled: true
-          service:
-            type: NodePort
-            nodePort: 30090
-
-        alertmanager:
-          enabled: true
+    - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+      targetRevision: main
+      ref: values
 
   destination:
     server: https://kubernetes.default.svc

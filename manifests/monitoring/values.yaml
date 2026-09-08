@@ -1,0 +1,14 @@
+grafana:
+  enabled: true
+
+  service:
+    type: LoadBalancer
+
+prometheus:
+  enabled: true
+
+  service:
+    type: LoadBalancer
+
+alertmanager:
+  enabled: true
