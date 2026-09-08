@@ -17,9 +17,15 @@ spec:
       values: |
         grafana:
           enabled: true
+          service:
+            type: NodePort
+            nodePort: 30300
 
         prometheus:
           enabled: true
+          service:
+            type: NodePort
+            nodePort: 30090
 
         alertmanager:
           enabled: true
