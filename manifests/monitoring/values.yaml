@@ -1,12 +1,16 @@
+crds:
+  enabled: true
+  upgradeJob:
+    enabled: true
+    forceConflicts: true
+
 grafana:
   enabled: true
-
   service:
     type: LoadBalancer
 
 prometheus:
   enabled: true
-
   service:
     type: LoadBalancer
 
