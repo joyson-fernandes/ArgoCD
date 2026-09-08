@@ -1,11 +1,23 @@
 admissionController:
   replicas: 1
 
+  metricsService:
+    create: true
+
 backgroundController:
   replicas: 1
+
+  metricsService:
+    create: true
 
 cleanupController:
   replicas: 1
 
+  metricsService:
+    create: true
+
 reportsController:
   replicas: 1
+
+  metricsService:
+    create: true
