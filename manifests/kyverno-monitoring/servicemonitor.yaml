@@ -9,11 +9,9 @@ spec:
   namespaceSelector:
     matchNames:
       - kyverno
-
   selector:
     matchLabels:
       app.kubernetes.io/instance: kyverno
-
   endpoints:
     - port: metrics-port
       path: /metrics
