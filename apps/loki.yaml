@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+spec:
+  project: default
+
+  sources:
+    # Loki Helm chart
+    - repoURL: https://grafana-community.github.io/helm-charts
+      chart: loki
+      targetRevision: 18.11.7
+      helm:
+        valueFiles:
+          - $values/manifests/loki/values.yaml
+
+    # Your Git repository containing values.yaml
+    - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: loki
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
+    retry:
+      limit: 5
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 3m
