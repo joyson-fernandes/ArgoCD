@@ -29,6 +29,7 @@ loki:
 
   compactor:
     retention_enabled: true
+    delete_request_store: filesystem
     working_directory: /var/loki/compactor
 
   rulerConfig:
