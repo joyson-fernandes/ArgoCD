@@ -15,6 +15,13 @@ spec:
           enabled: true
           service:
             type: LoadBalancer
+            port: 3000
+          sidecar:
+            dashboards:
+              enabled: true
+              label: grafana_dashboard
+              labelValue: "1"
+              searchNamespace: ALL  
 
         prometheus:
           enabled: true
