@@ -49,7 +49,11 @@ singleBinary:
       - ReadWriteOnce
     size: 30Gi
 
-# We are using Monolithic mode, so disable the other deployment modes.
+  service:
+    type: LoadBalancer
+    port: 3100
+
+# Disable the other deployment modes
 
 backend:
   replicas: 0
