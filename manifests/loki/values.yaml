@@ -42,16 +42,16 @@ loki:
 singleBinary:
   replicas: 1
 
+  service:
+    type: LoadBalancer
+    port: 3100
+
   persistence:
     enabled: true
     storageClass: local-path
     accessModes:
       - ReadWriteOnce
     size: 30Gi
-
-  service:
-    type: LoadBalancer
-    port: 3100
 
 # Disable the other deployment modes
 
