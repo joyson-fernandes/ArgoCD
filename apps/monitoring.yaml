@@ -13,9 +13,19 @@ spec:
       values: |
         grafana:
           enabled: true
+
           service:
             type: LoadBalancer
             port: 3000
+      
+          persistence:
+            enabled: true
+            type: pvc
+            storageClassName: local-path
+            accessModes:
+              - ReadWriteOnce
+            size: 10Gi
+
           sidecar:
             dashboards:
               enabled: true
@@ -25,8 +35,22 @@ spec:
 
         prometheus:
           enabled: true
+
           service:
             type: LoadBalancer
+
+          prometheusSpec:
+            retention: 15d  
+
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: local-path
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 10Gi
 
         alertmanager:
           enabled: true
