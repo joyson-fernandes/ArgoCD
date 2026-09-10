@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arc-runner-rbac
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    # Must land before any arc-runner-<repo> app that references these service accounts
+    argocd.argoproj.io/sync-wave: "-40"
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+    targetRevision: main
+    path: manifests/arc-runner-rbac
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arc-runners
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

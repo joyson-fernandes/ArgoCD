@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: buildkitd
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+    targetRevision: main
+    path: manifests/buildkitd
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arc-runners
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
