@@ -5,66 +5,21 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://prometheus-community.github.io/helm-charts
-    chart: kube-prometheus-stack
-    targetRevision: 90.0.0
-    helm:
-      values: |
-        grafana:
-          enabled: true
 
-          admin:
-            existingSecret: kube-prometheus-stack-grafana
+  sources:
+    # kube-prometheus-stack Helm chart
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 90.0.0
+      helm:
+        valueFiles:
+          - $values/manifests/monitoring/values.yaml
 
-          service:
-            type: LoadBalancer
-            port: 3000
-      
-          persistence:
-            enabled: true
-            type: pvc
-            storageClassName: local-path
-            accessModes:
-              - ReadWriteOnce
-            size: 10Gi
+    # Your Git repository containing values.yaml
+    - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+      targetRevision: main
+      ref: values
 
-          sidecar:
-            dashboards:
-              enabled: true
-              label: grafana_dashboard
-              labelValue: "1"
-              searchNamespace: ALL  
-
-          additionalDataSources:
-            - name: Loki
-              type: loki
-              access: proxy
-              url: http://loki.loki.svc.cluster.local:3100
-              isDefault: false
-              editable: false    
-
-        prometheus:
-          enabled: true
-
-          service:
-            type: LoadBalancer
-
-          prometheusSpec:
-            retention: 15d  
-
-            storageSpec:
-              volumeClaimTemplate:
-                spec:
-                  storageClassName: local-path
-                  accessModes:
-                    - ReadWriteOnce
-                  resources:
-                    requests:
-                      storage: 30Gi
-
-        alertmanager:
-          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
