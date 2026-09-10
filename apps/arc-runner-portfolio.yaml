@@ -18,6 +18,11 @@ spec:
       valuesObject:
         githubConfigUrl: https://github.com/joyson-fernandes/portfolio-website-v2
         githubConfigSecret: arc-github-app-secret
+        # Explicit instead of label-discovered — ArgoCD's helm-template
+        # rendering can't do a live lookup for the controller's SA.
+        controllerServiceAccount:
+          namespace: arc-systems
+          name: arc-controller-gha-rs-controller
         runnerScaleSetName: portfolio-k8s
         minRunners: 0
         maxRunners: 3
