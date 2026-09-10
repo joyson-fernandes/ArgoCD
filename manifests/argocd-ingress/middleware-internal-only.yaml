@@ -1,0 +1,15 @@
+# Defense in depth: argocd.joysontech.com is meant to resolve only via
+# internal split-horizon DNS, but this middleware also rejects any
+# request that doesn't originate from the home network's private
+# address space, in case the hostname is ever resolved/queried from
+# outside (e.g. someone hits the LB IP directly with a forged Host
+# header).
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: internal-only
+  namespace: argocd
+spec:
+  ipAllowList:
+    sourceRange:
+      - 10.0.0.0/8

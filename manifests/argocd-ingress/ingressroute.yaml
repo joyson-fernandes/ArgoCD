@@ -1,0 +1,51 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  entryPoints:
+    - websecure
+
+  routes:
+    - kind: Rule
+      match: Host(`argocd.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: argocd-server
+          port: 80
+
+  tls:
+    secretName: argocd-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: argocd
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd-redirect
+  namespace: argocd
+spec:
+  entryPoints:
+    - web
+
+  routes:
+    - kind: Rule
+      match: Host(`argocd.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: argocd-server
+          port: 80

@@ -1,0 +1,28 @@
+# Lets the portfolio CI runner force an immediate ArgoCD reconciliation
+# right after it pushes an image-tag bump, instead of waiting for the
+# ~3min poll interval. Scoped to just the two portfolio Applications —
+# not a general "manage any Application" grant.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: arc-runner-portfolio-argocd-refresh
+  namespace: argocd
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    resourceNames: ["portfolio", "portfolio-dev"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: arc-runner-portfolio-argocd-refresh
+  namespace: argocd
+subjects:
+  - kind: ServiceAccount
+    name: arc-runner-portfolio
+    namespace: arc-runners
+roleRef:
+  kind: Role
+  name: arc-runner-portfolio-argocd-refresh
+  apiGroup: rbac.authorization.k8s.io
