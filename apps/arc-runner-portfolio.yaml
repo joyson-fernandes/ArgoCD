@@ -28,9 +28,6 @@ spec:
               - name: runner
                 image: ghcr.io/actions/actions-runner:latest
                 command: ["/home/runner/run.sh"]
-                env:
-                  - name: BUILDKIT_HOST
-                    value: tcp://buildkitd.arc-runners.svc.cluster.local:1234
                 resources:
                   requests:
                     cpu: 250m

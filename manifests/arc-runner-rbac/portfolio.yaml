@@ -4,39 +4,32 @@ metadata:
   name: arc-runner-portfolio
   namespace: arc-runners
 ---
-# Lets the portfolio runner pod manage its own per-PR preview namespaces
-# (portfolio-preview-<PR#>) and the workloads inside them. Scoped to what
-# the preview job needs — not a general cluster-admin grant.
+# Lets the portfolio runner pod use `docker buildx create --driver kubernetes`,
+# which spins up a rootless BuildKit builder pod in this namespace and drives
+# it via exec/log/portforward instead of a local Docker daemon.
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
-  name: arc-runner-portfolio-preview
+  name: arc-runner-portfolio-buildx
+  namespace: arc-runners
 rules:
   - apiGroups: [""]
-    resources: ["namespaces"]
-    verbs: ["get", "list", "create", "delete"]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "create", "delete"]
   - apiGroups: [""]
-    resources: ["services", "pods"]
-    verbs: ["get", "list", "create", "update", "patch", "delete"]
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
-    verbs: ["get", "list", "create", "update", "patch", "delete"]
-  - apiGroups: ["traefik.io"]
-    resources: ["ingressroutes"]
-    verbs: ["get", "list", "create", "update", "patch", "delete"]
-  - apiGroups: [""]
-    resources: ["nodes"]
-    verbs: ["get", "list"]
+    resources: ["pods/log", "pods/exec", "pods/portforward"]
+    verbs: ["get", "create"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
-  name: arc-runner-portfolio-preview
+  name: arc-runner-portfolio-buildx
+  namespace: arc-runners
 subjects:
   - kind: ServiceAccount
     name: arc-runner-portfolio
     namespace: arc-runners
 roleRef:
-  kind: ClusterRole
-  name: arc-runner-portfolio-preview
+  kind: Role
+  name: arc-runner-portfolio-buildx
   apiGroup: rbac.authorization.k8s.io
