@@ -17,12 +17,14 @@ spec:
       targetRevision: 38.0.0
       helm:
         valueFiles:
-          - $values/values/traefik/values.yaml
+          - $values/manifests/traefik/values.yaml
 
     # Kubernetes manifests
     - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
       targetRevision: HEAD
       path: manifests/traefik
+      directory:
+        exclude: values.yaml
 
     # Git repository containing Helm values
     - repoURL: https://github.com/joyson-fernandes/ArgoCD.git
