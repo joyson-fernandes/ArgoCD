@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: argocd-joysontech-com-tls
   issuerRef:
-    name: selfsigned
+    name: letsencrypt-dns01-cloudflare
     kind: ClusterIssuer
   dnsNames:
     - argocd.joysontech.com

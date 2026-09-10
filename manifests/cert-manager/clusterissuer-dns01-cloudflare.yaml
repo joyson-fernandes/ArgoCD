@@ -1,0 +1,28 @@
+# DNS-01 solver for internal-only hostnames that should never be
+# publicly served (unlike letsencrypt-prod's HTTP-01 solver, which
+# requires the route to be briefly reachable over the public internet).
+# Proves domain ownership via a Cloudflare DNS TXT record instead.
+#
+# apiTokenSecretRef points at a Secret created directly with kubectl
+# (not tracked in git) in the cert-manager namespace:
+#   kubectl -n cert-manager create secret generic cloudflare-api-token-secret \
+#     --from-literal=api-token='<token scoped to Zone:DNS:Edit on joysontech.com>'
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-dns01-cloudflare
+spec:
+  acme:
+    email: jf@joysontech.com
+
+    server: https://acme-v02.api.letsencrypt.org/directory
+
+    privateKeySecretRef:
+      name: letsencrypt-dns01-cloudflare
+
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token-secret
+              key: api-token
