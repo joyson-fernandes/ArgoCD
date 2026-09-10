@@ -14,6 +14,9 @@ spec:
         grafana:
           enabled: true
 
+          admin:
+            existingSecret: kube-prometheus-stack-grafana
+
           service:
             type: LoadBalancer
             port: 3000
