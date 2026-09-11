@@ -83,6 +83,23 @@ spec:
       protocol: TCP
 
 ---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: portfolio-app
+  namespace: portfolio
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app: portfolio-app
+  endpoints:
+    - port: http
+      path: /api/metrics
+      interval: 30s
+
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
