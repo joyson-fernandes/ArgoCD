@@ -1,0 +1,26 @@
+# Single-binary Tempo — matches Loki's Monolithic deployment pattern in
+# this repo (manifests/loki/values.yaml). Filesystem storage, no object
+# store needed for this scale.
+tempo:
+  storage:
+    trace:
+      backend: local
+      local:
+        path: /var/tempo/traces
+      wal:
+        path: /var/tempo/wal
+
+  retention: 72h
+
+persistence:
+  enabled: true
+  storageClassName: local-path
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
