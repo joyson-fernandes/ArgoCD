@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shared-postgres
+  labels:
+    app: shared-postgres
+
+---
+# Consolidates the separate plain-Postgres StatefulSets that Umami and
+# interview-prep each got (the lightest option available before this
+# operator existed on prod-k8s). instances: 1, not 3 — this cluster only
+# has 2 nodes, not enough for real anti-affinity-backed HA, so this
+# trades HA for CNPG's declarative multi-database provisioning, native
+# backups, and built-in Prometheus metrics, none of which the plain
+# StatefulSets had.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: shared-postgres
+  namespace: shared-postgres
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.4
+  storage:
+    size: 10Gi
+    storageClass: local-path
+  monitoring:
+    enablePodMonitor: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: umami
+  namespace: shared-postgres
+spec:
+  name: umami
+  owner: umami
+  cluster:
+    name: shared-postgres
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: prep
+  namespace: shared-postgres
+spec:
+  name: prep
+  owner: prep
+  cluster:
+    name: shared-postgres
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: umami
+  namespace: shared-postgres
+spec:
+  name: umami
+  cluster:
+    name: shared-postgres
+  login: true
+  passwordSecret:
+    name: umami-db-role
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: prep
+  namespace: shared-postgres
+spec:
+  name: prep
+  cluster:
+    name: shared-postgres
+  login: true
+  passwordSecret:
+    name: prep-db-role
+---
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: umami-db-role
+  namespace: shared-postgres
+spec:
+  encryptedData:
+    password: AgAqQXI6zMoGUgJ7vH8A+LNduGts4LZN1JhHYrfyxtU8gu0tEbwnr6qMB1XEJS4JZCe/Pc5bmB57oG27YGpxZGo3Jcq3o9dkfOxstNb8hcNCXxxpMq0NA4cUasjYnQfOD1qMkc7RnsPquMPltwjCAqjcfKv49BElkh12Af6HHILos58kHZkzogSvm2acfFJTLOHE9Knmk4tCjYxIZ8G79jHA5wGH1gX3tWDarspuld5EibVBHWiBVnWcPzElO9DlWzvhAMtTvDARtQfb4hbKU55wgkRsaX/xuG2wvzleUzXO99E0zvY8zdepJME0JpF1BhHnYBmsN8CinOCKnPkJxHk02Iui6++yevF3BL1ItocU/WraYAx+HM6TXvgDdqknW/HrNsTjPr6vbj5Pkc+aBXdsTunP17zohIgvOEPadyFWbZuTg44jeBg8GTql2MMYLTwFFLffP8x0p2FcYxEsNB/YDKjU7AbF2yT81HkN5h2NLBy4dCUSr8jdf1gfjNEhtVtGYbEgO1LgEag4OY7epiPYr7jGQ5bUMHSt7uCxTaamceGFQahPUhmrH8n/MW5xF4oBylBSZjCr88X44332JqEeHWwt/7yWBRB+soDoStkC0nfi47eEMqVgow/AXcrv/oOJC3x9YYgHnL2XsE4EikgzFZE2Moqi1BJCtf6E6/fOTgaHAUdEcMeG8NUVSqM6GmDzt90RHP9RTJkrOco10QIBvWkBznQsVbcD/uEUajhExFy/OMIOiYyBX4ZzpMb8AAs=
+    username: AgBDoDa40VNrlzkC+fBlmKfStyn8y9LeE4BjuuExSSoSQCaLsFVGWzIcZfUFVW1FFjCJmSGUIoqXXywfuZ5z2VW3dkIk3+GHrgXodK191qpuQ+LEGSDoWq3TAIMfD9JaRibl/rajBER5ncintJ9g7KRQKsIBRSXfVXiCkm5WuNENFR5s++55VdxKhA26yxSAJNMpSfOJS9dhGN25B2QEWN/69TC3b1+6MFSZQXwxBkCxJUrbIQFdrQi3QST46FiMwrwiKFreQp76YajPEtSlnrpHfUVExpPoSQckba25CJh74VvxCsxazTCwb53/UipfoZ0YO5rIHhsDO49dL2RW0/68XbZsU6gq7XRDWJmV5/GwV37+9OyFcnc9n9vIzzQwjwlxAZMGyjeSpvSSfowc0jBFowi+jGrUn5+gWSZREjWc3CNdOZ7cAZzgMEGDbNauow3yRIWeG6ABNVGnz/98bpDAfNxx6JjOAFim/rBxV9XsSXQH/D0q5frP4yHobCW4tJFcKE9FwAxvTWFNCp+E6Nqfkk/rn0CidZVTpoIMyEwQmsW6GJ0WW3J+dXjh8h3KRMuQR6nLsaGK2cfOXmAtqrXHX9gJvEHS5G9Ae7GxU1wJq1IOGRlz1VkYh8Rv1/s6G0XlKMUsKH0szr1rHNVZdSoFFo5ivhUUegg9M3cQC6DmgfHPfzun6Eeng4uIE+khFsvli/vqgw==
+  template:
+    metadata:
+      name: umami-db-role
+      namespace: shared-postgres
+    type: kubernetes.io/basic-auth
+---
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: prep-db-role
+  namespace: shared-postgres
+spec:
+  encryptedData:
+    password: AgCBkHzo6un+1LpgIl0VvVHq8PgZjVVma1Egc8AzdWH0DGRRhKXFGu7sOhFzb/PTiO3lkXNf14O/AOJtEe6nCMrhBfNyYytve4r0vi4P40BzZmjX6hZCEw85I8wodqYp3RA3eo+mWPVxN+0XLzDVs1VPLXCVCZvfTprxGAD63DOb7vfl9+Vnq/YpHYcSddtOHYU1oD1rVhkaLkRkFpD1Xwgvsx5BBrkq3I/nLkSigY06f3sweMCghRGJpWw/bZ1otmw5y6bmKeQuFYpVDRdmor5YC/VEC0bEv2rWnAkAJgxMbDz9dGAsq0QxRW+aKK+0aMeyakSRH9cq+mBvcUFCUTIYbTPLuIYM6Y5aWANBXUbjCd5rWAU06mW1SnKYV738kx9qtHt9r5HXw9qtYp1FABER4qyW4efSgVBrkKGQgZGl6P2qyVlZPmZ87XSMp62tsrqnNtbCEFLCRqanrxr3+3qWZPtEgjiZ6vdB/sOAvVs9Q+QPt96oEtPCByrmiRGVuhk3wAe5/J3g7mCI03UHOXX1VdafWHQgsNyW6zQUkk38C9BWCa1nWsM9KzbZ5wqC/iLvwbrW9cEZ0II/xy9jmbGn2EKtgv72sXiBYgCSdx7kDDGrxQOeqQ7RzlHhIG5XzBpzlt3lRnlrl0na/lGtQiZiASkNOkuexIvfwAAeRiHsVpERLYJfogjYBEU/Xgwk21ZkGooFjw7NK0DAJBryUkeMXPxEFarMtYueH/OMKG70MemPn1Qig8+iFwV9VDh559U=
+    username: AgAXYA7HfyDwR+J+bs4JxJqgAaha1b7huNdmeDHxvMCr3xJhvagydgEUJWufj0NPmx+t/iKzw5Lj78hjNbY5B4IpveC5e2wbXIWHV0WSatHjxsx0o8iS0zmucoe9E2QXqyMSsgRyoQJl28KM3YPgx7cuoT8itGM/a2knkHQDkxmAEtiD9a4cM1SAVVy8spXC6dxm2au50Vi7vgEa8iyoQCGSVCfwLfpBi5AGFh71wzKGRi1/tNp6IrnzJlYvQlY37CvCEZIJxMO/PZz6ysftY7NvNCoSfr5DszF/tVnG6n9u9/9dNavYTZiWGCQdWtez18QVKQSvKF6V29H9rPMWCkCjWc+SJXsZCpma4FuHXOnpVT9wHq7GFZk5bxZ4XPPK/y0CflA/5TzRkG276fR20TCtJnJxRqzIPjyVdAYEDWoaUrLEHUURa26vvxvIfwe/oDouWD2m//pKOlh1o/QI3FBWz5Z78iKGs+NAdTgRWJ1hmMGBGPCtHRitUAq7SLCXhYYOPeXtOPdGDiD3ru9oMrM53lgzSmq4hb+KHY6Uni8dvS89sqvCgPrQSS+lSPZW6OkoBM+e0ZImt/GZwb8gt5VwmSPTjuVLazJHf15AnoxFF+JLh2WgjvfHtnGZWeav1dTonsss6/HsFm2DaJBuUlrED9oj8wiC0NyMl7s+pvPtUXolKE2ETIzMej7AoQDepg7a3SnV
+  template:
+    metadata:
+      name: prep-db-role
+      namespace: shared-postgres
+    type: kubernetes.io/basic-auth
