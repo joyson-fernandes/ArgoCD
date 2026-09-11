@@ -23,6 +23,8 @@ spec:
       labels:
         app: homelab-guides
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
       containers:
         - name: homelab-guides
           image: ghcr.io/joyson-fernandes/homelab-guides:latest
