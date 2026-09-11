@@ -13,6 +13,17 @@ spec:
     repoURL: https://cloudnative-pg.github.io/charts
     chart: cloudnative-pg
     targetRevision: 0.29.0
+    helm:
+      values: |
+        # CRDs applied once, directly, via `kubectl apply --server-side`
+        # (see manifests/cnpg-operator/README.md) — even with
+        # ServerSideApply=true at the Application level, ArgoCD kept
+        # hitting "metadata.annotations: Too long: may not be more than
+        # 262144 bytes" on the Cluster CRD specifically (confirmed live,
+        # reproducibly). CRDs change rarely enough that managing them
+        # outside GitOps for this one operator is a reasonable tradeoff.
+        crds:
+          create: false
 
   destination:
     server: https://kubernetes.default.svc
