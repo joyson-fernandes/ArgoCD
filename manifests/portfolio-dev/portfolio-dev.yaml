@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: portfolio-app
-          image: ghcr.io/joyson-fernandes/portfolio-website:574a5d9
+          image: ghcr.io/joyson-fernandes/portfolio-website:2d84639
           ports:
             - containerPort: 3000
               name: http
