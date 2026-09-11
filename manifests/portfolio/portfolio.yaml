@@ -41,6 +41,14 @@ spec:
               value: "3000"
             - name: NODE_ENV
               value: "production"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://tempo.monitoring.svc.cluster.local:4318"
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "http/protobuf"
+            - name: OTEL_SERVICE_NAME
+              value: "portfolio"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "deployment.environment.name=production"
 
           resources:
             requests:
