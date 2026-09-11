@@ -1,0 +1,214 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: umami
+  labels:
+    app: umami
+
+---
+# Dedicated single-instance Postgres for Umami — this cluster doesn't run
+# a shared CNPG/Postgres instance, so rather than pull in the full CNPG
+# operator for one small app, this follows the same lightweight pattern
+# other single-app databases in this repo use (e.g. phpIPAM's MariaDB
+# StatefulSet): a plain StatefulSet + PVC, no HA, no operator.
+#
+# umami-postgres / umami-app secrets are created directly with kubectl
+# (not tracked in git):
+#   kubectl -n umami create secret generic umami-postgres \
+#     --from-literal=POSTGRES_PASSWORD='<random>' \
+#     --from-literal=POSTGRES_USER=umami \
+#     --from-literal=POSTGRES_DB=umami
+#   kubectl -n umami create secret generic umami-app \
+#     --from-literal=DATABASE_URL='postgresql://umami:<same-password>@umami-postgres:5432/umami' \
+#     --from-literal=APP_SECRET='<random 32+ byte secret>'
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: umami-postgres
+  namespace: umami
+  labels:
+    app: umami-postgres
+spec:
+  serviceName: umami-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: umami-postgres
+  template:
+    metadata:
+      labels:
+        app: umami-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+              name: postgres
+          envFrom:
+            - secretRef:
+                name: umami-postgres
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "umami"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: umami-postgres
+  namespace: umami
+spec:
+  clusterIP: None
+  selector:
+    app: umami-postgres
+  ports:
+    - port: 5432
+      targetPort: postgres
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: umami
+  namespace: umami
+  labels:
+    app: umami
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: umami
+  template:
+    metadata:
+      labels:
+        app: umami
+    spec:
+      containers:
+        - name: umami
+          image: ghcr.io/umami-software/umami:postgresql-latest
+          ports:
+            - containerPort: 3000
+              name: http
+          envFrom:
+            - secretRef:
+                name: umami-app
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /api/heartbeat
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/heartbeat
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: umami
+  namespace: umami
+  labels:
+    app: umami
+spec:
+  type: ClusterIP
+  selector:
+    app: umami
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: analytics-joysontech-com
+  namespace: umami
+spec:
+  secretName: analytics-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - analytics.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: umami
+  namespace: umami
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`analytics.joysontech.com`)
+      services:
+        - name: umami
+          port: 80
+  tls:
+    secretName: analytics-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: umami
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: umami-redirect
+  namespace: umami
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`analytics.joysontech.com`)
+      middlewares:
+        - name: redirect-https
+      services:
+        - name: umami
+          port: 80
