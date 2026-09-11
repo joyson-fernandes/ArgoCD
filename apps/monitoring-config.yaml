@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-config
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+    targetRevision: HEAD
+    path: manifests/monitoring-config
+
+  # ServiceMonitors/PodMonitors here target resources across several
+  # namespaces (argocd, loki, monitoring, alloy, traefik) — no single
+  # destination namespace applies, each manifest declares its own.
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
