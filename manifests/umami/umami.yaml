@@ -12,15 +12,20 @@ metadata:
 # other single-app databases in this repo use (e.g. phpIPAM's MariaDB
 # StatefulSet): a plain StatefulSet + PVC, no HA, no operator.
 #
-# umami-postgres / umami-app secrets are created directly with kubectl
-# (not tracked in git):
+# umami-postgres / umami-app secrets are decrypted in-cluster by the
+# Sealed Secrets controller (kube-system) from
+# umami-postgres-sealedsecret.yaml / umami-app-sealedsecret.yaml in
+# this directory. To rotate/recreate, generate the plain Secret then
+# reseal it, e.g.:
 #   kubectl -n umami create secret generic umami-postgres \
 #     --from-literal=POSTGRES_PASSWORD='<random>' \
 #     --from-literal=POSTGRES_USER=umami \
-#     --from-literal=POSTGRES_DB=umami
+#     --from-literal=POSTGRES_DB=umami \
+#     --dry-run=client -o json | kubeseal --format yaml > umami-postgres-sealedsecret.yaml
 #   kubectl -n umami create secret generic umami-app \
 #     --from-literal=DATABASE_URL='postgresql://umami:<same-password>@umami-postgres:5432/umami' \
-#     --from-literal=APP_SECRET='<random 32+ byte secret>'
+#     --from-literal=APP_SECRET='<random 32+ byte secret>' \
+#     --dry-run=client -o json | kubeseal --format yaml > umami-app-sealedsecret.yaml
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

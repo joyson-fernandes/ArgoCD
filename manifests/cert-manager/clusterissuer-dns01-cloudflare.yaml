@@ -3,10 +3,13 @@
 # requires the route to be briefly reachable over the public internet).
 # Proves domain ownership via a Cloudflare DNS TXT record instead.
 #
-# apiTokenSecretRef points at a Secret created directly with kubectl
-# (not tracked in git) in the cert-manager namespace:
+# apiTokenSecretRef points at the Secret decrypted in-cluster from
+# cloudflare-api-token-sealedsecret.yaml (SealedSecrets controller,
+# kube-system) — encrypted with a token scoped to Zone:DNS:Edit on
+# joysontech.com. Re-seal with:
 #   kubectl -n cert-manager create secret generic cloudflare-api-token-secret \
-#     --from-literal=api-token='<token scoped to Zone:DNS:Edit on joysontech.com>'
+#     --from-literal=api-token='<token>' --dry-run=client -o json | \
+#     kubeseal --format yaml > cloudflare-api-token-sealedsecret.yaml
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
