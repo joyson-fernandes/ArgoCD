@@ -24,3 +24,8 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      # The Cluster CRD is large enough to exceed client-side apply's
+      # annotation size limit — confirmed live: it silently failed to
+      # install (operator crash-looped on "no matches for kind Cluster")
+      # while the other 8 smaller CRDs installed fine.
+      - ServerSideApply=true
