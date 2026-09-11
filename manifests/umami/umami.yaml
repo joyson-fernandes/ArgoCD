@@ -6,94 +6,20 @@ metadata:
     app: umami
 
 ---
-# Dedicated single-instance Postgres for Umami — this cluster doesn't run
-# a shared CNPG/Postgres instance, so rather than pull in the full CNPG
-# operator for one small app, this follows the same lightweight pattern
-# other single-app databases in this repo use (e.g. phpIPAM's MariaDB
-# StatefulSet): a plain StatefulSet + PVC, no HA, no operator.
+# Umami's database used to be a dedicated single-instance Postgres
+# StatefulSet run just for this app (this cluster had no shared
+# Postgres/CNPG instance at the time). Migrated on 2026-09-11 into the
+# shared CNPG cluster (shared-postgres namespace, see ~/ArgoCD
+# manifests/shared-postgres/) — pg_dump/restore, verified row counts
+# (website: 1, user: 1) match. umami-app now points there instead.
 #
-# umami-postgres / umami-app secrets are decrypted in-cluster by the
-# Sealed Secrets controller (kube-system) from
-# umami-postgres-sealedsecret.yaml / umami-app-sealedsecret.yaml in
-# this directory. To rotate/recreate, generate the plain Secret then
-# reseal it, e.g.:
-#   kubectl -n umami create secret generic umami-postgres \
-#     --from-literal=POSTGRES_PASSWORD='<random>' \
-#     --from-literal=POSTGRES_USER=umami \
-#     --from-literal=POSTGRES_DB=umami \
-#     --dry-run=client -o json | kubeseal --format yaml > umami-postgres-sealedsecret.yaml
+# umami-app secret is decrypted in-cluster by the Sealed Secrets
+# controller (kube-system) from umami-app-sealedsecret.yaml in this
+# directory. To rotate/recreate:
 #   kubectl -n umami create secret generic umami-app \
-#     --from-literal=DATABASE_URL='postgresql://umami:<same-password>@umami-postgres:5432/umami' \
+#     --from-literal=DATABASE_URL='postgresql://umami:<password>@shared-postgres-rw.shared-postgres.svc.cluster.local:5432/umami' \
 #     --from-literal=APP_SECRET='<random 32+ byte secret>' \
 #     --dry-run=client -o json | kubeseal --format yaml > umami-app-sealedsecret.yaml
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: umami-postgres
-  namespace: umami
-  labels:
-    app: umami-postgres
-spec:
-  serviceName: umami-postgres
-  replicas: 1
-  selector:
-    matchLabels:
-      app: umami-postgres
-  template:
-    metadata:
-      labels:
-        app: umami-postgres
-    spec:
-      containers:
-        - name: postgres
-          image: postgres:16-alpine
-          ports:
-            - containerPort: 5432
-              name: postgres
-          envFrom:
-            - secretRef:
-                name: umami-postgres
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/postgresql/data
-              subPath: postgres
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
-          readinessProbe:
-            exec:
-              command: ["pg_isready", "-U", "umami"]
-            initialDelaySeconds: 5
-            periodSeconds: 10
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: local-path
-        resources:
-          requests:
-            storage: 5Gi
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: umami-postgres
-  namespace: umami
-spec:
-  clusterIP: None
-  selector:
-    app: umami-postgres
-  ports:
-    - port: 5432
-      targetPort: postgres
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
