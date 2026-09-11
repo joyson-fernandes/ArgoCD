@@ -79,6 +79,9 @@ metadata:
   labels:
     release: kube-prometheus-stack
 spec:
+  # Without this, the job label defaults to "<namespace>/<podmonitor-name>"
+  # (traefik/traefik) instead of a clean "traefik".
+  jobLabel: app.kubernetes.io/name
   selector:
     matchLabels:
       app.kubernetes.io/name: traefik
