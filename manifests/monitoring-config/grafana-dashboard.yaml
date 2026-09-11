@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homelab-status-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  homelab-status.json: |
+    {
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [
+                {
+                  "options": {
+                    "0": {
+                      "color": "red",
+                      "text": "DOWN"
+                    }
+                  },
+                  "type": "value"
+                },
+                {
+                  "options": {
+                    "1": {
+                      "color": "green",
+                      "text": "UP"
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "noValue": "N/A",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "textMode": "name"
+          },
+          "targets": [
+            {
+              "expr": "up{job=~\"argocd-server-metrics|loki|tempo|alloy|traefik|kube-prometheus-stack-grafana|kube-prometheus-stack-prometheus|portfolio-app\"}",
+              "instant": true,
+              "legendFormat": "{{job}} ({{namespace}})",
+              "refId": "A"
+            }
+          ],
+          "title": "Service Status",
+          "type": "stat"
+        }
+      ],
+      "refresh": "30s",
+      "tags": [
+        "portfolio",
+        "status"
+      ],
+      "time": {
+        "from": "now-1h",
+        "to": "now"
+      },
+      "timezone": "browser",
+      "title": "Homelab Service Status",
+      "uid": "homelab-status",
+      "version": 1
+    }
