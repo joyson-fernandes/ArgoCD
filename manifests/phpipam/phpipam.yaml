@@ -138,7 +138,7 @@ spec:
           command:
             - sh
             - -c
-            - until mysqladmin ping -h phpipam-db --silent; do sleep 2; done
+            - until mariadb-admin ping -h phpipam-db --silent; do sleep 2; done
 
 ---
 apiVersion: apps/v1
@@ -184,7 +184,7 @@ spec:
           command:
             - sh
             - -c
-            - until mysqladmin ping -h phpipam-db --silent; do sleep 2; done
+            - until mariadb-admin ping -h phpipam-db --silent; do sleep 2; done
 
 ---
 apiVersion: v1

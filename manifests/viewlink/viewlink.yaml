@@ -1,0 +1,184 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: viewlink
+  labels:
+    app: viewlink
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: viewlink-data
+  namespace: viewlink
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: viewlink
+  namespace: viewlink
+  labels:
+    app: viewlink
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: viewlink
+  template:
+    metadata:
+      labels:
+        app: viewlink
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: viewlink
+          image: ghcr.io/joyson-fernandes/viewlink:latest
+          ports:
+            - containerPort: 8092
+              name: http
+          env:
+            - name: DB_PATH
+              value: /app/data/displays.json
+            - name: SSH_KEY_PATH
+              value: /secrets/ssh/id_rsa
+          envFrom:
+            - secretRef:
+                name: viewlink-ssh
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: ssh-key
+              mountPath: /secrets/ssh
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 30
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: viewlink-data
+        - name: ssh-key
+          secret:
+            secretName: viewlink-ssh
+            items:
+              - key: id_rsa
+                path: id_rsa
+                mode: 0600
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: viewlink
+  namespace: viewlink
+  labels:
+    app: viewlink
+spec:
+  type: ClusterIP
+  selector:
+    app: viewlink
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: viewlink-joysontech-com
+  namespace: viewlink
+spec:
+  secretName: viewlink-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - viewlink.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: internal-only
+  namespace: viewlink
+spec:
+  ipAllowList:
+    sourceRange:
+      - 10.0.0.0/8
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: viewlink
+  namespace: viewlink
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`viewlink.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: viewlink
+          port: 80
+  tls:
+    secretName: viewlink-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: viewlink
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: viewlink-redirect
+  namespace: viewlink
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`viewlink.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: viewlink
+          port: 80
