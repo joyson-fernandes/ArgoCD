@@ -110,6 +110,8 @@ spec:
               value: "%"
             - name: TZ
               value: "Europe/London"
+            - name: IPAM_TRUST_X_FORWARDED
+              value: "true"
           envFrom:
             - secretRef:
                 name: phpipam-db
