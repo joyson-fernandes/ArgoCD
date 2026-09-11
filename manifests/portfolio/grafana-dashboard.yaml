@@ -120,6 +120,190 @@ data:
           ],
           "title": "External API Health",
           "type": "timeseries"
+        },
+        {
+          "id": 5,
+          "title": "Project Link Clicks",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 16
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(portfolio_project_link_clicks_total[1h])) by (project)",
+              "legendFormat": "{{project}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Guide Views",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 16
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(portfolio_guide_views_total[1h])) by (slug)",
+              "legendFormat": "{{slug}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Average Quiz Score",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 24
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "max": 100,
+              "min": 0
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(portfolio_quiz_score_percent_sum[1h])) by (cert_id) / sum(rate(portfolio_quiz_score_percent_count[1h])) by (cert_id)",
+              "legendFormat": "{{cert_id}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "title": "Cache Hit Ratio",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 24
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "max": 1,
+              "min": 0
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(portfolio_cache_hits_total[15m])) by (key) / (sum(rate(portfolio_cache_hits_total[15m])) by (key) + sum(rate(portfolio_cache_misses_total[15m])) by (key))",
+              "legendFormat": "{{key}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "title": "Running Version",
+          "type": "stat",
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 32
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "options": {
+            "textMode": "value",
+            "colorMode": "none",
+            "graphMode": "none"
+          },
+          "targets": [
+            {
+              "expr": "portfolio_build_info",
+              "legendFormat": "{{git_sha}}",
+              "refId": "A",
+              "instant": true
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "title": "Time Since Deploy",
+          "type": "stat",
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 6,
+            "y": 32
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "dateTimeFromNow"
+            },
+            "overrides": []
+          },
+          "options": {
+            "textMode": "value",
+            "colorMode": "none",
+            "graphMode": "none"
+          },
+          "targets": [
+            {
+              "expr": "portfolio_deploy_timestamp_seconds * 1000",
+              "legendFormat": "deployed",
+              "refId": "A",
+              "instant": true
+            }
+          ]
         }
       ],
       "refresh": "30s",
