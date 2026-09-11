@@ -112,6 +112,8 @@ spec:
               value: "Europe/London"
             - name: IPAM_TRUST_X_FORWARDED
               value: "true"
+            - name: IPAM_DISABLE_INSTALLER
+              value: "1"
           envFrom:
             - secretRef:
                 name: phpipam-db
