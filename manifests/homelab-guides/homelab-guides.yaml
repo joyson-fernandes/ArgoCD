@@ -27,7 +27,7 @@ spec:
         - name: ghcr-pull-secret
       containers:
         - name: homelab-guides
-          image: ghcr.io/joyson-fernandes/homelab-guides:latest
+          image: ghcr.io/joyson-fernandes/homelab-guides:57f0b3b
           ports:
             - containerPort: 8080
               name: http
