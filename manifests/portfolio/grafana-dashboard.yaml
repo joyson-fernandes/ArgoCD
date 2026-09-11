@@ -29,8 +29,8 @@ data:
           "id": 1,
           "targets": [
             {
-              "expr": "sum(rate(portfolio_http_requests_total[5m])) by (route)",
-              "legendFormat": "{{route}}",
+              "expr": "sum(rate(portfolio_http_requests_total[5m])) by (route, namespace)",
+              "legendFormat": "{{namespace}} - {{route}}",
               "refId": "A"
             }
           ],
@@ -57,8 +57,8 @@ data:
           "id": 2,
           "targets": [
             {
-              "expr": "sum(rate(portfolio_http_requests_total{status=~\"5..\"}[5m])) by (route)",
-              "legendFormat": "{{route}}",
+              "expr": "sum(rate(portfolio_http_requests_total{status=~\"5..\"}[5m])) by (route, namespace)",
+              "legendFormat": "{{namespace}} - {{route}}",
               "refId": "A"
             }
           ],
@@ -85,8 +85,8 @@ data:
           "id": 3,
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(portfolio_http_request_duration_seconds_bucket[5m])) by (le, route))",
-              "legendFormat": "{{route}}",
+              "expr": "histogram_quantile(0.95, sum(rate(portfolio_http_request_duration_seconds_bucket[5m])) by (le, route, namespace))",
+              "legendFormat": "{{namespace}} - {{route}}",
               "refId": "A"
             }
           ],
@@ -113,8 +113,8 @@ data:
           "id": 4,
           "targets": [
             {
-              "expr": "sum(rate(portfolio_external_api_calls_total[5m])) by (target, status)",
-              "legendFormat": "{{target}} ({{status}})",
+              "expr": "sum(rate(portfolio_external_api_calls_total[5m])) by (target, status, namespace)",
+              "legendFormat": "{{namespace}} - {{target}} ({{status}})",
               "refId": "A"
             }
           ],
@@ -122,15 +122,34 @@ data:
           "type": "timeseries"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 16
+          },
           "id": 5,
+          "targets": [
+            {
+              "expr": "sum(rate(portfolio_project_link_clicks_total[1h])) by (project, namespace)",
+              "legendFormat": "{{namespace}} - {{project}}",
+              "refId": "A"
+            }
+          ],
           "title": "Project Link Clicks",
-          "type": "timeseries",
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 16
-          },
+          "type": "timeseries"
+        },
+        {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
@@ -141,112 +160,84 @@ data:
             },
             "overrides": []
           },
-          "targets": [
-            {
-              "expr": "sum(rate(portfolio_project_link_clicks_total[1h])) by (project)",
-              "legendFormat": "{{project}}",
-              "refId": "A"
-            }
-          ]
-        },
-        {
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 16
+          },
           "id": 6,
+          "targets": [
+            {
+              "expr": "sum(rate(portfolio_guide_views_total[1h])) by (slug, namespace)",
+              "legendFormat": "{{namespace}} - {{slug}}",
+              "refId": "A"
+            }
+          ],
           "title": "Guide Views",
-          "type": "timeseries",
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 16
-          },
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "targets": [
-            {
-              "expr": "sum(rate(portfolio_guide_views_total[1h])) by (slug)",
-              "legendFormat": "{{slug}}",
-              "refId": "A"
-            }
-          ]
+          "type": "timeseries"
         },
         {
-          "id": 7,
-          "title": "Average Quiz Score",
-          "type": "timeseries",
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 24
-          },
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "percent",
               "max": 100,
-              "min": 0
+              "min": 0,
+              "unit": "percent"
             },
             "overrides": []
           },
-          "targets": [
-            {
-              "expr": "sum(rate(portfolio_quiz_score_percent_sum[1h])) by (cert_id) / sum(rate(portfolio_quiz_score_percent_count[1h])) by (cert_id)",
-              "legendFormat": "{{cert_id}}",
-              "refId": "A"
-            }
-          ]
-        },
-        {
-          "id": 8,
-          "title": "Cache Hit Ratio",
-          "type": "timeseries",
           "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
+            "x": 0,
             "y": 24
           },
+          "id": 7,
+          "targets": [
+            {
+              "expr": "sum(rate(portfolio_quiz_score_percent_sum[1h])) by (cert_id, namespace) / sum(rate(portfolio_quiz_score_percent_count[1h])) by (cert_id, namespace)",
+              "legendFormat": "{{namespace}} - {{cert_id}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Average Quiz Score",
+          "type": "timeseries"
+        },
+        {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "percentunit",
               "max": 1,
-              "min": 0
+              "min": 0,
+              "unit": "percentunit"
             },
             "overrides": []
           },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 24
+          },
+          "id": 8,
           "targets": [
             {
-              "expr": "sum(rate(portfolio_cache_hits_total[15m])) by (key) / (sum(rate(portfolio_cache_hits_total[15m])) by (key) + sum(rate(portfolio_cache_misses_total[15m])) by (key))",
-              "legendFormat": "{{key}}",
+              "expr": "sum(rate(portfolio_cache_hits_total[15m])) by (key, namespace) / (sum(rate(portfolio_cache_hits_total[15m])) by (key, namespace) + sum(rate(portfolio_cache_misses_total[15m])) by (key, namespace))",
+              "legendFormat": "{{namespace}} - {{key}}",
               "refId": "A"
             }
-          ]
+          ],
+          "title": "Cache Hit Ratio",
+          "type": "timeseries"
         },
         {
-          "id": 9,
-          "title": "Running Version",
-          "type": "stat",
-          "gridPos": {
-            "h": 4,
-            "w": 6,
-            "x": 0,
-            "y": 32
-          },
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
@@ -257,30 +248,30 @@ data:
             },
             "overrides": []
           },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 32
+          },
+          "id": 9,
           "options": {
-            "textMode": "value",
             "colorMode": "none",
-            "graphMode": "none"
+            "graphMode": "none",
+            "textMode": "value"
           },
           "targets": [
             {
               "expr": "portfolio_build_info",
-              "legendFormat": "{{git_sha}}",
-              "refId": "A",
-              "instant": true
+              "instant": true,
+              "legendFormat": "{{namespace}} - {{git_sha}}",
+              "refId": "A"
             }
-          ]
+          ],
+          "title": "Running Version",
+          "type": "stat"
         },
         {
-          "id": 10,
-          "title": "Time Since Deploy",
-          "type": "stat",
-          "gridPos": {
-            "h": 4,
-            "w": 6,
-            "x": 6,
-            "y": 32
-          },
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
@@ -291,19 +282,28 @@ data:
             },
             "overrides": []
           },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 6,
+            "y": 32
+          },
+          "id": 10,
           "options": {
-            "textMode": "value",
             "colorMode": "none",
-            "graphMode": "none"
+            "graphMode": "none",
+            "textMode": "value"
           },
           "targets": [
             {
               "expr": "portfolio_deploy_timestamp_seconds * 1000",
-              "legendFormat": "deployed",
-              "refId": "A",
-              "instant": true
+              "instant": true,
+              "legendFormat": "{{namespace}}",
+              "refId": "A"
             }
-          ]
+          ],
+          "title": "Time Since Deploy",
+          "type": "stat"
         }
       ],
       "refresh": "30s",
@@ -317,5 +317,5 @@ data:
       "timezone": "browser",
       "title": "Portfolio App Metrics",
       "uid": "portfolio-app-metrics",
-      "version": 1
+      "version": 2
     }
