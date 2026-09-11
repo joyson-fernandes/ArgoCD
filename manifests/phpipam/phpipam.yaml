@@ -135,10 +135,13 @@ spec:
       initContainers:
         - name: wait-for-db
           image: mariadb:11
+          envFrom:
+            - secretRef:
+                name: phpipam-db
           command:
             - sh
             - -c
-            - until mariadb-admin ping -h phpipam-db --silent; do sleep 2; done
+            - until mariadb-admin ping -h phpipam-db -uroot -p"$MYSQL_ROOT_PASSWORD" --silent; do sleep 2; done
 
 ---
 apiVersion: apps/v1
@@ -181,10 +184,13 @@ spec:
       initContainers:
         - name: wait-for-db
           image: mariadb:11
+          envFrom:
+            - secretRef:
+                name: phpipam-db
           command:
             - sh
             - -c
-            - until mariadb-admin ping -h phpipam-db --silent; do sleep 2; done
+            - until mariadb-admin ping -h phpipam-db -uroot -p"$MYSQL_ROOT_PASSWORD" --silent; do sleep 2; done
 
 ---
 apiVersion: v1
