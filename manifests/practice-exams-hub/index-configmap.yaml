@@ -103,6 +103,7 @@ data:
 
         section.track { margin-bottom: 52px; }
         .track-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; }
+        .track-icon { width: 30px; height: 30px; align-self: center; flex-shrink: 0; }
         .track-head h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
         .track-head p { font-size: 13px; color: var(--text-dim); margin: 0; }
 
@@ -231,6 +232,7 @@ data:
 
         <section class="track">
           <div class="track-head">
+            <img class="track-icon" src="https://images.credly.com/images/cd6c6449-6814-4613-a2d3-13cf4ac5be4f/image.png" alt="Kubestronaut badge" />
             <h2>Kubestronaut</h2>
             <p>The five certifications required for the title.</p>
           </div>
@@ -300,6 +302,7 @@ data:
 
         <section class="track">
           <div class="track-head">
+            <img class="track-icon" src="https://images.credly.com/images/1dba0197-1013-4f23-8918-9479f77172d6/blob" alt="Golden Kubestronaut badge" />
             <h2>Golden Kubestronaut</h2>
             <p>Every additional cert on the way to Golden status.</p>
           </div>
