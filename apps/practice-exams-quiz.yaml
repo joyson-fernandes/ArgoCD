@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: practice-exams-quiz
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/joyson-fernandes/ArgoCD.git
+    targetRevision: HEAD
+    path: manifests/practice-exams-quiz
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: practice-exams-quiz
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

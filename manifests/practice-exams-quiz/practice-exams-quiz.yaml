@@ -1,0 +1,147 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: practice-exams-quiz
+  labels:
+    app: practice-exams-quiz
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: practice-exams-quiz
+  namespace: practice-exams-quiz
+  labels:
+    app: practice-exams-quiz
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: practice-exams-quiz
+  template:
+    metadata:
+      labels:
+        app: practice-exams-quiz
+    spec:
+      imagePullSecrets:
+        - name: practice-exams-quiz-pull-secret
+      containers:
+        - name: server
+          image: ghcr.io/joyson-fernandes/practice-exams-quiz:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: http
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: practice-exams-quiz
+  namespace: practice-exams-quiz
+  labels:
+    app: practice-exams-quiz
+spec:
+  type: ClusterIP
+  selector:
+    app: practice-exams-quiz
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: quiz-practiceexams-joysontech-com
+  namespace: practice-exams-quiz
+spec:
+  secretName: quiz-practiceexams-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - quiz.practiceexams.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: internal-only
+  namespace: practice-exams-quiz
+spec:
+  ipAllowList:
+    sourceRange:
+      - 10.0.0.0/8
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: practice-exams-quiz
+  namespace: practice-exams-quiz
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`quiz.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: practice-exams-quiz
+          port: 80
+  tls:
+    secretName: quiz-practiceexams-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: practice-exams-quiz
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: practice-exams-quiz-redirect
+  namespace: practice-exams-quiz
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`quiz.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: practice-exams-quiz
+          port: 80
