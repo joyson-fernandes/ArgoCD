@@ -150,7 +150,7 @@ data:
             <div class="brand-mark">PE</div>
             <span>Practice Exams</span>
           </div>
-          <div class="pill"><span class="dot"></span>3 environments live</div>
+          <div class="pill"><span class="dot"></span>4 environments live</div>
         </header>
 
         <div class="hero">
@@ -186,6 +186,15 @@ data:
             <h2>Certified Kubernetes Administrator</h2>
             <p>Cluster administration tasks against a real Kubernetes API — RBAC, storage, networking, workloads.</p>
             <div class="card-tags"><span class="tag">kubectl</span><span class="tag">rbac</span><span class="tag">25 tasks</span></div>
+          </a>
+          <a class="card" href="https://ckad.practiceexams.joysontech.com">
+            <div class="card-top">
+              <img class="card-badge" src="https://images.credly.com/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob" alt="CKAD badge" />
+              <span class="card-arrow">&#8599;</span>
+            </div>
+            <h2>Certified Kubernetes Application Developer</h2>
+            <p>Build and deploy workloads against a real Kubernetes API — Deployments, Jobs, probes, ingress, Helm.</p>
+            <div class="card-tags"><span class="tag">kubectl</span><span class="tag">helm</span><span class="tag">18 tasks</span></div>
           </a>
         </div>
 
