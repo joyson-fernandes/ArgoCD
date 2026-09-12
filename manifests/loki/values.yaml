@@ -39,6 +39,19 @@ loki:
     filesystem:
       directory: /var/loki/chunks
 
+# Chart defaults size these memcached caches for a much bigger cluster
+# (chunksCache alone defaults to 8Gi) — on this 2-node homelab cluster
+# that was reserving ~68% of the worker node's total memory via requests,
+# leaving no headroom to schedule anything else even though actual usage
+# was nowhere near that. Trimmed to sane sizes for our log volume.
+resultsCache:
+  allocatedMemory: 256
+  allocatedCPU: 100m
+
+chunksCache:
+  allocatedMemory: 512
+  allocatedCPU: 100m
+
 singleBinary:
   replicas: 1
 
