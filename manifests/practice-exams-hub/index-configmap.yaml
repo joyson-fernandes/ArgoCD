@@ -119,9 +119,9 @@ data:
         div.card.soon { opacity: 0.5; }
         .card-top { display: flex; align-items: center; justify-content: space-between; position: relative; }
         .card-badge {
-          width: 58px; height: 58px; border-radius: 12px;
+          width: 80px; height: 80px; border-radius: 14px;
           object-fit: contain; background: var(--panel-2);
-          border: 1px solid var(--border); padding: 6px;
+          border: 1px solid var(--border); padding: 8px;
           flex-shrink: 0;
         }
         .card-badge.placeholder {
