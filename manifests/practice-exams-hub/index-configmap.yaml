@@ -242,8 +242,8 @@ data:
               <div class="card-name">Kubernetes and Cloud Native Associate</div>
               <p class="card-desc">Core Kubernetes concepts and the cloud-native landscape.</p>
               <div class="card-stats">
-                <div class="stat"><b>39</b><span>Questions</span></div>
-                <div class="stat"><b>45 min</b><span>Exam Mode</span></div>
+                <div class="stat"><b>60</b><span>Questions</span></div>
+                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
                 <div class="stat"><b>75%</b><span>To Pass</span></div>
               </div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
@@ -254,8 +254,20 @@ data:
               <div class="card-name">Kubernetes and Cloud Native Security Associate</div>
               <p class="card-desc">Security fundamentals across the cluster and supply chain.</p>
               <div class="card-stats">
-                <div class="stat"><b>94</b><span>Questions</span></div>
-                <div class="stat"><b>100 min</b><span>Exam Mode</span></div>
+                <div class="stat"><b>60</b><span>Questions</span></div>
+                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
+                <div class="stat"><b>75%</b><span>To Pass</span></div>
+              </div>
+              <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
+            </a>
+            <a class="card" href="https://quiz.practiceexams.joysontech.com/kcsa2">
+              <img class="card-badge-big" src="https://images.credly.com/images/67dd8a95-8876-4051-9cb9-3d97c204f85a/image.png" alt="KCSA badge" />
+              <div class="card-acronym">KCSA 2</div>
+              <div class="card-name">Kubernetes and Cloud Native Security Associate (Set 2)</div>
+              <p class="card-desc">A second independent practice set covering the same KCSA security domains.</p>
+              <div class="card-stats">
+                <div class="stat"><b>60</b><span>Questions</span></div>
+                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
                 <div class="stat"><b>75%</b><span>To Pass</span></div>
               </div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
@@ -313,7 +325,7 @@ data:
               <p class="card-desc">Observability concepts, PromQL, instrumentation, exporters, alerting.</p>
               <div class="card-stats">
                 <div class="stat"><b>60</b><span>Questions</span></div>
-                <div class="stat"><b>60 min</b><span>Exam Mode</span></div>
+                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
                 <div class="stat"><b>75%</b><span>To Pass</span></div>
               </div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
@@ -324,8 +336,8 @@ data:
               <div class="card-name">Certified Argo Project Associate</div>
               <p class="card-desc">Argo Workflows, Argo CD, Argo Rollouts, and Argo Events in production.</p>
               <div class="card-stats">
-                <div class="stat"><b>25</b><span>Questions</span></div>
-                <div class="stat"><b>50 min</b><span>Exam Mode</span></div>
+                <div class="stat"><b>60</b><span>Questions</span></div>
+                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
                 <div class="stat"><b>75%</b><span>To Pass</span></div>
               </div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
@@ -348,24 +360,24 @@ data:
               <div class="card-name">Certified GitOps Associate</div>
               <p class="card-desc">GitOps principles, Argo CD &amp; Flux, declarative deployment workflows.</p>
               <div class="card-stats">
-                <div class="stat"><b>25</b><span>Questions</span></div>
-                <div class="stat"><b>50 min</b><span>Exam Mode</span></div>
+                <div class="stat"><b>60</b><span>Questions</span></div>
+                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
                 <div class="stat"><b>75%</b><span>To Pass</span></div>
               </div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
             </a>
-            <div class="card soon">
+            <a class="card" href="https://quiz.practiceexams.joysontech.com/kca">
               <img class="card-badge-big" src="https://images.credly.com/images/2592935a-d8fa-405d-b40a-711a75454fc2/image.png" alt="KCA badge" />
               <div class="card-acronym">KCA</div>
               <div class="card-name">Kyverno Certified Associate</div>
-              <p class="card-desc">Kubernetes policy-as-code with Kyverno.</p>
+              <p class="card-desc">Kubernetes policy-as-code with Kyverno: validate, mutate, generate, and verifyImages policies.</p>
               <div class="card-stats">
-                <div class="stat"><b>—</b><span>Questions</span></div>
-                <div class="stat"><b>—</b><span>Duration</span></div>
-                <div class="stat"><b>—</b><span>To Pass</span></div>
+                <div class="stat"><b>60</b><span>Questions</span></div>
+                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
+                <div class="stat"><b>75%</b><span>To Pass</span></div>
               </div>
-              <span class="tag soon">coming soon</span>
-            </div>
+              <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
+            </a>
             <div class="card soon">
               <div class="card-badge-big placeholder">CBA</div>
               <div class="card-acronym">CBA</div>
