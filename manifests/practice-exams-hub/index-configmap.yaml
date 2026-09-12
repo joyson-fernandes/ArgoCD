@@ -216,7 +216,7 @@ data:
         <div class="hero">
           <span class="kicker">Hands-on and multiple choice</span>
           <h1>Practice like it's <em>the real exam</em></h1>
-          <p class="sub">Real terminals, real clusters, root access — spun up fresh and torn down when you're done. Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut.</p>
+          <p class="sub">Real terminals, real clusters, and root access, created for your session and deleted when you're done. Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut.</p>
 
           <div class="disclaimer">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -224,7 +224,7 @@ data:
             </svg>
             <div>
               <strong class="title">Important Disclaimer</strong>
-              <p>These questions and tasks are <b>not</b> original certification exam content. They're entirely based on public documentation, study notes, and personal experience preparing for these exams — intended to help you practice the underlying concepts, not to represent or replicate actual exam content from the CNCF or the Linux Foundation.</p>
+              <p>These questions and tasks are <b>not</b> original certification exam content. They're entirely based on public documentation, study notes, and personal experience preparing for these exams, intended to help you practice the underlying concepts rather than represent or replicate actual exam content from the CNCF or the Linux Foundation.</p>
             </div>
           </div>
         </div>
@@ -264,7 +264,7 @@ data:
               <img class="card-badge-big" src="https://images.credly.com/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png" alt="CKA badge" />
               <div class="card-acronym">CKA</div>
               <div class="card-name">Certified Kubernetes Administrator</div>
-              <p class="card-desc">Cluster administration against a real Kubernetes API — RBAC, storage, networking.</p>
+              <p class="card-desc">Cluster administration against a real Kubernetes API: RBAC, storage, and networking.</p>
               <div class="card-stats">
                 <div class="stat"><b>25</b><span>Tasks</span></div>
                 <div class="stat"><b>~2 min</b><span>Setup</span></div>
@@ -276,7 +276,7 @@ data:
               <img class="card-badge-big" src="https://images.credly.com/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob" alt="CKAD badge" />
               <div class="card-acronym">CKAD</div>
               <div class="card-name">Certified Kubernetes Application Developer</div>
-              <p class="card-desc">Build and deploy workloads — Deployments, Jobs, probes, ingress, Helm.</p>
+              <p class="card-desc">Build and deploy workloads with Deployments, Jobs, probes, ingress, and Helm.</p>
               <div class="card-stats">
                 <div class="stat"><b>18</b><span>Tasks</span></div>
                 <div class="stat"><b>~2 min</b><span>Setup</span></div>
@@ -334,7 +334,7 @@ data:
               <img class="card-badge-big" src="https://images.credly.com/images/d7d4ddc8-7df8-4c03-9343-507b51e0ef99/image.png" alt="ICA badge" />
               <div class="card-acronym">ICA</div>
               <div class="card-name">Istio Certified Associate</div>
-              <p class="card-desc">Service mesh tasks — Gateways, VirtualServices, mTLS, traffic policy.</p>
+              <p class="card-desc">Service mesh tasks covering Gateways, VirtualServices, mTLS, and traffic policy.</p>
               <div class="card-stats">
                 <div class="stat"><b>22</b><span>Tasks</span></div>
                 <div class="stat"><b>~2 min</b><span>Setup</span></div>
@@ -418,7 +418,7 @@ data:
               <img class="card-badge-big" src="https://images.credly.com/images/1677b995-9642-44e2-8961-026f84810bbc/blob" alt="LFCS badge" />
               <div class="card-acronym">LFCS</div>
               <div class="card-name">Linux Foundation Certified System Administrator</div>
-              <p class="card-desc">Real Linux sysadmin work — LVM, systemd, networking, Docker.</p>
+              <p class="card-desc">Real Linux sysadmin work with LVM, systemd, networking, and Docker.</p>
               <div class="card-stats">
                 <div class="stat"><b>17</b><span>Tasks</span></div>
                 <div class="stat"><b>~1 min</b><span>Setup</span></div>
