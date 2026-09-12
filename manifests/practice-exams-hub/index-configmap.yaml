@@ -163,7 +163,7 @@ data:
             <div class="brand-mark">PE</div>
             <span>Practice Exams</span>
           </div>
-          <div class="pill"><span class="dot"></span>4 environments live</div>
+          <div class="pill"><span class="dot"></span>9 exams live</div>
         </header>
 
         <div class="hero">
@@ -178,22 +178,24 @@ data:
             <p>The five certifications required for the title.</p>
           </div>
           <div class="grid">
-            <div class="card soon">
+            <a class="card" href="https://quiz.practiceexams.joysontech.com/kcna">
               <div class="card-top">
                 <img class="card-badge" src="https://images.credly.com/images/f28f1d88-428a-47f6-95b5-7da1dd6c1000/KCNA_badge.png" alt="KCNA badge" />
+                <span class="card-arrow">&#8599;</span>
               </div>
               <h3>Kubernetes and Cloud Native Associate</h3>
               <p>Multiple choice — core Kubernetes concepts and the cloud-native landscape.</p>
-              <div class="card-tags"><span class="tag soon">coming soon</span></div>
-            </div>
-            <div class="card soon">
+              <div class="card-tags"><span class="tag">mcq</span><span class="tag">39 questions</span></div>
+            </a>
+            <a class="card" href="https://quiz.practiceexams.joysontech.com/kcsa">
               <div class="card-top">
                 <img class="card-badge" src="https://images.credly.com/images/67dd8a95-8876-4051-9cb9-3d97c204f85a/image.png" alt="KCSA badge" />
+                <span class="card-arrow">&#8599;</span>
               </div>
               <h3>Kubernetes and Cloud Native Security Associate</h3>
               <p>Multiple choice — security fundamentals across the cluster and supply chain.</p>
-              <div class="card-tags"><span class="tag soon">coming soon</span></div>
-            </div>
+              <div class="card-tags"><span class="tag">mcq</span><span class="tag">94 questions</span></div>
+            </a>
             <a class="card" href="https://cka.practiceexams.joysontech.com">
               <div class="card-top">
                 <img class="card-badge" src="https://images.credly.com/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png" alt="CKA badge" />
@@ -229,18 +231,24 @@ data:
             <p>Every additional cert on the way to Golden status.</p>
           </div>
           <div class="grid">
-            <div class="card soon">
-              <div class="card-top"><img class="card-badge" src="https://images.credly.com/images/c34436dc-1cfd-4125-a862-35f9c86ca17f/image.png" alt="PCA badge" /></div>
+            <a class="card" href="https://quiz.practiceexams.joysontech.com/pca">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/c34436dc-1cfd-4125-a862-35f9c86ca17f/image.png" alt="PCA badge" />
+                <span class="card-arrow">&#8599;</span>
+              </div>
               <h3>Prometheus Certified Associate</h3>
               <p>Multiple choice — observability, PromQL, exporters, alerting.</p>
-              <div class="card-tags"><span class="tag soon">coming soon</span></div>
-            </div>
-            <div class="card soon">
-              <div class="card-top"><img class="card-badge" src="https://images.credly.com/images/12624f9e-6b4a-43f0-b7a2-afb2c6cf8059/image.png" alt="CAPA badge" /></div>
+              <div class="card-tags"><span class="tag">mcq</span><span class="tag">60 questions</span></div>
+            </a>
+            <a class="card" href="https://quiz.practiceexams.joysontech.com/capa">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/12624f9e-6b4a-43f0-b7a2-afb2c6cf8059/image.png" alt="CAPA badge" />
+                <span class="card-arrow">&#8599;</span>
+              </div>
               <h3>Certified Argo Project Associate</h3>
               <p>Multiple choice — Argo Workflows, Argo CD, Rollouts, and Events.</p>
-              <div class="card-tags"><span class="tag soon">coming soon</span></div>
-            </div>
+              <div class="card-tags"><span class="tag">mcq</span><span class="tag">25 questions</span></div>
+            </a>
             <a class="card" href="https://ica.practiceexams.joysontech.com">
               <div class="card-top">
                 <img class="card-badge" src="https://images.credly.com/images/d7d4ddc8-7df8-4c03-9343-507b51e0ef99/image.png" alt="ICA badge" />
@@ -250,12 +258,15 @@ data:
               <p>Service mesh tasks in an isolated vcluster — Gateways, VirtualServices, mTLS, traffic policy.</p>
               <div class="card-tags"><span class="tag">vcluster</span><span class="tag">istio</span><span class="tag">22 tasks</span></div>
             </a>
-            <div class="card soon">
-              <div class="card-top"><img class="card-badge" src="https://images.credly.com/images/7219d055-4e97-439c-b244-8fbe885fa06b/image.png" alt="CGOA badge" /></div>
+            <a class="card" href="https://quiz.practiceexams.joysontech.com/cgoa">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/7219d055-4e97-439c-b244-8fbe885fa06b/image.png" alt="CGOA badge" />
+                <span class="card-arrow">&#8599;</span>
+              </div>
               <h3>Certified GitOps Associate</h3>
               <p>Multiple choice — GitOps principles, Argo CD &amp; Flux, declarative delivery.</p>
-              <div class="card-tags"><span class="tag soon">coming soon</span></div>
-            </div>
+              <div class="card-tags"><span class="tag">mcq</span><span class="tag">25 questions</span></div>
+            </a>
             <div class="card soon">
               <div class="card-top"><img class="card-badge" src="https://images.credly.com/images/2592935a-d8fa-405d-b40a-711a75454fc2/image.png" alt="KCA badge" /></div>
               <h3>Kyverno Certified Associate</h3>
