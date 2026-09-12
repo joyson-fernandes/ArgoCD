@@ -37,7 +37,7 @@ data:
           min-height: 100vh;
         }
         .wrap {
-          max-width: 980px;
+          max-width: 1040px;
           margin: 0 auto;
           padding: 56px 20px 64px;
         }
@@ -45,7 +45,7 @@ data:
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 84px;
+          margin-bottom: 72px;
         }
         .brand { display: flex; align-items: center; gap: 10px; }
         .brand-mark {
@@ -63,7 +63,7 @@ data:
         }
         .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,0.15); }
 
-        .hero { text-align: center; margin-bottom: 64px; }
+        .hero { text-align: center; margin-bottom: 56px; }
         .kicker {
           display: inline-block; font-size: 12.5px; font-weight: 600;
           color: var(--accent); letter-spacing: 0.02em; margin-bottom: 18px;
@@ -80,23 +80,28 @@ data:
           max-width: 560px; margin: 0 auto;
         }
 
+        section.track { margin-bottom: 52px; }
+        .track-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; }
+        .track-head h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+        .track-head p { font-size: 13px; color: var(--text-dim); margin: 0; }
+
         .grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-          gap: 16px;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 14px;
         }
-        a.card {
+        a.card, div.card {
           position: relative;
           background: var(--panel);
           border: 1px solid var(--border);
           border-radius: 16px;
-          padding: 26px;
+          padding: 22px;
           text-decoration: none;
           color: var(--text);
           transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 14px;
           overflow: hidden;
         }
         a.card::before {
@@ -111,35 +116,43 @@ data:
           background: var(--panel-2);
         }
         a.card:hover::before { opacity: 1; }
+        div.card.soon { opacity: 0.5; }
         .card-top { display: flex; align-items: center; justify-content: space-between; position: relative; }
         .card-badge {
-          width: 46px; height: 46px; border-radius: 10px;
+          width: 40px; height: 40px; border-radius: 9px;
           object-fit: contain; background: var(--panel-2);
-          border: 1px solid var(--border); padding: 6px;
+          border: 1px solid var(--border); padding: 5px;
+          flex-shrink: 0;
+        }
+        .card-badge.placeholder {
+          display: flex; align-items: center; justify-content: center;
+          font-size: 11px; font-weight: 800; color: var(--text-faint);
+          font-family: 'JetBrains Mono', monospace;
         }
         .card-arrow {
-          color: var(--text-faint); font-size: 18px; transition: transform 0.2s ease, color 0.2s ease;
+          color: var(--text-faint); font-size: 17px; transition: transform 0.2s ease, color 0.2s ease;
         }
         a.card:hover .card-arrow { transform: translate(3px, -3px); color: var(--accent); }
-        .card h2 { font-size: 16.5px; margin: 0; font-weight: 700; letter-spacing: -0.01em; position: relative; }
-        .card p { font-size: 13.5px; color: var(--text-dim); margin: 0; line-height: 1.55; position: relative; }
+        .card h3 { font-size: 15px; margin: 0; font-weight: 700; letter-spacing: -0.01em; position: relative; }
+        .card p { font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.5; position: relative; }
         .card-tags { display: flex; gap: 6px; flex-wrap: wrap; position: relative; }
         .tag {
-          font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim);
+          font-size: 10.5px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim);
           background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-          padding: 3px 8px; border-radius: 6px;
+          padding: 3px 7px; border-radius: 6px;
         }
+        .tag.soon { color: #f5b34d; background: rgba(245,179,77,0.08); border-color: rgba(245,179,77,0.25); }
 
         footer {
-          margin-top: 72px; text-align: center;
+          margin-top: 56px; text-align: center;
           color: var(--text-faint); font-size: 12.5px;
           display: flex; flex-direction: column; gap: 6px; align-items: center;
         }
 
         @media (max-width: 560px) {
           h1 { font-size: 32px; }
-          header { margin-bottom: 56px; }
-          .hero { margin-bottom: 44px; }
+          header { margin-bottom: 48px; }
+          .hero { margin-bottom: 40px; }
         }
       </style>
     </head>
@@ -154,49 +167,142 @@ data:
         </header>
 
         <div class="hero">
-          <span class="kicker">Hands-on, not multiple choice</span>
+          <span class="kicker">Hands-on and multiple choice</span>
           <h1>Practice like it's <em>the real exam</em></h1>
-          <p class="sub">A real terminal, a real cluster or box, root access — spun up fresh for you and torn down when you're done. Pick a certification to start.</p>
+          <p class="sub">Real terminals, real clusters, root access — spun up fresh and torn down when you're done. Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut.</p>
         </div>
 
-        <div class="grid">
-          <a class="card" href="https://ica.practiceexams.joysontech.com">
-            <div class="card-top">
-              <img class="card-badge" src="https://images.credly.com/images/d7d4ddc8-7df8-4c03-9343-507b51e0ef99/image.png" alt="ICA badge" />
-              <span class="card-arrow">&#8599;</span>
+        <section class="track">
+          <div class="track-head">
+            <h2>Kubestronaut</h2>
+            <p>The five certifications required for the title.</p>
+          </div>
+          <div class="grid">
+            <div class="card soon">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/f28f1d88-428a-47f6-95b5-7da1dd6c1000/KCNA_badge.png" alt="KCNA badge" />
+              </div>
+              <h3>Kubernetes and Cloud Native Associate</h3>
+              <p>Multiple choice — core Kubernetes concepts and the cloud-native landscape.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
             </div>
-            <h2>Istio Certified Associate</h2>
-            <p>Service mesh tasks in an isolated vcluster — Gateways, VirtualServices, mTLS, traffic policy.</p>
-            <div class="card-tags"><span class="tag">vcluster</span><span class="tag">istio</span><span class="tag">22 tasks</span></div>
-          </a>
-          <a class="card" href="https://lfcs.practiceexams.joysontech.com">
-            <div class="card-top">
-              <img class="card-badge" src="https://images.credly.com/images/1677b995-9642-44e2-8961-026f84810bbc/blob" alt="LFCS badge" />
-              <span class="card-arrow">&#8599;</span>
+            <div class="card soon">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/67dd8a95-8876-4051-9cb9-3d97c204f85a/image.png" alt="KCSA badge" />
+              </div>
+              <h3>Kubernetes and Cloud Native Security Associate</h3>
+              <p>Multiple choice — security fundamentals across the cluster and supply chain.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
             </div>
-            <h2>Linux Foundation Certified System Administrator</h2>
-            <p>Real Linux sysadmin work on a privileged sandbox box — LVM, systemd, networking, Docker.</p>
-            <div class="card-tags"><span class="tag">systemd</span><span class="tag">docker</span><span class="tag">17 tasks</span></div>
-          </a>
-          <a class="card" href="https://cka.practiceexams.joysontech.com">
-            <div class="card-top">
-              <img class="card-badge" src="https://images.credly.com/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png" alt="CKA badge" />
-              <span class="card-arrow">&#8599;</span>
+            <a class="card" href="https://cka.practiceexams.joysontech.com">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png" alt="CKA badge" />
+                <span class="card-arrow">&#8599;</span>
+              </div>
+              <h3>Certified Kubernetes Administrator</h3>
+              <p>Cluster administration against a real Kubernetes API — RBAC, storage, networking, workloads.</p>
+              <div class="card-tags"><span class="tag">kubectl</span><span class="tag">rbac</span><span class="tag">25 tasks</span></div>
+            </a>
+            <a class="card" href="https://ckad.practiceexams.joysontech.com">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob" alt="CKAD badge" />
+                <span class="card-arrow">&#8599;</span>
+              </div>
+              <h3>Certified Kubernetes Application Developer</h3>
+              <p>Build and deploy workloads against a real Kubernetes API — Deployments, Jobs, probes, ingress, Helm.</p>
+              <div class="card-tags"><span class="tag">kubectl</span><span class="tag">helm</span><span class="tag">18 tasks</span></div>
+            </a>
+            <div class="card soon">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/9945dfcb-1cca-4529-85e6-db1be3782210/kubernetes-security-specialist-logo2.png" alt="CKS badge" />
+              </div>
+              <h3>Certified Kubernetes Security Specialist</h3>
+              <p>Runtime sandboxing, AppArmor/seccomp, CIS benchmarking, admission control, on a real cluster.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
             </div>
-            <h2>Certified Kubernetes Administrator</h2>
-            <p>Cluster administration tasks against a real Kubernetes API — RBAC, storage, networking, workloads.</p>
-            <div class="card-tags"><span class="tag">kubectl</span><span class="tag">rbac</span><span class="tag">25 tasks</span></div>
-          </a>
-          <a class="card" href="https://ckad.practiceexams.joysontech.com">
-            <div class="card-top">
-              <img class="card-badge" src="https://images.credly.com/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob" alt="CKAD badge" />
-              <span class="card-arrow">&#8599;</span>
+          </div>
+        </section>
+
+        <section class="track">
+          <div class="track-head">
+            <h2>Golden Kubestronaut</h2>
+            <p>Every additional cert on the way to Golden status.</p>
+          </div>
+          <div class="grid">
+            <div class="card soon">
+              <div class="card-top"><img class="card-badge" src="https://images.credly.com/images/c34436dc-1cfd-4125-a862-35f9c86ca17f/image.png" alt="PCA badge" /></div>
+              <h3>Prometheus Certified Associate</h3>
+              <p>Multiple choice — observability, PromQL, exporters, alerting.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
             </div>
-            <h2>Certified Kubernetes Application Developer</h2>
-            <p>Build and deploy workloads against a real Kubernetes API — Deployments, Jobs, probes, ingress, Helm.</p>
-            <div class="card-tags"><span class="tag">kubectl</span><span class="tag">helm</span><span class="tag">18 tasks</span></div>
-          </a>
-        </div>
+            <div class="card soon">
+              <div class="card-top"><img class="card-badge" src="https://images.credly.com/images/12624f9e-6b4a-43f0-b7a2-afb2c6cf8059/image.png" alt="CAPA badge" /></div>
+              <h3>Certified Argo Project Associate</h3>
+              <p>Multiple choice — Argo Workflows, Argo CD, Rollouts, and Events.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
+            </div>
+            <a class="card" href="https://ica.practiceexams.joysontech.com">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/d7d4ddc8-7df8-4c03-9343-507b51e0ef99/image.png" alt="ICA badge" />
+                <span class="card-arrow">&#8599;</span>
+              </div>
+              <h3>Istio Certified Associate</h3>
+              <p>Service mesh tasks in an isolated vcluster — Gateways, VirtualServices, mTLS, traffic policy.</p>
+              <div class="card-tags"><span class="tag">vcluster</span><span class="tag">istio</span><span class="tag">22 tasks</span></div>
+            </a>
+            <div class="card soon">
+              <div class="card-top"><img class="card-badge" src="https://images.credly.com/images/7219d055-4e97-439c-b244-8fbe885fa06b/image.png" alt="CGOA badge" /></div>
+              <h3>Certified GitOps Associate</h3>
+              <p>Multiple choice — GitOps principles, Argo CD &amp; Flux, declarative delivery.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
+            </div>
+            <div class="card soon">
+              <div class="card-top"><img class="card-badge" src="https://images.credly.com/images/2592935a-d8fa-405d-b40a-711a75454fc2/image.png" alt="KCA badge" /></div>
+              <h3>Kyverno Certified Associate</h3>
+              <p>Kubernetes policy-as-code with Kyverno.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
+            </div>
+            <div class="card soon">
+              <div class="card-top"><div class="card-badge placeholder">CBA</div></div>
+              <h3>Certified Backstage Associate</h3>
+              <p>Backstage plugins, software catalog, internal developer portals.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
+            </div>
+            <div class="card soon">
+              <div class="card-top"><div class="card-badge placeholder">CNPA</div></div>
+              <h3>Cloud Native Platform Engineering Associate</h3>
+              <p>Platform engineering principles and internal developer platforms.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
+            </div>
+            <div class="card soon">
+              <div class="card-top"><div class="card-badge placeholder">CNPE</div></div>
+              <h3>Cloud Native Platform Engineering Expert</h3>
+              <p>Advanced platform engineering across the CNCF landscape.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
+            </div>
+            <div class="card soon">
+              <div class="card-top"><div class="card-badge placeholder">CCA</div></div>
+              <h3>Cilium Certified Associate</h3>
+              <p>eBPF-based networking, security, and observability with Cilium.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
+            </div>
+            <a class="card" href="https://lfcs.practiceexams.joysontech.com">
+              <div class="card-top">
+                <img class="card-badge" src="https://images.credly.com/images/1677b995-9642-44e2-8961-026f84810bbc/blob" alt="LFCS badge" />
+                <span class="card-arrow">&#8599;</span>
+              </div>
+              <h3>Linux Foundation Certified System Administrator</h3>
+              <p>Real Linux sysadmin work on a privileged sandbox box — LVM, systemd, networking, Docker.</p>
+              <div class="card-tags"><span class="tag">systemd</span><span class="tag">docker</span><span class="tag">17 tasks</span></div>
+            </a>
+            <div class="card soon">
+              <div class="card-top"><div class="card-badge placeholder">OTCA</div></div>
+              <h3>OpenTelemetry Certified Associate</h3>
+              <p>Traces, metrics, logs, and the OpenTelemetry Collector pipeline.</p>
+              <div class="card-tags"><span class="tag soon">coming soon</span></div>
+            </div>
+          </div>
+        </section>
 
         <footer>
           <span>Each exam runs as its own independently scaled environment.</span>
