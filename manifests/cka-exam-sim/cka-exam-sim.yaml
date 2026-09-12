@@ -46,6 +46,12 @@ rules:
   - apiGroups: ["scheduling.k8s.io"]
     resources: ["priorityclasses"]
     verbs: ["get", "list", "watch"]
+  # For the real single-node kubeadm VM (KubeVirt VirtualMachineInstance)
+  # used by the 3 questions vcluster can't cover — static pod, etcd
+  # snapshot backup, kubeadm upgrade. See seed/lib/cka-vmi.yaml.
+  - apiGroups: ["kubevirt.io"]
+    resources: ["virtualmachineinstances"]
+    verbs: ["*"]
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -94,6 +100,10 @@ spec:
           envFrom:
             - secretRef:
                 name: cka-exam-sim-ghcr
+          volumeMounts:
+            - name: ssh-key
+              mountPath: /etc/cka-ssh
+              readOnly: true
           resources:
             requests:
               cpu: 100m
@@ -113,6 +123,11 @@ spec:
               port: http
             initialDelaySeconds: 10
             periodSeconds: 30
+      volumes:
+        - name: ssh-key
+          secret:
+            secretName: cka-exam-sim-ssh
+            defaultMode: 0600
 
 ---
 apiVersion: v1
