@@ -205,3 +205,58 @@ spec:
       services:
         - name: cka-exam-sim
           port: 80
+
+---
+# Also reachable under the shared practiceexams.joysontech.com umbrella —
+# same Service, same Middlewares, just a second subdomain/Certificate.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cka-practiceexams-joysontech-com
+  namespace: cka-exam-sim
+spec:
+  secretName: cka-practiceexams-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - cka.practiceexams.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cka-exam-sim-hub
+  namespace: cka-exam-sim
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`cka.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: cka-exam-sim
+          port: 80
+  tls:
+    secretName: cka-practiceexams-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cka-exam-sim-hub-redirect
+  namespace: cka-exam-sim
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`cka.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: cka-exam-sim
+          port: 80

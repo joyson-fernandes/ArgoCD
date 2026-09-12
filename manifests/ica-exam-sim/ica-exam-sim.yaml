@@ -205,3 +205,61 @@ spec:
       services:
         - name: ica-exam-sim
           port: 80
+
+---
+# Also reachable under the shared practiceexams.joysontech.com umbrella —
+# same Service, same Middlewares, just a second subdomain/Certificate so
+# this app keeps its own domain namespace instead of needing to share a
+# base path (this app's frontend builds WebSocket/API URLs as root-
+# relative to location.host, so path-prefix routing would break it).
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ica-practiceexams-joysontech-com
+  namespace: ica-exam-sim
+spec:
+  secretName: ica-practiceexams-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - ica.practiceexams.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ica-exam-sim-hub
+  namespace: ica-exam-sim
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`ica.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: ica-exam-sim
+          port: 80
+  tls:
+    secretName: ica-practiceexams-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ica-exam-sim-hub-redirect
+  namespace: ica-exam-sim
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`ica.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: ica-exam-sim
+          port: 80

@@ -1,0 +1,94 @@
+apiVersion: v1
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <title>Practice Exams</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <style>
+        :root {
+          color-scheme: dark;
+          --bg: #0a0c10;
+          --panel: #0f1218;
+          --panel-2: #141824;
+          --border: #1f2430;
+          --text: #e7e9ee;
+          --text-dim: #8890a0;
+          --accent: #5b8def;
+        }
+        * { box-sizing: border-box; }
+        body {
+          margin: 0;
+          background: var(--bg);
+          color: var(--text);
+          font-family: 'Inter', system-ui, sans-serif;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 64px 20px;
+        }
+        h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; text-align: center; }
+        .sub { color: var(--text-dim); font-size: 15px; margin: 0 0 44px; text-align: center; max-width: 520px; }
+        .grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 18px;
+          width: 100%;
+          max-width: 900px;
+        }
+        a.card {
+          background: var(--panel);
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          padding: 28px 24px;
+          text-decoration: none;
+          color: var(--text);
+          transition: border-color 0.15s, transform 0.15s;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        a.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .badge {
+          width: 40px; height: 40px; border-radius: 8px;
+          background: var(--panel-2);
+          display: flex; align-items: center; justify-content: center;
+          font-weight: 700; font-size: 15px; color: var(--accent);
+        }
+        .card h2 { font-size: 17px; margin: 4px 0 0; font-weight: 600; }
+        .card p { font-size: 13.5px; color: var(--text-dim); margin: 0; line-height: 1.5; }
+        footer { margin-top: 56px; color: var(--text-dim); font-size: 12.5px; }
+      </style>
+    </head>
+    <body>
+      <h1>Practice Exams</h1>
+      <p class="sub">Real hands-on mock exam environments — a real terminal, a real cluster, root access. Pick a certification to start a session.</p>
+      <div class="grid">
+        <a class="card" href="https://ica.practiceexams.joysontech.com">
+          <div class="badge">ICA</div>
+          <h2>Istio Certified Associate</h2>
+          <p>Service mesh tasks in an isolated vcluster — Gateways, VirtualServices, mTLS, traffic policy.</p>
+        </a>
+        <a class="card" href="https://lfcs.practiceexams.joysontech.com">
+          <div class="badge">LFCS</div>
+          <h2>Linux Foundation Certified System Administrator</h2>
+          <p>Real Linux sysadmin work on a privileged sandbox box — LVM, systemd, networking, Docker.</p>
+        </a>
+        <a class="card" href="https://cka.practiceexams.joysontech.com">
+          <div class="badge">CKA</div>
+          <h2>Certified Kubernetes Administrator</h2>
+          <p>Cluster administration tasks against a real Kubernetes API — RBAC, storage, networking, workloads.</p>
+        </a>
+      </div>
+      <footer>Each exam runs as its own independently scaled app.</footer>
+    </body>
+    </html>
+kind: ConfigMap
+metadata:
+  name: practice-exams-hub-html
+  namespace: practice-exams-hub

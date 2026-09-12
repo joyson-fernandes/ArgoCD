@@ -188,3 +188,58 @@ spec:
       services:
         - name: lfcs-exam-sim
           port: 80
+
+---
+# Also reachable under the shared practiceexams.joysontech.com umbrella —
+# same Service, same Middlewares, just a second subdomain/Certificate.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: lfcs-practiceexams-joysontech-com
+  namespace: lfcs-exam-sim
+spec:
+  secretName: lfcs-practiceexams-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - lfcs.practiceexams.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: lfcs-exam-sim-hub
+  namespace: lfcs-exam-sim
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`lfcs.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: lfcs-exam-sim
+          port: 80
+  tls:
+    secretName: lfcs-practiceexams-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: lfcs-exam-sim-hub-redirect
+  namespace: lfcs-exam-sim
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`lfcs.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: lfcs-exam-sim
+          port: 80
