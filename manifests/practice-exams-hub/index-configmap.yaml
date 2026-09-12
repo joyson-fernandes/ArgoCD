@@ -119,14 +119,14 @@ data:
         div.card.soon { opacity: 0.5; }
         .card-top { display: flex; align-items: center; justify-content: space-between; position: relative; }
         .card-badge {
-          width: 40px; height: 40px; border-radius: 9px;
+          width: 58px; height: 58px; border-radius: 12px;
           object-fit: contain; background: var(--panel-2);
-          border: 1px solid var(--border); padding: 5px;
+          border: 1px solid var(--border); padding: 6px;
           flex-shrink: 0;
         }
         .card-badge.placeholder {
           display: flex; align-items: center; justify-content: center;
-          font-size: 11px; font-weight: 800; color: var(--text-faint);
+          font-size: 13px; font-weight: 800; color: var(--text-faint);
           font-family: 'JetBrains Mono', monospace;
         }
         .card-arrow {
