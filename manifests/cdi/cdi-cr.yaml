@@ -13,3 +13,12 @@ spec:
   workload:
     nodeSelector:
       kubernetes.io/os: linux
+    # Lets CDI importer/uploader/cloner pods land on prod-k8s-w02, the
+    # KubeVirt-dedicated node — tainted workload=kubevirt so ordinary
+    # pods stay off it, which would otherwise also block CDI's importer
+    # pod from following a DataVolume's PVC there (see cks-exam-sim).
+    tolerations:
+      - key: workload
+        operator: Equal
+        value: kubevirt
+        effect: NoSchedule
