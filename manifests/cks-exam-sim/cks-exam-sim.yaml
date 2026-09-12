@@ -1,0 +1,256 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cks-exam-sim
+  labels:
+    app: cks-exam-sim
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cks-exam-sim
+  namespace: cks-exam-sim
+
+---
+# Deliberately broad, but not cluster-admin: this app dynamically creates
+# a namespace per exam session with an unpredictable name, so per-namespace
+# Roles can't be pre-scoped — it needs these resource kinds cluster-wide to
+# stand up each session's VirtualMachineInstance + Service + cloud-init
+# Secret. No pods/exec permission needed here (unlike the other exam
+# sims) — there's no kubectl exec target for a VM, the terminal bridge is
+# a real SSH session instead (see internal/k8s/terminal.go).
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cks-exam-sim
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["services", "secrets", "events"]
+    verbs: ["*"]
+  - apiGroups: ["kubevirt.io"]
+    resources: ["virtualmachineinstances"]
+    verbs: ["*"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cks-exam-sim
+subjects:
+  - kind: ServiceAccount
+    name: cks-exam-sim
+    namespace: cks-exam-sim
+roleRef:
+  kind: ClusterRole
+  name: cks-exam-sim
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cks-exam-sim
+  namespace: cks-exam-sim
+  labels:
+    app: cks-exam-sim
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cks-exam-sim
+  template:
+    metadata:
+      labels:
+        app: cks-exam-sim
+    spec:
+      serviceAccountName: cks-exam-sim
+      imagePullSecrets:
+        - name: cks-exam-sim-pull-secret
+      containers:
+        - name: server
+          image: ghcr.io/joyson-fernandes/cks-exam-sim:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: ssh-key
+              mountPath: /etc/cks-ssh
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+      volumes:
+        - name: ssh-key
+          secret:
+            secretName: cks-exam-sim-ssh
+            defaultMode: 0600
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cks-exam-sim
+  namespace: cks-exam-sim
+  labels:
+    app: cks-exam-sim
+spec:
+  type: ClusterIP
+  selector:
+    app: cks-exam-sim
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cks-exam-joysontech-com
+  namespace: cks-exam-sim
+spec:
+  secretName: cks-exam-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - cks-exam.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: internal-only
+  namespace: cks-exam-sim
+spec:
+  ipAllowList:
+    sourceRange:
+      - 10.0.0.0/8
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cks-exam-sim
+  namespace: cks-exam-sim
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`cks-exam.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: cks-exam-sim
+          port: 80
+  tls:
+    secretName: cks-exam-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: cks-exam-sim
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cks-exam-sim-redirect
+  namespace: cks-exam-sim
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`cks-exam.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: cks-exam-sim
+          port: 80
+
+---
+# Also reachable under the shared practiceexams.joysontech.com umbrella —
+# same Service, same Middlewares, just a second subdomain/Certificate.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cks-practiceexams-joysontech-com
+  namespace: cks-exam-sim
+spec:
+  secretName: cks-practiceexams-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - cks.practiceexams.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cks-exam-sim-hub
+  namespace: cks-exam-sim
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`cks.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: cks-exam-sim
+          port: 80
+  tls:
+    secretName: cks-practiceexams-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cks-exam-sim-hub-redirect
+  namespace: cks-exam-sim
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`cks.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: cks-exam-sim
+          port: 80
