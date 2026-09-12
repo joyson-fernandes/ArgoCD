@@ -29,7 +29,7 @@ rules:
     resources: ["namespaces"]
     verbs: ["get", "list", "watch", "create", "delete"]
   - apiGroups: [""]
-    resources: ["pods", "pods/exec", "pods/log", "services", "configmaps", "secrets", "serviceaccounts", "persistentvolumeclaims", "events"]
+    resources: ["pods", "pods/exec", "pods/log", "pods/portforward", "services", "configmaps", "secrets", "serviceaccounts", "persistentvolumeclaims", "events"]
     verbs: ["*"]
   - apiGroups: ["apps"]
     resources: ["deployments", "statefulsets", "replicasets"]
