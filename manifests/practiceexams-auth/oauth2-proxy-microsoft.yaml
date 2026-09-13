@@ -21,6 +21,15 @@ spec:
           args:
             - --provider=entra-id
             - --scope=openid
+            # The app registration allows "All Microsoft account users"
+            # (any org tenant + personal accounts), so the issuer has to be
+            # the multi-tenant /common/ endpoint -- but common's own
+            # discovery document doesn't literally match the tenant-specific
+            # `iss` claim every real token actually carries, so standard
+            # issuer verification always fails against it. This flag is
+            # what every multi-tenant Entra ID setup needs, not a security
+            # downgrade specific to us.
+            - --insecure-oidc-skip-issuer-verification=true
             - --email-domain=*
             - --upstream=static://200
             - --http-address=0.0.0.0:4180
