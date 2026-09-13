@@ -24,6 +24,10 @@ ports:
 providers:
   kubernetesCRD:
     enabled: true
+    # Needed so the shared practiceexams-auth Middleware (and the picker
+    # Service it references) can be referenced from every protected app's
+    # own namespace, instead of duplicating the auth gate into each one.
+    allowCrossNamespace: true
 
   kubernetesIngress:
     enabled: true
