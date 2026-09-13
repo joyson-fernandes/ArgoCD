@@ -80,6 +80,12 @@ data:
           padding: 6px 13px; display: flex; align-items: center; gap: 6px;
         }
         .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,0.15); }
+        .logout-link {
+          font-size: 13px; color: var(--text-dim); text-decoration: none;
+          border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px;
+          transition: color 0.15s, border-color 0.15s;
+        }
+        .logout-link:hover { color: var(--text); border-color: var(--border-hover); }
 
         .hero { text-align: center; margin-bottom: 56px; }
         .kicker {
@@ -226,6 +232,7 @@ data:
             <img class="brand-mark" src="/logo.svg" alt="Practice Exams" />
             <span>Practice Exams</span>
           </div>
+          <a class="logout-link" href="https://auth.practiceexams.joysontech.com/google/oauth2/sign_out?rd=https%3A%2F%2Fpracticeexams.joysontech.com%2F">Log out</a>
         </header>
 
         <div class="hero">
