@@ -260,18 +260,6 @@ data:
               </div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
             </a>
-            <a class="card" href="https://quiz.practiceexams.joysontech.com/kcsa2">
-              <img class="card-badge-big" src="https://images.credly.com/images/67dd8a95-8876-4051-9cb9-3d97c204f85a/image.png" alt="KCSA badge" />
-              <div class="card-acronym">KCSA 2</div>
-              <div class="card-name">Kubernetes and Cloud Native Security Associate (Set 2)</div>
-              <p class="card-desc">A second independent practice set covering the same KCSA security domains.</p>
-              <div class="card-stats">
-                <div class="stat"><b>60</b><span>Questions</span></div>
-                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
-                <div class="stat"><b>75%</b><span>To Pass</span></div>
-              </div>
-              <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
-            </a>
             <a class="card" href="https://cka.practiceexams.joysontech.com">
               <img class="card-badge-big" src="https://images.credly.com/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png" alt="CKA badge" />
               <div class="card-acronym">CKA</div>
