@@ -55,16 +55,19 @@ data:
         </a>
       </div>
       <script>
-        // Traefik's errors middleware appends the originally requested URL
-        // as ?rd=<url> when it redirects an unauthenticated visitor here.
-        // Forward it through to each provider's /oauth2/start so oauth2-proxy
-        // sends the user back to whatever page they actually wanted.
-        var params = new URLSearchParams(window.location.search);
-        var rd = params.get('rd') || 'https://practiceexams.joysontech.com/';
+        // Traefik's errors middleware serves this page's content in place
+        // of the blocked response while leaving the browser's actual
+        // address bar on the page the visitor originally tried to reach --
+        // it's a content swap, not a real redirect. That means
+        // window.location.href here is already the right place to send
+        // the visitor back to after login; no query-param plumbing needed.
+        var rd = window.location.href.indexOf('auth.practiceexams.joysontech.com') === -1
+          ? window.location.href
+          : 'https://practiceexams.joysontech.com/';
         document.getElementById('google-btn').href =
-          '/google/oauth2/start?rd=' + encodeURIComponent(rd);
+          'https://auth.practiceexams.joysontech.com/google/oauth2/start?rd=' + encodeURIComponent(rd);
         document.getElementById('microsoft-btn').href =
-          '/microsoft/oauth2/start?rd=' + encodeURIComponent(rd);
+          'https://auth.practiceexams.joysontech.com/microsoft/oauth2/start?rd=' + encodeURIComponent(rd);
       </script>
     </body>
     </html>

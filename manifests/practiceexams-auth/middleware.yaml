@@ -1,11 +1,15 @@
 # Shared auth gate for every practiceexams.joysontech.com app. Chained as
-# [practiceexams-auth, practiceexams-auth-errors] on each protected
-# IngressRoute: the forwardAuth checks the session cookie against
-# oauth2-proxy-google's /auth endpoint (any instance can validate a
-# session cookie regardless of which provider created it, since both
-# share the same cookie secret and cookie domain); a 401 from that check
-# is caught by the errors middleware and redirected to the login picker,
-# preserving the originally requested URL as ?rd=.
+# [practiceexams-auth-errors, practiceexams-auth] on each protected
+# IngressRoute -- errors must come first in the list since Traefik
+# middlewares wrap outward-in, and it can only catch a status code from
+# whatever runs after it. The forwardAuth checks the session cookie
+# against oauth2-proxy-google's /auth endpoint (any instance can
+# validate a session cookie regardless of which provider created it,
+# since both share the same cookie secret and cookie domain); on a 401
+# the errors middleware swaps in the picker page's content, in place,
+# without changing the browser's address bar -- the picker's own script
+# reads window.location.href (which is still the original URL the
+# visitor tried to reach) to build each provider's ?rd= redirect target.
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -31,4 +35,4 @@ spec:
     service:
       name: practiceexams-auth-picker
       port: 80
-    query: "/?rd={url}"
+    query: "/"
