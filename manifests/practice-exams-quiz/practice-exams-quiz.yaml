@@ -110,9 +110,9 @@ spec:
       match: Host(`quiz.practiceexams.joysontech.com`)
       middlewares:
         - name: internal-only
-        - name: practiceexams-auth
-          namespace: practiceexams-auth
         - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
+        - name: practiceexams-auth
           namespace: practiceexams-auth
       services:
         - name: practice-exams-quiz

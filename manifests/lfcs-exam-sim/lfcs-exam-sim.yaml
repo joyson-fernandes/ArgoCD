@@ -153,9 +153,9 @@ spec:
       match: Host(`lfcs-exam.joysontech.com`)
       middlewares:
         - name: internal-only
-        - name: practiceexams-auth
-          namespace: practiceexams-auth
         - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
+        - name: practiceexams-auth
           namespace: practiceexams-auth
       services:
         - name: lfcs-exam-sim
@@ -223,9 +223,9 @@ spec:
       match: Host(`lfcs.practiceexams.joysontech.com`)
       middlewares:
         - name: internal-only
-        - name: practiceexams-auth
-          namespace: practiceexams-auth
         - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
+        - name: practiceexams-auth
           namespace: practiceexams-auth
       services:
         - name: lfcs-exam-sim

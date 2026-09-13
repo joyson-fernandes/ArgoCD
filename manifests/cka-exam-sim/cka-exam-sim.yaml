@@ -185,9 +185,9 @@ spec:
       match: Host(`cka-exam.joysontech.com`)
       middlewares:
         - name: internal-only
-        - name: practiceexams-auth
-          namespace: practiceexams-auth
         - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
+        - name: practiceexams-auth
           namespace: practiceexams-auth
       services:
         - name: cka-exam-sim
@@ -255,9 +255,9 @@ spec:
       match: Host(`cka.practiceexams.joysontech.com`)
       middlewares:
         - name: internal-only
-        - name: practiceexams-auth
-          namespace: practiceexams-auth
         - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
+        - name: practiceexams-auth
           namespace: practiceexams-auth
       services:
         - name: cka-exam-sim

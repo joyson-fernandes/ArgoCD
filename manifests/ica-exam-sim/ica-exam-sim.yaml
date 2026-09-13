@@ -170,9 +170,9 @@ spec:
       match: Host(`ica-exam.joysontech.com`)
       middlewares:
         - name: internal-only
-        - name: practiceexams-auth
-          namespace: practiceexams-auth
         - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
+        - name: practiceexams-auth
           namespace: practiceexams-auth
       services:
         - name: ica-exam-sim
@@ -243,9 +243,9 @@ spec:
       match: Host(`ica.practiceexams.joysontech.com`)
       middlewares:
         - name: internal-only
-        - name: practiceexams-auth
-          namespace: practiceexams-auth
         - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
+        - name: practiceexams-auth
           namespace: practiceexams-auth
       services:
         - name: ica-exam-sim
