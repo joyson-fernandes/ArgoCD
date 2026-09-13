@@ -1,5 +1,20 @@
 apiVersion: v1
+binaryData:
+  apple-touch-icon.png: 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
+  favicon-32.png: iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAACp0lEQVRYhcXXTUhUURTA8f+58+noGEUlEQWhuWtRJEFFH8vQhVBKLdy46IusFkIEQXubaeNShbLABK1FSrsoklxFtTXdRZhY6mjjOON7p8XMG8evcWTGmbt65114v3vvOe88npAxWp7M7ze2dVeUeuCoKOWiIJqcd65FZU0MKAiZsWTG/1AdM8KwK2E6Q6HglGNKGu+YbTJKjyjBdQ/PD187Py9Ia7gjOJBeQArvF03GO4inYlFsmsPh4ICkjn28CDt3cCeOuOPUmFTOi42DUml5aHOL0lACPHkNDUahukQ4otQYo1SUCAclaEqIIwqmlLgA7q3wi6e8GIEPo3EoMC4quLPh5WVC0yU/AEcOungxGMNaLhyOk4LNjj0aVd5/jgNw4piHWy0ByrxSMDxVA9lz/uZdjMHhJVShttrF/RsBdgU3SsP2cQFMLgX3cTTOy4EYlgUHqgz3bgao2mvyxtNvQS7V/uVrgu7eRZbiyp7dhtvXA3jc+eFkLiCXV23VyHPnTuzOFa877uHqZT8uF/ydsenqjrEczw8XBXcu+PkzXhrrfYjA5KRNV88ikVlNzx8+5MLvX32SKEz+VKILuikugHsrvLHex4WzXgB+jFs8742xtLiC15300HTNx0Zj5o/y9HF0U5zMRrQRXhGQNP7t+zKv+mNYidUPm5mxiS8pXp+sW8DvX3ZWXBTkzqM5zdZez532IgIjIwmw88/5KjxZA9l7+6eReEGqfSNcAFPID8t28S36wM7jTiecLxUuSsRg60SJcAQmjDEMlQhH4a1xJUznShqKh6PMeWNWpwmFglOCtAqiRcTVIK3tfZXTBiDcERzAplmUSDF2bpArD54FXkPqnjMets3vszy0iVIvSi3OP0P++IKBMRuGvDGrs72vctox/wMG02AKTZy4rwAAAABJRU5ErkJggg==
 data:
+  favicon.svg: |
+    <svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#5b8def"/>
+          <stop offset="1" stop-color="#8b5cf6"/>
+        </linearGradient>
+      </defs>
+      <rect width="256" height="256" rx="56" fill="url(#g)"/>
+      <path d="M72 92 L112 128 L72 164" stroke="white" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <rect x="132" y="150" width="60" height="18" rx="9" fill="white"/>
+    </svg>
   index.html: |
     <!doctype html>
     <html lang="en">
@@ -7,6 +22,9 @@ data:
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>Practice Exams</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
@@ -53,10 +71,7 @@ data:
         .brand { display: flex; align-items: center; gap: 10px; }
         .brand-mark {
           width: 30px; height: 30px; border-radius: 9px;
-          background: linear-gradient(135deg, var(--accent), var(--accent-2));
-          display: flex; align-items: center; justify-content: center;
-          font-size: 13px; font-weight: 800; color: white; flex-shrink: 0;
-          letter-spacing: -0.02em;
+          flex-shrink: 0; display: block;
         }
         .brand span { font-weight: 700; font-size: 14.5px; letter-spacing: -0.01em; }
         .pill {
@@ -208,7 +223,7 @@ data:
       <div class="wrap">
         <header>
           <div class="brand">
-            <div class="brand-mark">PE</div>
+            <img class="brand-mark" src="/logo.svg" alt="Practice Exams" />
             <span>Practice Exams</span>
           </div>
         </header>
@@ -448,6 +463,18 @@ data:
       </div>
     </body>
     </html>
+  logo.svg: |
+    <svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#5b8def"/>
+          <stop offset="1" stop-color="#8b5cf6"/>
+        </linearGradient>
+      </defs>
+      <rect width="256" height="256" rx="56" fill="url(#g)"/>
+      <path d="M72 92 L112 128 L72 164" stroke="white" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <rect x="132" y="150" width="60" height="18" rx="9" fill="white"/>
+    </svg>
 kind: ConfigMap
 metadata:
   name: practice-exams-hub-html
