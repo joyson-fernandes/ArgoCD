@@ -1,0 +1,87 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: auth-practiceexams-joysontech-com
+  namespace: practiceexams-auth
+spec:
+  secretName: auth-practiceexams-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - auth.practiceexams.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: internal-only
+  namespace: practiceexams-auth
+spec:
+  ipAllowList:
+    sourceRange:
+      - 10.0.0.0/8
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: practiceexams-auth
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: practiceexams-auth
+  namespace: practiceexams-auth
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`auth.practiceexams.joysontech.com`) && PathPrefix(`/google/oauth2`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: oauth2-proxy-google
+          port: 4180
+    - kind: Rule
+      match: Host(`auth.practiceexams.joysontech.com`) && PathPrefix(`/microsoft/oauth2`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: oauth2-proxy-microsoft
+          port: 4180
+    - kind: Rule
+      match: Host(`auth.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: practiceexams-auth-picker
+          port: 80
+  tls:
+    secretName: auth-practiceexams-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: practiceexams-auth-redirect
+  namespace: practiceexams-auth
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`auth.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: practiceexams-auth-picker
+          port: 80

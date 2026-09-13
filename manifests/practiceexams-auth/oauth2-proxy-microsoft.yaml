@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth2-proxy-microsoft
+  namespace: practiceexams-auth
+  labels:
+    app: oauth2-proxy-microsoft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2-proxy-microsoft
+  template:
+    metadata:
+      labels:
+        app: oauth2-proxy-microsoft
+    spec:
+      containers:
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+          args:
+            - --provider=entra-id
+            - --scope=openid
+            - --email-domain=*
+            - --upstream=static://200
+            - --http-address=0.0.0.0:4180
+            - --reverse-proxy=true
+            - --cookie-domain=.joysontech.com
+            - --whitelist-domain=.joysontech.com
+            - --cookie-secure=true
+            - --cookie-samesite=lax
+            - --cookie-expire=168h
+            - --proxy-prefix=/microsoft/oauth2
+            - --redirect-url=https://auth.practiceexams.joysontech.com/microsoft/oauth2/callback
+            - --skip-provider-button=true
+            - --silence-ping-logging=true
+          env:
+            - name: OAUTH2_PROXY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: oauth2-proxy-microsoft
+                  key: client-id
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: oauth2-proxy-microsoft
+                  key: client-secret
+            - name: OAUTH2_PROXY_OIDC_ISSUER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: oauth2-proxy-microsoft
+                  key: oidc-issuer-url
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: practiceexams-auth-cookie
+                  key: cookie-secret
+          ports:
+            - containerPort: 4180
+              name: http
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oauth2-proxy-microsoft
+  namespace: practiceexams-auth
+spec:
+  selector:
+    app: oauth2-proxy-microsoft
+  ports:
+    - name: http
+      port: 4180
+      targetPort: http

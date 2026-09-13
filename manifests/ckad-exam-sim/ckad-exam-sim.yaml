@@ -170,6 +170,10 @@ spec:
       match: Host(`ckad-exam.joysontech.com`)
       middlewares:
         - name: internal-only
+        - name: practiceexams-auth
+          namespace: practiceexams-auth
+        - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
       services:
         - name: ckad-exam-sim
           port: 80
@@ -236,6 +240,10 @@ spec:
       match: Host(`ckad.practiceexams.joysontech.com`)
       middlewares:
         - name: internal-only
+        - name: practiceexams-auth
+          namespace: practiceexams-auth
+        - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
       services:
         - name: ckad-exam-sim
           port: 80
