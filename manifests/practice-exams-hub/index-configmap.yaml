@@ -1,23 +1,16 @@
 apiVersion: v1
 binaryData:
-  apple-touch-icon.png: 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
-  favicon-32.png: iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAACp0lEQVRYhcXXTUhUURTA8f+58+noGEUlEQWhuWtRJEFFH8vQhVBKLdy46IusFkIEQXubaeNShbLABK1FSrsoklxFtTXdRZhY6mjjOON7p8XMG8evcWTGmbt65114v3vvOe88npAxWp7M7ze2dVeUeuCoKOWiIJqcd65FZU0MKAiZsWTG/1AdM8KwK2E6Q6HglGNKGu+YbTJKjyjBdQ/PD187Py9Ia7gjOJBeQArvF03GO4inYlFsmsPh4ICkjn28CDt3cCeOuOPUmFTOi42DUml5aHOL0lACPHkNDUahukQ4otQYo1SUCAclaEqIIwqmlLgA7q3wi6e8GIEPo3EoMC4quLPh5WVC0yU/AEcOungxGMNaLhyOk4LNjj0aVd5/jgNw4piHWy0ByrxSMDxVA9lz/uZdjMHhJVShttrF/RsBdgU3SsP2cQFMLgX3cTTOy4EYlgUHqgz3bgao2mvyxtNvQS7V/uVrgu7eRZbiyp7dhtvXA3jc+eFkLiCXV23VyHPnTuzOFa877uHqZT8uF/ydsenqjrEczw8XBXcu+PkzXhrrfYjA5KRNV88ikVlNzx8+5MLvX32SKEz+VKILuikugHsrvLHex4WzXgB+jFs8742xtLiC15300HTNx0Zj5o/y9HF0U5zMRrQRXhGQNP7t+zKv+mNYidUPm5mxiS8pXp+sW8DvX3ZWXBTkzqM5zdZez532IgIjIwmw88/5KjxZA9l7+6eReEGqfSNcAFPID8t28S36wM7jTiecLxUuSsRg60SJcAQmjDEMlQhH4a1xJUznShqKh6PMeWNWpwmFglOCtAqiRcTVIK3tfZXTBiDcERzAplmUSDF2bpArD54FXkPqnjMets3vszy0iVIvSi3OP0P++IKBMRuGvDGrs72vctox/wMG02AKTZy4rwAAAABJRU5ErkJggg==
+  apple-touch-icon.png: iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAABmJLR0QA/wD/AP+gvaeTAAAJsklEQVR4nO3de1SUdR7H8WdmuK6o3EfkYihl6+K92lbN1OPZWkowzKB1zaO0CshNQFvbtBUqFbDD1SFJLM0UFRX0oLatt9zSZNdStDAVTSddQEHRABFm/5hzdj0yX5znN891+rz+8gBfzvfA+/A8Mr/zoPEcM58DsEQr9wKgXIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIgDSIhDZlqtpncvF7m3sAxxyEmj0WSlRe1bk97Pu6/cu1iAOOS0NC5i9tRxgx/pV1GQ5O/rIfc6D0IcsnkjJixpxmTzv0OC9FXFqQMDfeRd6QGIQx5zp09YNCfs/rcE6D2qVqf+JsRfrpW6QxwymBUx9r3kad3f7uPZe0d+4vDBQdKvZBHikFr4xJHZ6VEajcbie736uu0qSn5m9GMSb2WRzjXwKbl3+AV5ftzQtZlzHHS6Hj7GydEhYuLIb2p/rDM2SraYRYhDOuOfGLxh+Z+dHB0e+pGODrqpk0afvXjt7MVrEixGQRwSeTI0uCwnztXFycqP1+m0UyaOuPKfppofroi6WA9wzyGF4YODtqyK7+XqzGtKp9XmpEfJ+PsxxCG6kCB9WU5cHzdXvoOdXV3x76y/1nhTjK2sgTjEFezvXVGQ5OPZm++gyWRasHJTxf4TYmxlJcQhIj8f9/K8RIbrgslkWphTtnH3V2JsZT3EIRZvd7ftuQkD/LwYZjMMFet2HhF8Jb4Qhyjce/+qPC/xsUf6McxmlVblb/xc8JUYIA7hubo4bcyaF8r0KsmarQdXrq0SfCU2iENgLs6Om7Njnx42iGF2U9XRN/PKBV+JGeIQkqODrjQzZtwolldGKg+cSF7+qclkEnwrZohDMDqtdvWS154bG8owu/fIqbl/+6izq0vwrWyBOISh0WhWLYqOnDyaYfZwde2cJaUd9zoF38pGiEMYGQkvzZwyhmHweE3dn/6ypv1uh+Ar2Q5xCGBJbHh89CSGwZpzxuh0w53WdsFXEgTisFVc1KSUmb9nGDx/uf7lBYXNLT8LvpJQEIdNYqaNfycpkmGwztgYnpDXcKNF8JUEhDjYRf3htytSpjMMXm1onpZcIOPLrVZCHIxeeHZ4/uIZWq3lo6A9aGy+HZlSeOnqdTG2EhbiYDHxqV+XLJvtoOP91bt1u3V6apG8h/+sp9A4GL7ukhk78tFPVsx1tuIo6APutLZPTy06WXtZjK3EoMTvQYDe45+f/PX5sUPlXsSCUUMGfJo1z8XZke9gW3vHHxd9UH36oghLiUVxB4wD9B6VRSkDA3ymTBh5+gfjucv1cm/0f0MG9d+el9SX/4G/jnuds9/68MDX34mxlXiUFYe5DPMBGZ1Oq6g+Bgb6VOQne3u48R3s7OqKy1i/+9C3YmwlKgXFcX8ZZsrpw9/Xo7Iwub+vO99Bk8mUll22ec8xMbYSm1LiGODntasoJajboTqdTvvihBHffv/jhSsNsizGcZzeq++u1SkD+rMc+Fucu23dji8EX0kairghDdB77ChICuznafG9zo4OG1bMk+v+1Kuv2/a8hGB/b4bZzOLKkm2HBF9JMvLH0f1q0p2To27du69L30fvXi5b3o9/PNiPYdZQtj93w2eCryQlmS8r1pRhJv39h6uL0+acuCdDgxlm15YfXpy7TfCVJCZnHNaXYSZlH06OuvXL5z77xGCG2S17v07N3qSk836MZIvD16vPnuK07negPZPm/tRBpy3NfJ3twF/lgROxGeu7utSfhoz3HA03Wv5x9AzDoNj3p1qtpvCtmWHjhzHMHjz+feyyj5V2FJSZnJeVv3912tezz4jHeT/lSLzri0ajyU6PmvHC7xhmj5288OpCQ5siD/yxkfmGVGl9vB0/NfaVCQyD/z5z6eUFRYo98MdG/l+CKaePN2LCUmc9xzB45vxPkSkFt263CrKGcsgfB8dxnx89HdjPc+ijAXwHBbw/jY+etCQ2nGHw/OX6iMS86813bFxAgRQRh8nE7Tlyiu3nh4NOGzFplI0/P14Nezo77RXqCX89MNY3RSTmX21Q+oE/NoqIw0yu60v4xJGGpa9ptbz/49bY1BKRmH9R7mf+iUdBcXBy9GHNsx8tun7zdkRC/tlL6jjwx0ZZcXDS9mH9sx8f0HKnbVpKYc05I99BdVFcHJxUffB99uP/tLbdjV5oOF5Tx3dQdZQYByd+H6Eh/uW5CX168T7wd7ejc9abJYeqa/kOqpFC4+DE7CMkSL8zP8nLneXA37xlH+354hTfQZVSbhycOH0E+3vvKkrRe/Xh+zlNJlPKyk1b9x3nO6heio6DE7oPPx/3isLkAD3vv4lkfvbj+sov+Q6qmtLj4ITrw9vdraIgaVCgL8MOGYaKD7YeZBhUNRXEwQnRR31Ty/bcxCFMT/jLKq16/+N9DINqp444OJtffwl7Zlgo/1mO41Zv3p9ZXMkwaAdUE4eNr7/4ePB++jjHcZuqji5atYVh0D6oJg4z5usLg8oDJ+IzN3TZwVlQViqLg5Oqj71HTsUsLb3XaScH/tioLw5O/D4OV9fOXFxyt+OeSJ9fLVQZB2fD/elDHTt5ITrd0NZuP0dBmak1DlvuT3tQc844fUFRy89tAn5O9VJrHGbCXl/OX66fmpR/46YdHvhjo+44OOH6qDM2TpmfW3/9liBb2QfVx8EJ0cfVhuaIhDxjfZOAW9kBe4iDs+3+tLGpJTwhv84o2/M/FMtO4mC+P711uzVyQeF3F34SaTFVs5M4zPheX1rb7kalGf515qKYS6mYXcXB8emjrb0jemHxl9+ck2ArlbK3ODjr+lDpsx8lZodxcA/rQ73PfpSYfcbB0X2o+tmPErPbODiij7eLdn5YruIn/EnJnuPguvWRWVxZoIw/9qwKdh4Hd18fhrL975XslnsdNdF4jpkv9w6i02o1kZNHb/usWu5FVOYXEQewkf8JxqBYiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANIiANI/wXa6E+m8vNcPgAAAABJRU5ErkJggg==
+  favicon-32.png: iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAABmJLR0QA/wD/AP+gvaeTAAABv0lEQVRIiWMUsspmoCVgoqnpoxaMWjBiLODiYGNnZaGVBexsrMu6MpZ0pnNysGFVwMwpa0a26awszAtaU5zMNRVlRBkYGA6fvYWphnwfMDMxTa+Ld7fWgRjds2AHVmVkWsDIyNhTGh7obMTAwHD22oOYilk/f/0mzQIOdlYOdlZcsm35wXF+1gwMDJdvPwktnPrl2w9cKrFbwMHOurQzfWlnOlY7qtN800IdGBgYbj98GVI49eOX77hMx2lBcbyHg6mGg6kGph35Ma5F8e4MDAwPn78NzJ/85v1nPKYz4EpFp6/cN9ZSUJAWUZAWMdZS2LT//J+//xgYGJKD7FryghkYGJ6//uCfM+nJy3f4TcdpwZ+//zbuPaerJqMsK6YgLWKpr7Jx37lAF+P+skhGRsa3H78E5E66+/gVQdMZGBgY8VSZkJhwMNVgYGC4dOuJtooUMxPTxy/fA3InXrr1hBjTcfoA7o9N+89DwkpcmI+JkfHb919hxdPOXX9IpOkMBPPBj5+/o8tnHjh9g4GB4eev39EVM09dvke86QzEFBWQ+NBWke6cu23XsSskmc6APw6oAoZCfTBqwagFtLYAAL+yk0wposilAAAAAElFTkSuQmCC
 data:
   favicon.svg: |
     <svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#5b8def"/>
-          <stop offset="1" stop-color="#8b5cf6"/>
-        </linearGradient>
-      </defs>
-      <rect width="256" height="256" rx="56" fill="url(#g)"/>
-      <path d="M72 92 L112 128 L72 164" stroke="white" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <rect x="132" y="150" width="60" height="18" rx="9" fill="white"/>
+      <rect width="256" height="256" fill="#123a6b"/>
+      <path d="M72 132 L110 170 L184 92" stroke="#ffffff" stroke-width="20" stroke-linecap="square" stroke-linejoin="miter" fill="none"/>
     </svg>
   index.html: |
     <!doctype html>
-    <html lang="en">
+    <html lang="en" data-theme="dark">
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -27,295 +20,288 @@ data:
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
       <style>
-        :root {
-          color-scheme: dark;
-          --bg: #08090d;
-          --panel: #101319;
-          --panel-2: #161a23;
-          --border: #212633;
-          --border-hover: #34405c;
-          --text: #edeff3;
-          --text-dim: #8991a3;
-          --text-faint: #565f72;
-          --accent: #5b8def;
-          --accent-2: #8b5cf6;
-          --soon: #f5b34d;
+        :root, [data-theme="dark"] {
+          --bg: #0a0d13;
+          --bg-soft: #11151d;
+          --panel: #0e1219;
+          --line: #232a38;
+          --text: #e7e9ee;
+          --text-dim: #8b93a3;
+          --text-faint: #5b6474;
+          --blue: #6bafe8;
+          --accent: #3d6ea8;
+          --gold: #e0ab52;
+          --gold-dim: #241d10;
+          --gold-line: #4a3a1d;
+          --gold-text: #d9b774;
+          --hero-bg: #0f1622;
+          --hero-text: #f1f3f6;
+          --hero-sub: #9fb0c4;
+          --hero-eyebrow: #7fb8e8;
+          --hero-border: #232f42;
+        }
+        [data-theme="light"] {
+          --bg: #ffffff;
+          --bg-soft: #f3f6f9;
+          --panel: #ffffff;
+          --line: #dbe2ea;
+          --text: #17202b;
+          --text-dim: #5c6b7a;
+          --text-faint: #8b98a5;
+          --blue: #0068b3;
+          --accent: #0b2545;
+          --gold: #b3811f;
+          --gold-dim: #fbf3e2;
+          --gold-line: #ecd9ab;
+          --gold-text: #6b5a35;
+          --hero-bg: #0b2545;
+          --hero-text: #ffffff;
+          --hero-sub: #b9c8db;
+          --hero-eyebrow: #7fb8e8;
+          --hero-border: rgba(255,255,255,0.15);
         }
         * { box-sizing: border-box; }
         body {
           margin: 0;
-          background:
-            radial-gradient(1100px 520px at 18% -8%, rgba(91,141,239,0.16), transparent 60%),
-            radial-gradient(900px 480px at 88% 8%, rgba(139,92,246,0.12), transparent 55%),
-            var(--bg);
+          background: var(--bg);
           color: var(--text);
-          font-family: 'Inter', system-ui, sans-serif;
+          font-family: 'Public Sans', system-ui, sans-serif;
           -webkit-font-smoothing: antialiased;
           min-height: 100vh;
+          transition: background-color 0.15s ease, color 0.15s ease;
         }
-        .wrap {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 56px 20px 64px;
-        }
-        header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 72px;
-          padding-bottom: 20px;
-          border-bottom: 1px solid var(--border);
-        }
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .brand-mark {
-          width: 30px; height: 30px; border-radius: 9px;
-          flex-shrink: 0; display: block;
-        }
-        .brand span { font-weight: 700; font-size: 14.5px; letter-spacing: -0.01em; }
-        .pill {
-          font-size: 12px; color: var(--text-dim);
-          border: 1px solid var(--border); border-radius: 100px;
-          padding: 6px 13px; display: flex; align-items: center; gap: 6px;
-        }
-        .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,0.15); }
-        .logout-link {
-          font-size: 13px; color: var(--text-dim); text-decoration: none;
-          border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px;
-          transition: color 0.15s, border-color 0.15s;
-        }
-        .logout-link:hover { color: var(--text); border-color: var(--border-hover); }
+        .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
 
-        .hero { text-align: center; margin-bottom: 56px; }
-        .kicker {
-          display: inline-block; font-size: 12.5px; font-weight: 600;
-          color: var(--accent); letter-spacing: 0.02em; margin-bottom: 18px;
-          background: rgba(91,141,239,0.1); border: 1px solid rgba(91,141,239,0.25);
-          padding: 5px 14px; border-radius: 100px;
+        header { border-bottom: 1px solid var(--line); }
+        .header-inner {
+          max-width: 1140px; margin: 0 auto; padding: 0 24px;
+          display: flex; align-items: center; justify-content: space-between; height: 68px;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand-mark { width: 30px; height: 30px; flex-shrink: 0; display: block; }
+        .brand span { font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 16px; color: var(--text); }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        .theme-toggle {
+          width: 36px; height: 36px; border: 1px solid var(--line); background: var(--bg);
+          color: var(--text-dim); display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .theme-toggle:hover { color: var(--text); border-color: var(--blue); }
+        .theme-toggle svg { width: 16px; height: 16px; }
+        [data-theme="light"] .icon-moon, [data-theme="dark"] .icon-sun { display: none; }
+        .logout-link {
+          font-family: 'IBM Plex Sans', sans-serif; font-weight: 500;
+          font-size: 13.5px; color: var(--text-dim); text-decoration: none;
+          border: 1px solid var(--line); padding: 7px 15px;
+          transition: border-color 0.15s, color 0.15s;
+        }
+        .logout-link:hover { color: var(--text); border-color: var(--blue); }
+
+        .hero { background: var(--hero-bg); color: var(--hero-text); }
+        .hero-inner {
+          max-width: 1140px; margin: 0 auto; padding: 56px 24px 0;
+          display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: end;
+        }
+        .eyebrow {
+          font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em;
+          color: var(--hero-eyebrow); text-transform: uppercase; margin-bottom: 16px; display: block;
         }
         h1 {
-          font-size: 44px; font-weight: 800; letter-spacing: -0.03em;
-          margin: 0 0 18px; line-height: 1.08;
+          font-family: 'IBM Plex Sans', sans-serif; font-size: 40px; font-weight: 700;
+          letter-spacing: -0.015em; margin: 0 0 16px; line-height: 1.15; text-wrap: balance;
+          color: var(--hero-text);
         }
-        h1 em { font-style: normal; background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .sub {
-          color: var(--text-dim); font-size: 16.5px; line-height: 1.6;
-          max-width: 560px; margin: 0 auto;
+        .sub { color: var(--hero-sub); font-size: 16px; line-height: 1.6; max-width: 48ch; margin: 0 0 40px; }
+
+        .stat-row { display: flex; border-top: 1px solid var(--hero-border); }
+        .stat { flex: 1; padding: 20px 0; border-right: 1px solid var(--hero-border); }
+        .stat:first-child { padding-left: 0; }
+        .stat:last-child { border-right: none; }
+        .stat b {
+          display: block; font-family: 'IBM Plex Sans', sans-serif; font-size: 30px;
+          font-weight: 700; line-height: 1; margin-bottom: 6px; font-variant-numeric: tabular-nums;
+          color: var(--hero-text);
         }
+        .stat span { font-size: 12px; color: var(--hero-sub); text-transform: uppercase; letter-spacing: 0.04em; }
 
         .disclaimer {
-          display: flex; gap: 12px; align-items: flex-start;
-          max-width: 720px; margin: 32px auto 0;
-          background: rgba(245,179,77,0.06);
-          border: 1px solid rgba(245,179,77,0.28);
-          border-radius: 14px; padding: 16px 20px;
-          text-align: left;
+          display: flex; gap: 13px; align-items: flex-start;
+          background: var(--gold-dim); border: 1px solid var(--gold-line);
+          padding: 16px 20px; margin: 40px 0 0;
         }
-        .disclaimer svg { flex-shrink: 0; margin-top: 2px; color: var(--soon); }
+        .disclaimer svg { flex-shrink: 0; margin-top: 2px; color: var(--gold); }
         .disclaimer strong.title {
-          display: block; color: var(--soon); font-size: 13.5px;
-          font-weight: 700; margin-bottom: 4px;
+          display: block; color: var(--gold); font-size: 12.5px;
+          font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em; text-transform: uppercase;
+          margin-bottom: 5px;
         }
-        .disclaimer p {
-          margin: 0; font-size: 13px; line-height: 1.6; color: var(--text-dim);
-        }
-        .disclaimer p b { color: var(--text); }
+        .disclaimer p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--gold-text); }
+        .disclaimer p b { color: var(--text); font-weight: 700; }
 
-        section.track { margin-bottom: 52px; }
-        .track-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; }
-        .track-icon { width: 30px; height: 30px; align-self: center; flex-shrink: 0; }
-        .track-head h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+        section.track { margin: 52px 0; }
+        .track-head {
+          display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px;
+          padding-bottom: 14px; border-bottom: 2px solid var(--accent);
+        }
+        .track-head h2 { font-family: 'IBM Plex Sans', sans-serif; font-size: 21px; font-weight: 700; margin: 0; color: var(--text); }
         .track-head p { font-size: 13px; color: var(--text-dim); margin: 0; }
 
-        .grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-          gap: 16px;
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+
         a.card, div.card {
           position: relative;
           background: var(--panel);
-          border: 1px solid var(--border);
-          border-radius: 16px;
-          padding: 28px 22px 22px;
-          text-decoration: none;
-          color: var(--text);
-          box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 24px -12px rgba(0,0,0,0.4);
-          transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          overflow: hidden;
+          text-decoration: none; color: var(--text);
+          display: flex; flex-direction: column;
+          padding: 22px 20px 18px;
+          transition: background-color 0.15s ease;
         }
-        a.card::before {
-          content: '';
-          position: absolute; inset: 0;
-          background: linear-gradient(135deg, rgba(91,141,239,0.08), rgba(139,92,246,0.05));
-          opacity: 0; transition: opacity 0.2s ease;
-        }
-        a.card:hover {
-          border-color: var(--border-hover);
-          transform: translateY(-3px);
-          background: var(--panel-2);
-          box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 20px 32px -14px rgba(91,141,239,0.18);
-        }
-        a.card:hover::before { opacity: 1; }
-        div.card.soon { opacity: 0.55; }
+        a.card:hover { background: var(--bg-soft); }
 
-        .card-badge-big {
-          width: 84px; height: 84px; object-fit: contain;
-          margin-bottom: 14px; position: relative; flex-shrink: 0;
-        }
+        .card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .card-badge-big { width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; }
         .card-badge-big.placeholder {
           display: flex; align-items: center; justify-content: center;
-          width: 84px; height: 84px; border-radius: 50%;
-          background: var(--panel-2); border: 1px solid var(--border);
-          font-size: 14px; font-weight: 800; color: var(--text-faint);
-          font-family: 'JetBrains Mono', monospace;
+          width: 38px; height: 38px; background: var(--bg-soft); border: 1px solid var(--line);
+          font-size: 9.5px; font-weight: 700; color: var(--text-faint);
+          font-family: 'IBM Plex Mono', monospace;
         }
-        .card-acronym { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; position: relative; }
-        .card-name {
-          font-size: 12.5px; font-weight: 600; color: var(--accent);
-          margin: 5px 0 12px; position: relative; max-width: 220px; line-height: 1.4;
+        .card-acronym { font-family: 'IBM Plex Sans', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); }
+        .card-name { font-size: 11px; color: var(--text-dim); margin-top: 2px; line-height: 1.3; }
+        .card-desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.55; margin: 0 0 16px; min-height: 34px; }
+
+        .card-meta {
+          display: flex; gap: 14px; font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px; color: var(--text-faint); margin-top: auto; padding-top: 12px;
+          border-top: 1px solid var(--line);
         }
-        div.card.soon .card-name { color: var(--soon); }
-        .card-desc {
-          font-size: 12.5px; color: var(--text-dim); line-height: 1.55;
-          margin: 0 0 20px; position: relative; min-height: 38px;
-        }
-        .card-stats {
-          display: flex; width: 100%; position: relative;
-          border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-          padding: 13px 0; margin-bottom: 18px;
-        }
-        .stat {
-          flex: 1; display: flex; flex-direction: column; gap: 3px;
-          border-right: 1px solid var(--border);
-        }
-        .stat:last-child { border-right: none; }
-        .stat b { font-size: 13px; font-weight: 700; }
-        .stat span { font-size: 9.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+        .card-meta b { color: var(--text); font-weight: 500; }
 
         .card-cta {
-          color: var(--accent); font-weight: 600; font-size: 13px;
-          display: flex; align-items: center; gap: 6px; position: relative;
-          margin-top: auto;
+          color: var(--blue); font-weight: 600; font-size: 12.5px;
+          display: flex; align-items: center; gap: 6px; margin-top: 12px;
         }
-        .card-cta .arrow { transition: transform 0.2s ease; }
+        .card-cta .arrow { transition: transform 0.15s ease; }
         a.card:hover .card-cta .arrow { transform: translateX(3px); }
+
+        div.card.soon { background: var(--bg-soft); }
+        div.card.soon .card-acronym, div.card.soon .card-name, div.card.soon .card-badge-big { opacity: 0.45; }
         .tag.soon {
-          font-size: 11px; font-weight: 700; color: var(--soon);
-          background: rgba(245,179,77,0.08); border: 1px solid rgba(245,179,77,0.25);
-          padding: 5px 12px; border-radius: 100px; position: relative;
-          margin-top: auto;
+          font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 500;
+          color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em;
+          margin-top: 12px;
         }
 
         footer {
-          margin-top: 56px; text-align: center;
-          color: var(--text-faint); font-size: 12.5px;
+          margin-top: 56px; padding: 24px 0; border-top: 1px solid var(--line);
+          text-align: center; color: var(--text-faint); font-size: 12px;
+          font-family: 'IBM Plex Mono', monospace;
           display: flex; flex-direction: column; gap: 6px; align-items: center;
         }
 
-        @media (max-width: 560px) {
-          h1 { font-size: 32px; }
-          header { margin-bottom: 48px; }
-          .hero { margin-bottom: 40px; }
+        @media (max-width: 720px) {
+          .hero-inner { grid-template-columns: 1fr; padding-top: 40px; }
+          h1 { font-size: 30px; }
+          .stat-row { flex-wrap: wrap; }
+          .stat { flex: 1 1 50%; border-bottom: 1px solid var(--hero-border); }
         }
       </style>
     </head>
     <body>
-      <div class="wrap">
-        <header>
+      <header>
+        <div class="header-inner">
           <div class="brand">
             <img class="brand-mark" src="/logo.svg" alt="Practice Exams" />
             <span>Practice Exams</span>
           </div>
-          <a class="logout-link" href="https://auth.practiceexams.joysontech.com/google/oauth2/sign_out?rd=https%3A%2F%2Fpracticeexams.joysontech.com%2F">Log out</a>
-        </header>
+          <div class="header-actions">
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+            <a class="logout-link" href="https://auth.practiceexams.joysontech.com/google/oauth2/sign_out?rd=https%3A%2F%2Fpracticeexams.joysontech.com%2F">Log out</a>
+          </div>
+        </div>
+      </header>
 
-        <div class="hero">
-          <span class="kicker">Hands-on and multiple choice</span>
-          <h1>Practice like it's <em>the real exam</em></h1>
-          <p class="sub">Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut.</p>
+      <div class="hero">
+        <div class="hero-inner">
+          <div>
+            <span class="eyebrow">Hands-on &amp; multiple choice</span>
+            <h1>Practice like it's the real exam</h1>
+            <p class="sub">Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut.</p>
+          </div>
+        </div>
+        <div class="wrap">
+          <div class="stat-row">
+            <div class="stat"><b>15</b><span>Certifications</span></div>
+            <div class="stat"><b>02</b><span>Tracks</span></div>
+            <div class="stat"><b>100%</b><span>Real Infrastructure</span></div>
+          </div>
+        </div>
+      </div>
 
-          <div class="disclaimer">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-3.03L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div>
-              <strong class="title">Important Disclaimer</strong>
-              <p>These questions and tasks are <b>not</b> original certification exam content. They're entirely based on public documentation, study notes, and personal experience preparing for these exams, intended to help you practice the underlying concepts rather than represent or replicate actual exam content from the CNCF or the Linux Foundation.</p>
-            </div>
+      <div class="wrap">
+        <div class="disclaimer">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-3.03L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <strong class="title">Important disclaimer</strong>
+            <p>These questions and tasks are <b>not</b> original certification exam content. They're entirely based on public documentation, study notes, and personal experience preparing for these exams, intended to help you practice the underlying concepts rather than represent or replicate actual exam content from the CNCF or the Linux Foundation.</p>
           </div>
         </div>
 
         <section class="track">
           <div class="track-head">
-            <img class="track-icon" src="https://images.credly.com/images/cd6c6449-6814-4613-a2d3-13cf4ac5be4f/image.png" alt="Kubestronaut badge" />
             <h2>Kubestronaut</h2>
-            <p>The five certifications required for the title.</p>
+            <p>The five certifications required for the title</p>
           </div>
           <div class="grid">
             <a class="card" href="https://quiz.practiceexams.joysontech.com/kcna">
-              <img class="card-badge-big" src="https://images.credly.com/images/f28f1d88-428a-47f6-95b5-7da1dd6c1000/KCNA_badge.png" alt="KCNA badge" />
-              <div class="card-acronym">KCNA</div>
-              <div class="card-name">Kubernetes and Cloud Native Associate</div>
-              <p class="card-desc">Core Kubernetes concepts and the cloud-native landscape.</p>
-              <div class="card-stats">
-                <div class="stat"><b>60</b><span>Questions</span></div>
-                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
-                <div class="stat"><b>75%</b><span>To Pass</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/f28f1d88-428a-47f6-95b5-7da1dd6c1000/KCNA_badge.png" alt="KCNA badge" />
+                <div><div class="card-acronym">KCNA</div><div class="card-name">Kubernetes and Cloud Native Associate</div></div>
               </div>
+              <p class="card-desc">Core Kubernetes concepts and the cloud-native landscape.</p>
+              <div class="card-meta"><span><b>60</b> questions</span><span><b>90</b> min</span><span><b>75%</b> to pass</span></div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
             </a>
             <a class="card" href="https://quiz.practiceexams.joysontech.com/kcsa">
-              <img class="card-badge-big" src="https://images.credly.com/images/67dd8a95-8876-4051-9cb9-3d97c204f85a/image.png" alt="KCSA badge" />
-              <div class="card-acronym">KCSA</div>
-              <div class="card-name">Kubernetes and Cloud Native Security Associate</div>
-              <p class="card-desc">Security fundamentals across the cluster and supply chain.</p>
-              <div class="card-stats">
-                <div class="stat"><b>60</b><span>Questions</span></div>
-                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
-                <div class="stat"><b>75%</b><span>To Pass</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/67dd8a95-8876-4051-9cb9-3d97c204f85a/image.png" alt="KCSA badge" />
+                <div><div class="card-acronym">KCSA</div><div class="card-name">Kubernetes and Cloud Native Security Associate</div></div>
               </div>
+              <p class="card-desc">Security fundamentals across the cluster and supply chain.</p>
+              <div class="card-meta"><span><b>60</b> questions</span><span><b>90</b> min</span><span><b>75%</b> to pass</span></div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
             </a>
             <a class="card" href="https://cka.practiceexams.joysontech.com">
-              <img class="card-badge-big" src="https://images.credly.com/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png" alt="CKA badge" />
-              <div class="card-acronym">CKA</div>
-              <div class="card-name">Certified Kubernetes Administrator</div>
-              <p class="card-desc">Cluster administration against a real Kubernetes API: RBAC, storage, and networking.</p>
-              <div class="card-stats">
-                <div class="stat"><b>25</b><span>Tasks</span></div>
-                <div class="stat"><b>~2 min</b><span>Setup</span></div>
-                <div class="stat"><b>Real</b><span>Cluster</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png" alt="CKA badge" />
+                <div><div class="card-acronym">CKA</div><div class="card-name">Certified Kubernetes Administrator</div></div>
               </div>
+              <p class="card-desc">Cluster administration against a real Kubernetes API: RBAC, storage, networking.</p>
+              <div class="card-meta"><span><b>25</b> tasks</span><span><b>real</b> cluster</span></div>
               <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
             </a>
             <a class="card" href="https://ckad.practiceexams.joysontech.com">
-              <img class="card-badge-big" src="https://images.credly.com/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob" alt="CKAD badge" />
-              <div class="card-acronym">CKAD</div>
-              <div class="card-name">Certified Kubernetes Application Developer</div>
-              <p class="card-desc">Build and deploy workloads with Deployments, Jobs, probes, ingress, and Helm.</p>
-              <div class="card-stats">
-                <div class="stat"><b>18</b><span>Tasks</span></div>
-                <div class="stat"><b>~2 min</b><span>Setup</span></div>
-                <div class="stat"><b>Real</b><span>Cluster</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob" alt="CKAD badge" />
+                <div><div class="card-acronym">CKAD</div><div class="card-name">Certified Kubernetes Application Developer</div></div>
               </div>
+              <p class="card-desc">Build and deploy workloads with Deployments, Jobs, probes, ingress, Helm.</p>
+              <div class="card-meta"><span><b>18</b> tasks</span><span><b>real</b> cluster</span></div>
               <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
             </a>
             <a class="card" href="https://cks.practiceexams.joysontech.com">
-              <img class="card-badge-big" src="https://images.credly.com/images/9945dfcb-1cca-4529-85e6-db1be3782210/kubernetes-security-specialist-logo2.png" alt="CKS badge" />
-              <div class="card-acronym">CKS</div>
-              <div class="card-name">Certified Kubernetes Security Specialist</div>
-              <p class="card-desc">Runtime sandboxing, AppArmor, seccomp, CIS benchmarking, admission control.</p>
-              <div class="card-stats">
-                <div class="stat"><b>18</b><span>Tasks</span></div>
-                <div class="stat"><b>~2 min</b><span>Setup</span></div>
-                <div class="stat"><b>Real</b><span>Cluster</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/9945dfcb-1cca-4529-85e6-db1be3782210/kubernetes-security-specialist-logo2.png" alt="CKS badge" />
+                <div><div class="card-acronym">CKS</div><div class="card-name">Certified Kubernetes Security Specialist</div></div>
               </div>
+              <p class="card-desc">Runtime sandboxing, AppArmor, seccomp, CIS benchmarking, admission control.</p>
+              <div class="card-meta"><span><b>18</b> tasks</span><span><b>real</b> cluster</span></div>
               <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
             </a>
           </div>
@@ -323,164 +309,129 @@ data:
 
         <section class="track">
           <div class="track-head">
-            <img class="track-icon" src="https://images.credly.com/images/1dba0197-1013-4f23-8918-9479f77172d6/blob" alt="Golden Kubestronaut badge" />
             <h2>Golden Kubestronaut</h2>
-            <p>Every additional cert on the way to Golden status.</p>
+            <p>Every additional cert on the way to Golden status</p>
           </div>
           <div class="grid">
             <a class="card" href="https://quiz.practiceexams.joysontech.com/pca">
-              <img class="card-badge-big" src="https://images.credly.com/images/c34436dc-1cfd-4125-a862-35f9c86ca17f/image.png" alt="PCA badge" />
-              <div class="card-acronym">PCA</div>
-              <div class="card-name">Prometheus Certified Associate</div>
-              <p class="card-desc">Observability concepts, PromQL, instrumentation, exporters, alerting.</p>
-              <div class="card-stats">
-                <div class="stat"><b>60</b><span>Questions</span></div>
-                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
-                <div class="stat"><b>75%</b><span>To Pass</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/c34436dc-1cfd-4125-a862-35f9c86ca17f/image.png" alt="PCA badge" />
+                <div><div class="card-acronym">PCA</div><div class="card-name">Prometheus Certified Associate</div></div>
               </div>
+              <p class="card-desc">Observability concepts, PromQL, instrumentation, exporters, alerting.</p>
+              <div class="card-meta"><span><b>60</b> questions</span><span><b>90</b> min</span><span><b>75%</b> to pass</span></div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
             </a>
             <a class="card" href="https://quiz.practiceexams.joysontech.com/capa">
-              <img class="card-badge-big" src="https://images.credly.com/images/12624f9e-6b4a-43f0-b7a2-afb2c6cf8059/image.png" alt="CAPA badge" />
-              <div class="card-acronym">CAPA</div>
-              <div class="card-name">Certified Argo Project Associate</div>
-              <p class="card-desc">Argo Workflows, Argo CD, Argo Rollouts, and Argo Events in production.</p>
-              <div class="card-stats">
-                <div class="stat"><b>60</b><span>Questions</span></div>
-                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
-                <div class="stat"><b>75%</b><span>To Pass</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/12624f9e-6b4a-43f0-b7a2-afb2c6cf8059/image.png" alt="CAPA badge" />
+                <div><div class="card-acronym">CAPA</div><div class="card-name">Certified Argo Project Associate</div></div>
               </div>
+              <p class="card-desc">Argo Workflows, Argo CD, Argo Rollouts, and Argo Events in production.</p>
+              <div class="card-meta"><span><b>60</b> questions</span><span><b>90</b> min</span><span><b>75%</b> to pass</span></div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
             </a>
             <a class="card" href="https://ica.practiceexams.joysontech.com">
-              <img class="card-badge-big" src="https://images.credly.com/images/d7d4ddc8-7df8-4c03-9343-507b51e0ef99/image.png" alt="ICA badge" />
-              <div class="card-acronym">ICA</div>
-              <div class="card-name">Istio Certified Associate</div>
-              <p class="card-desc">Service mesh tasks covering Gateways, VirtualServices, mTLS, and traffic policy.</p>
-              <div class="card-stats">
-                <div class="stat"><b>22</b><span>Tasks</span></div>
-                <div class="stat"><b>~2 min</b><span>Setup</span></div>
-                <div class="stat"><b>Real</b><span>vCluster</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/d7d4ddc8-7df8-4c03-9343-507b51e0ef99/image.png" alt="ICA badge" />
+                <div><div class="card-acronym">ICA</div><div class="card-name">Istio Certified Associate</div></div>
               </div>
+              <p class="card-desc">Service mesh tasks covering Gateways, VirtualServices, mTLS, traffic policy.</p>
+              <div class="card-meta"><span><b>22</b> tasks</span><span><b>real</b> vCluster</span></div>
               <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
             </a>
             <a class="card" href="https://quiz.practiceexams.joysontech.com/cgoa">
-              <img class="card-badge-big" src="https://images.credly.com/images/7219d055-4e97-439c-b244-8fbe885fa06b/image.png" alt="CGOA badge" />
-              <div class="card-acronym">CGOA</div>
-              <div class="card-name">Certified GitOps Associate</div>
-              <p class="card-desc">GitOps principles, Argo CD &amp; Flux, declarative deployment workflows.</p>
-              <div class="card-stats">
-                <div class="stat"><b>60</b><span>Questions</span></div>
-                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
-                <div class="stat"><b>75%</b><span>To Pass</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/7219d055-4e97-439c-b244-8fbe885fa06b/image.png" alt="CGOA badge" />
+                <div><div class="card-acronym">CGOA</div><div class="card-name">Certified GitOps Associate</div></div>
               </div>
+              <p class="card-desc">GitOps principles, Argo CD &amp; Flux, declarative deployment workflows.</p>
+              <div class="card-meta"><span><b>60</b> questions</span><span><b>90</b> min</span><span><b>75%</b> to pass</span></div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
             </a>
             <a class="card" href="https://quiz.practiceexams.joysontech.com/kca">
-              <img class="card-badge-big" src="https://images.credly.com/images/2592935a-d8fa-405d-b40a-711a75454fc2/image.png" alt="KCA badge" />
-              <div class="card-acronym">KCA</div>
-              <div class="card-name">Kyverno Certified Associate</div>
-              <p class="card-desc">Kubernetes policy-as-code with Kyverno: validate, mutate, generate, and verifyImages policies.</p>
-              <div class="card-stats">
-                <div class="stat"><b>60</b><span>Questions</span></div>
-                <div class="stat"><b>90 min</b><span>Exam Mode</span></div>
-                <div class="stat"><b>75%</b><span>To Pass</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/2592935a-d8fa-405d-b40a-711a75454fc2/image.png" alt="KCA badge" />
+                <div><div class="card-acronym">KCA</div><div class="card-name">Kyverno Certified Associate</div></div>
               </div>
+              <p class="card-desc">Kubernetes policy-as-code: validate, mutate, generate, verifyImages.</p>
+              <div class="card-meta"><span><b>60</b> questions</span><span><b>90</b> min</span><span><b>75%</b> to pass</span></div>
               <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
             </a>
             <div class="card soon">
-              <div class="card-badge-big placeholder">CBA</div>
-              <div class="card-acronym">CBA</div>
-              <div class="card-name">Certified Backstage Associate</div>
+              <div class="card-top">
+                <div class="card-badge-big placeholder">CBA</div>
+                <div><div class="card-acronym">CBA</div><div class="card-name">Certified Backstage Associate</div></div>
+              </div>
               <p class="card-desc">Backstage plugins, software catalog, internal developer portals.</p>
-              <div class="card-stats">
-                <div class="stat"><b>—</b><span>Questions</span></div>
-                <div class="stat"><b>—</b><span>Duration</span></div>
-                <div class="stat"><b>—</b><span>To Pass</span></div>
-              </div>
-              <span class="tag soon">coming soon</span>
+              <span class="tag soon">Coming soon</span>
             </div>
             <div class="card soon">
-              <div class="card-badge-big placeholder">CNPA</div>
-              <div class="card-acronym">CNPA</div>
-              <div class="card-name">Cloud Native Platform Engineering Associate</div>
+              <div class="card-top">
+                <div class="card-badge-big placeholder">CNPA</div>
+                <div><div class="card-acronym">CNPA</div><div class="card-name">Cloud Native Platform Engineering Associate</div></div>
+              </div>
               <p class="card-desc">Platform engineering principles and internal developer platforms.</p>
-              <div class="card-stats">
-                <div class="stat"><b>—</b><span>Questions</span></div>
-                <div class="stat"><b>—</b><span>Duration</span></div>
-                <div class="stat"><b>—</b><span>To Pass</span></div>
-              </div>
-              <span class="tag soon">coming soon</span>
+              <span class="tag soon">Coming soon</span>
             </div>
             <div class="card soon">
-              <div class="card-badge-big placeholder">CNPE</div>
-              <div class="card-acronym">CNPE</div>
-              <div class="card-name">Cloud Native Platform Engineering Expert</div>
+              <div class="card-top">
+                <div class="card-badge-big placeholder">CNPE</div>
+                <div><div class="card-acronym">CNPE</div><div class="card-name">Cloud Native Platform Engineering Expert</div></div>
+              </div>
               <p class="card-desc">Advanced platform engineering across the CNCF landscape.</p>
-              <div class="card-stats">
-                <div class="stat"><b>—</b><span>Questions</span></div>
-                <div class="stat"><b>—</b><span>Duration</span></div>
-                <div class="stat"><b>—</b><span>To Pass</span></div>
-              </div>
-              <span class="tag soon">coming soon</span>
+              <span class="tag soon">Coming soon</span>
             </div>
             <div class="card soon">
-              <div class="card-badge-big placeholder">CCA</div>
-              <div class="card-acronym">CCA</div>
-              <div class="card-name">Cilium Certified Associate</div>
-              <p class="card-desc">eBPF-based networking, security, and observability with Cilium.</p>
-              <div class="card-stats">
-                <div class="stat"><b>—</b><span>Questions</span></div>
-                <div class="stat"><b>—</b><span>Duration</span></div>
-                <div class="stat"><b>—</b><span>To Pass</span></div>
+              <div class="card-top">
+                <div class="card-badge-big placeholder">CCA</div>
+                <div><div class="card-acronym">CCA</div><div class="card-name">Cilium Certified Associate</div></div>
               </div>
-              <span class="tag soon">coming soon</span>
+              <p class="card-desc">eBPF-based networking, security, and observability with Cilium.</p>
+              <span class="tag soon">Coming soon</span>
             </div>
             <a class="card" href="https://lfcs.practiceexams.joysontech.com">
-              <img class="card-badge-big" src="https://images.credly.com/images/1677b995-9642-44e2-8961-026f84810bbc/blob" alt="LFCS badge" />
-              <div class="card-acronym">LFCS</div>
-              <div class="card-name">Linux Foundation Certified System Administrator</div>
-              <p class="card-desc">Real Linux sysadmin work with LVM, systemd, networking, and Docker.</p>
-              <div class="card-stats">
-                <div class="stat"><b>17</b><span>Tasks</span></div>
-                <div class="stat"><b>~1 min</b><span>Setup</span></div>
-                <div class="stat"><b>Real</b><span>Sandbox</span></div>
+              <div class="card-top">
+                <img class="card-badge-big" src="https://images.credly.com/images/1677b995-9642-44e2-8961-026f84810bbc/blob" alt="LFCS badge" />
+                <div><div class="card-acronym">LFCS</div><div class="card-name">Linux Foundation Certified System Administrator</div></div>
               </div>
+              <p class="card-desc">Real Linux sysadmin work with LVM, systemd, networking, and Docker.</p>
+              <div class="card-meta"><span><b>17</b> tasks</span><span><b>real</b> sandbox</span></div>
               <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
             </a>
             <div class="card soon">
-              <div class="card-badge-big placeholder">OTCA</div>
-              <div class="card-acronym">OTCA</div>
-              <div class="card-name">OpenTelemetry Certified Associate</div>
-              <p class="card-desc">Traces, metrics, logs, and the OpenTelemetry Collector pipeline.</p>
-              <div class="card-stats">
-                <div class="stat"><b>—</b><span>Questions</span></div>
-                <div class="stat"><b>—</b><span>Duration</span></div>
-                <div class="stat"><b>—</b><span>To Pass</span></div>
+              <div class="card-top">
+                <div class="card-badge-big placeholder">OTCA</div>
+                <div><div class="card-acronym">OTCA</div><div class="card-name">OpenTelemetry Certified Associate</div></div>
               </div>
-              <span class="tag soon">coming soon</span>
+              <p class="card-desc">Traces, metrics, logs, and the OpenTelemetry Collector pipeline.</p>
+              <span class="tag soon">Coming soon</span>
             </div>
           </div>
         </section>
 
         <footer>
-          <span>Each exam runs as its own independently scaled environment.</span>
-          <span>Built by Joyson Fernandes</span>
+          <span>EACH EXAM RUNS AS ITS OWN INDEPENDENTLY SCALED ENVIRONMENT</span>
+          <span>BUILT BY JOYSON FERNANDES</span>
         </footer>
       </div>
+      <script>
+        try {
+          var saved = localStorage.getItem('pe-theme');
+          if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        } catch (e) {}
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+          var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', next);
+          try { localStorage.setItem('pe-theme', next); } catch (e) {}
+        });
+      </script>
     </body>
     </html>
   logo.svg: |
     <svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#5b8def"/>
-          <stop offset="1" stop-color="#8b5cf6"/>
-        </linearGradient>
-      </defs>
-      <rect width="256" height="256" rx="56" fill="url(#g)"/>
-      <path d="M72 92 L112 128 L72 164" stroke="white" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <rect x="132" y="150" width="60" height="18" rx="9" fill="white"/>
+      <rect width="256" height="256" fill="#123a6b"/>
+      <path d="M72 132 L110 170 L184 92" stroke="#ffffff" stroke-width="20" stroke-linecap="square" stroke-linejoin="miter" fill="none"/>
     </svg>
 kind: ConfigMap
 metadata:
