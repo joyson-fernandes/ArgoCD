@@ -277,7 +277,7 @@ data:
                 <div class="card-acronym">CKA</div>
                 <div class="card-name">Certified Kubernetes Administrator</div>
                 <p class="card-desc">Cluster administration against a real Kubernetes API.</p>
-                <div class="card-meta"><span><b>25</b> tasks</span><span>real cluster</span></div>
+                <div class="card-meta"><span><b>25</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
               <a class="card" data-track="kubestronaut" data-type="sim" data-status="live" href="https://ckad.practiceexams.joysontech.com">
@@ -286,7 +286,7 @@ data:
                 <div class="card-acronym">CKAD</div>
                 <div class="card-name">Certified Kubernetes Application Developer</div>
                 <p class="card-desc">Build and deploy workloads: Deployments, Jobs, ingress, Helm.</p>
-                <div class="card-meta"><span><b>18</b> tasks</span><span>real cluster</span></div>
+                <div class="card-meta"><span><b>18</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
               <a class="card" data-track="kubestronaut" data-type="sim" data-status="live" href="https://cks.practiceexams.joysontech.com">
@@ -295,7 +295,7 @@ data:
                 <div class="card-acronym">CKS</div>
                 <div class="card-name">Certified Kubernetes Security Specialist</div>
                 <p class="card-desc">Runtime sandboxing, AppArmor, seccomp, CIS benchmarking.</p>
-                <div class="card-meta"><span><b>18</b> tasks</span><span>real cluster</span></div>
+                <div class="card-meta"><span><b>18</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
               <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/pca">
@@ -322,7 +322,7 @@ data:
                 <div class="card-acronym">ICA</div>
                 <div class="card-name">Istio Certified Associate</div>
                 <p class="card-desc">Gateways, VirtualServices, mTLS, traffic policy.</p>
-                <div class="card-meta"><span><b>22</b> tasks</span><span>real vCluster</span></div>
+                <div class="card-meta"><span><b>22</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
               <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cgoa">
@@ -349,7 +349,7 @@ data:
                 <div class="card-acronym">LFCS</div>
                 <div class="card-name">Linux Foundation Certified System Administrator</div>
                 <p class="card-desc">LVM, systemd, networking, and Docker on a real box.</p>
-                <div class="card-meta"><span><b>17</b> tasks</span><span>real sandbox</span></div>
+                <div class="card-meta"><span><b>17</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
               <div class="card soon" data-track="golden" data-type="sim" data-status="soon">
