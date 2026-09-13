@@ -150,10 +150,10 @@ data:
         a.card:hover { border-color: var(--blue); transform: translateY(-2px); }
 
         .card-badge-wrap {
-          width: 64px; height: 64px; border-radius: 50%; background: var(--bg-soft);
+          width: 92px; height: 92px; border-radius: 50%; background: var(--bg-soft);
           display: flex; align-items: center; justify-content: center; margin-bottom: 14px; flex-shrink: 0;
         }
-        .card-badge-big { width: 42px; height: 42px; object-fit: contain; }
+        .card-badge-big { width: 66px; height: 66px; object-fit: contain; }
         .card-badge-big.placeholder {
           font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 500; color: var(--text-faint);
         }
