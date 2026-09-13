@@ -216,7 +216,7 @@ data:
         <div class="hero">
           <span class="kicker">Hands-on and multiple choice</span>
           <h1>Practice like it's <em>the real exam</em></h1>
-          <p class="sub">Real terminals, real clusters, and root access, created for your session and deleted when you're done. Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut.</p>
+          <p class="sub">Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut.</p>
 
           <div class="disclaimer">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
