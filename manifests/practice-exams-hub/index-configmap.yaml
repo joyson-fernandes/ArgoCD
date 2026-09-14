@@ -386,7 +386,7 @@ data:
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
               <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cba">
-                <div class="card-badge-wrap"><span class="card-badge-big placeholder">CBA</span></div>
+                <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/d84e4fb0-dc7f-4d79-b1eb-a8a973da4965/image.png" alt="CBA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CBA</div>
                 <div class="card-name">Certified Backstage Associate</div>
@@ -395,7 +395,7 @@ data:
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
               <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cnpa">
-                <div class="card-badge-wrap"><span class="card-badge-big placeholder">CNPA</span></div>
+                <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/bf3fc97e-a12c-4567-86ea-01639b9b15fb/blob" alt="CNPA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CNPA</div>
                 <div class="card-name">Cloud Native Platform Engineering Associate</div>
@@ -412,7 +412,7 @@ data:
                 <span class="tag soon">Not yet available</span>
               </div>
               <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cca">
-                <div class="card-badge-wrap"><span class="card-badge-big placeholder">CCA</span></div>
+                <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/729367b3-0344-4b00-a6da-53e1807f808a/image.png" alt="CCA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CCA</div>
                 <div class="card-name">Cilium Certified Associate</div>
@@ -421,7 +421,7 @@ data:
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
               <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/otca">
-                <div class="card-badge-wrap"><span class="card-badge-big placeholder">OTCA</span></div>
+                <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/3d3f7131-83a4-4427-8a68-150ca90bcc23/blob" alt="OTCA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">OTCA</div>
                 <div class="card-name">OpenTelemetry Certified Associate</div>
