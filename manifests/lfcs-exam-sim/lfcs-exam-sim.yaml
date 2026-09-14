@@ -27,6 +27,9 @@ rules:
     resources: ["namespaces"]
     verbs: ["get", "list", "watch", "create", "delete"]
   - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
     resources: ["pods", "pods/exec", "pods/log", "services", "secrets", "events"]
     verbs: ["*"]
 
