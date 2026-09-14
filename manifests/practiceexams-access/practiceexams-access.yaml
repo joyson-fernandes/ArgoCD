@@ -1,0 +1,176 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: practiceexams-access
+  labels:
+    app: practiceexams-access
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: practiceexams-access-data
+  namespace: practiceexams-access
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: practiceexams-access
+  namespace: practiceexams-access
+  labels:
+    app: practiceexams-access
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: practiceexams-access
+  template:
+    metadata:
+      labels:
+        app: practiceexams-access
+    spec:
+      imagePullSecrets:
+        - name: practiceexams-access-pull-secret
+      containers:
+        - name: server
+          image: ghcr.io/joyson-fernandes/practiceexams-access:latest
+          imagePullPolicy: Always
+          env:
+            - name: ADMIN_EMAIL
+              value: jf@joysontech.com
+            - name: DB_PATH
+              value: /data/access.db
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /api/exams
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/exams
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: practiceexams-access-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: practiceexams-access
+  namespace: practiceexams-access
+  labels:
+    app: practiceexams-access
+spec:
+  type: ClusterIP
+  selector:
+    app: practiceexams-access
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: admin-practiceexams-joysontech-com
+  namespace: practiceexams-access
+spec:
+  secretName: admin-practiceexams-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - admin.practiceexams.joysontech.com
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: internal-only
+  namespace: practiceexams-access
+spec:
+  ipAllowList:
+    sourceRange:
+      - 10.0.0.0/8
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: practiceexams-access
+  namespace: practiceexams-access
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`admin.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: practiceexams-auth-errors
+          namespace: practiceexams-auth
+        - name: practiceexams-auth
+          namespace: practiceexams-auth
+      services:
+        - name: practiceexams-access
+          port: 80
+  tls:
+    secretName: admin-practiceexams-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: practiceexams-access
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: practiceexams-access-redirect
+  namespace: practiceexams-access
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`admin.practiceexams.joysontech.com`)
+      middlewares:
+        - name: internal-only
+        - name: redirect-https
+      services:
+        - name: practiceexams-access
+          port: 80
