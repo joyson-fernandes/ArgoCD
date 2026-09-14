@@ -268,23 +268,23 @@ data:
             <div class="filter-group">
               <h3>Track</h3>
               <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="track" value="kubestronaut" /> Kubestronaut</span><span class="count">5</span></label>
-              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="track" value="golden" /> Golden Kubestronaut</span><span class="count">10</span></label>
+              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="track" value="golden" /> Golden Kubestronaut</span><span class="count">11</span></label>
             </div>
             <div class="filter-group">
               <h3>Type</h3>
-              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="type" value="quiz" /> Multiple choice</span><span class="count">7</span></label>
-              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="type" value="sim" /> Hands-on simulator</span><span class="count">8</span></label>
+              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="type" value="quiz" /> Multiple choice</span><span class="count">10</span></label>
+              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="type" value="sim" /> Hands-on simulator</span><span class="count">6</span></label>
             </div>
             <div class="filter-group">
               <h3>Status</h3>
-              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="status" value="live" /> Available now</span><span class="count">10</span></label>
-              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="status" value="soon" /> Coming soon</span><span class="count">5</span></label>
+              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="status" value="live" /> Available now</span><span class="count">15</span></label>
+              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="status" value="soon" /> Coming soon</span><span class="count">1</span></label>
             </div>
             <button class="filter-reset" id="reset-filters">Reset filters</button>
           </aside>
 
           <div>
-            <div class="results-bar"><span><b id="result-count">15</b> certifications</span></div>
+            <div class="results-bar"><span><b id="result-count">16</b> certifications</span></div>
             <div class="grid" id="grid">
               <a class="card" data-track="kubestronaut" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/kcna">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/f28f1d88-428a-47f6-95b5-7da1dd6c1000/KCNA_badge.png" alt="KCNA badge" /></div>
@@ -385,22 +385,24 @@ data:
                 <div class="card-meta"><span><b>17</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
-              <div class="card soon" data-track="golden" data-type="sim" data-status="soon">
+              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cba">
                 <div class="card-badge-wrap"><span class="card-badge-big placeholder">CBA</span></div>
-                <span class="type-badge">Coming soon</span>
+                <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CBA</div>
                 <div class="card-name">Certified Backstage Associate</div>
                 <p class="card-desc">Software catalog and internal developer portals.</p>
-                <span class="tag soon">Not yet available</span>
-              </div>
-              <div class="card soon" data-track="golden" data-type="sim" data-status="soon">
+                <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
+                <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
+              </a>
+              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cnpa">
                 <div class="card-badge-wrap"><span class="card-badge-big placeholder">CNPA</span></div>
-                <span class="type-badge">Coming soon</span>
+                <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CNPA</div>
                 <div class="card-name">Cloud Native Platform Engineering Associate</div>
                 <p class="card-desc">Platform engineering principles and IDPs.</p>
-                <span class="tag soon">Not yet available</span>
-              </div>
+                <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
+                <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
+              </a>
               <div class="card soon" data-track="golden" data-type="sim" data-status="soon">
                 <div class="card-badge-wrap"><span class="card-badge-big placeholder">CNPE</span></div>
                 <span class="type-badge">Coming soon</span>
@@ -409,22 +411,24 @@ data:
                 <p class="card-desc">Advanced platform engineering across CNCF.</p>
                 <span class="tag soon">Not yet available</span>
               </div>
-              <div class="card soon" data-track="golden" data-type="sim" data-status="soon">
+              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cca">
                 <div class="card-badge-wrap"><span class="card-badge-big placeholder">CCA</span></div>
-                <span class="type-badge">Coming soon</span>
+                <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CCA</div>
                 <div class="card-name">Cilium Certified Associate</div>
                 <p class="card-desc">eBPF-based networking and observability.</p>
-                <span class="tag soon">Not yet available</span>
-              </div>
-              <div class="card soon" data-track="golden" data-type="quiz" data-status="soon">
+                <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
+                <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
+              </a>
+              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/otca">
                 <div class="card-badge-wrap"><span class="card-badge-big placeholder">OTCA</span></div>
-                <span class="type-badge">Coming soon</span>
+                <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">OTCA</div>
                 <div class="card-name">OpenTelemetry Certified Associate</div>
                 <p class="card-desc">Traces, metrics, logs, and the Collector.</p>
-                <span class="tag soon">Not yet available</span>
-              </div>
+                <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
+                <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
+              </a>
             </div>
           </div>
         </div>
