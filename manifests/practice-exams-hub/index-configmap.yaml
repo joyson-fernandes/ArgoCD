@@ -431,7 +431,7 @@ data:
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
               <a class="card" data-track="aws" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/dop-c02">
-                <div class="card-badge-wrap"><span class="card-badge-big placeholder">DOP-C02</span></div>
+                <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/bd31ef42-d460-493e-8503-39592aaf0458/image.png" alt="DOP-C02 badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">DOP-C02</div>
                 <div class="card-name">AWS Certified DevOps Engineer – Professional</div>
