@@ -115,3 +115,43 @@ spec:
       name: prep-db-role
       namespace: shared-postgres
     type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: practiceexams
+  namespace: shared-postgres
+spec:
+  name: practiceexams
+  owner: practiceexams
+  cluster:
+    name: shared-postgres
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: practiceexams
+  namespace: shared-postgres
+spec:
+  name: practiceexams
+  cluster:
+    name: shared-postgres
+  login: true
+  passwordSecret:
+    name: practiceexams-db-role
+---
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: practiceexams-db-role
+  namespace: shared-postgres
+spec:
+  encryptedData:
+    password: AgCzlHUuEP2Wc0M/4mC2PnIFW5KWLdQsznzr5ewo/bKcMdrYZTfcj0odUXr9RMCXA5ZTv3aUZxM/AG33utryteXdITkEcDJtUHnkFxTGFPfV0Zso/mc2/vsgOuu4bUY1qCJEM3tR8Y0Ofnu0yotao5n8/1Ps+XNgGrn6Hk87GsvmMcTD2YyEV3y2rufIi76akOdt9IwBAwg04vrqO/OrA7xA/+7AYd7MUZ5MaKfcnDYT/cdpn6yn4h1L3kkexFxDNE+xOkIgbOQawwnT30yx5mhTzaEt+nNwonOiq6QJr7kP2t7V+WWaLsrUa0fGmfZpUrSJjGx+yXkcdXAAHRQNw7fobdk6H8K3FqsZWwa/q+X73bShtxtd82aqYPEy1B6Y3ugURXobwI0gHt/LgTCcCIMW8DmUgvGvn3gBIg/buXk8iu25Bpa79QHOKF1PDbrl4TyKIStlzN4rEmFhKNj01KJQH1H0h2fzVMnuL7vhGyAwcAjAprBcioCmn7RzZGLye0j0ouJRnaWp5d3UWUHR2hcdqVHk1OXtXiY0bPawofWL7hFvlGGUQH0HeX6o58Gr6kEWoYZ4xYJTy3tMfw64aoy0a9RZ2a8TaGRx66b2dTdCWfff54WnZAmzgc4M8mxNjwtSnhHqJWhOWELoxcC3ev26B82KhXa4XaVMevf4HO9yCl0uWS7/6lVGFLG55fKHII+dEtvPGOt09XPE/8XlcUTXee49bJgWgV9po/S57naVGgUf/7Wv2pIgC1gWIgHslH0=
+    username: AgBapVICxpYL7KdBhmLUdSUoe8q+5oqXVTCYejZhLj5R86caEOBmlgRi9A4ypkmlj66mVF+JpNlbZ05Yz0KBDnIQOQgDnJ8ar0e1iRFFXmPDF6gq/HBappZDoGLt5lagVOlB5Lb6DdLpBmKy5+qQ037noa900gKdP/F6tSIoWK8j4FtP2sd7WB9WyoqODIGwi0JRBbnL8eAQDsb8Gi7qJriC6IkKdir+03o5ri9uiZykS3C3t/t+X81fOv8deG9aBr17HbpWX24XFKXFrNvStFWhSLsUvTkyABTbSZpLB3zmZO1R73o8FnW3hgRS+XTqSrpDnnzbs2DqOSrYYW1ZdoEFF8xYwd/29KY7ggc88Xw+ItXxQDkA1Gme71n6mQL4N76CPMhqkPe7waJWDez1atdgMtil3dozLFF/yvFJXPvPRDgK3i4fl4594peliGK1MZ/64Yi3cvVZ2vFVJ/2U5v8qW3/KCghr/zClASIsGaf1ey0ZbRShi4AAzMbfBkvmEVnXQ1cPS3+2GbL0Bl7fKslROryQZhXExYrL53lY0F4orjQBgalUwQHWdDRbDRVwipgvZh2NIc8DNRv7qsWgqhyA+2iSOUjhVwvp0a9ZbvX2A3fLBEa/IqFzdscVc7QHm+l2hkK0QaSXv+bYoo8JUeBYtqUFM6AqxTxO51Cn+fTIx35VJY3sZWBt8hjDA+1eqb6pxIgniJL43ginqzYP
+  template:
+    metadata:
+      name: practiceexams-db-role
+      namespace: shared-postgres
+    type: kubernetes.io/basic-auth

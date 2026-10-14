@@ -31,6 +31,12 @@ spec:
         - name: server
           image: ghcr.io/joyson-fernandes/practice-exams-quiz:latest
           imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: practice-exams-quiz-db
+                  key: DATABASE_URL
           ports:
             - containerPort: 3000
               name: http
@@ -149,3 +155,18 @@ spec:
       services:
         - name: practice-exams-quiz
           port: 80
+
+---
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: practice-exams-quiz-db
+  namespace: practice-exams-quiz
+spec:
+  encryptedData:
+    DATABASE_URL: AgBxcguZdWtAV/ULxrScuhno+t0kwamdTz48yi1rzf688/A43kSPlkfXlhXtf9ZygN5cN88ccVGcm4rdRDVFBM8yr/RX8dXKdBbtIdBE2e23Val5iIOgeoI3D26gZAMAJHUD9Ax/wkpHsDk8bKdhljSm6wkqGDGQGoXlZUc11Nb8+Il4eziigWG0V1lqXhTprAIHKo4NF14b+iRRPZWzpKKLb/mu1/TzYk89rkjCYUZq0ySQBuFDn7OIvfO5hLJ6nxnufuorZXU8otJtzKROkkkHenJTty9ojrLH+6gu8wxLLEQPyB3QVye4SeZ4Z9v1Qivd3jPchJFH4uLXgxZ9QaJHXLpZbYrYiIcqjyfL6rKx4xjG9i+Cgxlz4AmCV0Rk4rscp4iiULQY/lQqinrdcZfe2v6ARfSmQt1jWzzKKTtIOc9OdFL65K7Bzf+K3BmVsdWVG2LmyxxWw9mshLi0tvrLRaMskUq/ULWF+N4RVWhGA6k3QJ7Gg1bHGvirGMAn4uh2TFYRuiaCSCstlIKUcec8hnE6IkMbdZulxXFiJeqNJ3HnPeGLnZDNVjeC807vSQD310LCpfaMN8yKdE9oQLi8uDHWSLfppvD4knOwZLsDCf8Hqx9u3YzpkdCC6FWjIHRCMZAOEcEiM1c8Q4QowGSRLLt3JIBfCv6KoLgVRIhOHpkth5v/qu/yT64BR1OJ3GkG3l3xFoRY6XxgqFRznR92+IsPbtkMtCeGiWPeyo/W1G+vBs9YLc2BYthHZPp829zHDAF3Zp4S1yoSnR736TJHNsisy3hEqxxEbHWTESSuuJZe1NCUEiY2151yRVNK6YBAUhWhb1RLanT5dZq+/zCAOS2XfQbzfQmLXJ+0+EUTvUhiS/Cv7q3v1l21sKE3Q+Tv
+  template:
+    metadata:
+      name: practice-exams-quiz-db
+      namespace: practice-exams-quiz
