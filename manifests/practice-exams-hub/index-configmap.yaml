@@ -215,6 +215,25 @@ data:
           display: flex; flex-direction: column; gap: 6px; align-items: center;
         }
 
+        .providers { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 760px; padding-bottom: 64px; }
+        a.provider { padding: 32px 28px 26px; align-items: flex-start; text-align: left; }
+        .provider-mark {
+          width: 56px; height: 56px; border-radius: 14px; background: var(--bg-soft);
+          display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+          font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 15px; color: var(--blue);
+        }
+        .provider-name { font-family: 'IBM Plex Sans', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+        .provider-desc { font-size: 13.5px; color: var(--text-dim); line-height: 1.55; margin: 0 0 18px; }
+        .provider-count { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--text-faint); margin-top: auto; }
+        .back-link {
+          display: inline-block; margin-bottom: 14px; font-size: 13px; font-weight: 600; color: var(--blue);
+          text-decoration: none; cursor: pointer; background: none; border: none; padding: 0;
+          font-family: 'Public Sans', sans-serif;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .layout.nofilters { grid-template-columns: 1fr; }
+        [hidden] { display: none !important; }
+
         @media (max-width: 860px) {
           .layout { grid-template-columns: 1fr; }
           .filters { position: static; flex-direction: row; flex-wrap: wrap; gap: 28px; }
@@ -224,10 +243,10 @@ data:
     <body>
       <header>
         <div class="header-inner">
-          <div class="brand">
+          <a class="brand" href="#" style="text-decoration:none;color:inherit">
             <img class="brand-mark" src="/logo.svg" alt="Practice Exams" />
             <span>Practice Exams</span>
-          </div>
+          </a>
           <div class="header-actions">
             <div class="account-menu" id="account-menu">
               <button class="account-avatar-btn" id="account-avatar-btn" aria-label="Account menu" aria-expanded="false">
@@ -252,16 +271,39 @@ data:
       </header>
 
       <div class="wrap">
-        <div class="hero">
-          <h1>Practice and get exam ready</h1>
-          <p class="sub">Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut, plus AWS.</p>
-          <div class="disclaimer">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-3.03L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <p>These questions and tasks are <b>not</b> original certification exam content. They're entirely based on public documentation, study notes, and personal experience preparing for these exams, intended to help you practice the underlying concepts rather than represent or replicate actual exam content from the CNCF or the Linux Foundation.</p>
+        <div id="providers-view">
+          <div class="hero">
+            <h1>Practice and get exam ready</h1>
+            <p class="sub">Choose a certification provider to see its practice exams.</p>
+          </div>
+          <div class="providers" id="providers">
+            <a class="card provider" href="#linux-foundation">
+              <div class="provider-mark">LF</div>
+              <div class="provider-name">The Linux Foundation</div>
+              <p class="provider-desc">Kubestronaut and Golden Kubestronaut: Kubernetes, CNCF and Linux Foundation certifications.</p>
+              <div class="provider-count" data-provider-count="lf"></div>
+            </a>
+            <a class="card provider" href="#aws">
+              <div class="provider-mark">AWS</div>
+              <div class="provider-name">AWS</div>
+              <p class="provider-desc">Amazon Web Services certification practice, including the DevOps Engineer Professional exam.</p>
+              <div class="provider-count" data-provider-count="aws"></div>
+            </a>
           </div>
         </div>
+
+        <div id="catalog-view" hidden>
+          <div class="hero">
+            <a class="back-link" href="#">&larr; All providers</a>
+            <h1 id="vendor-title">Practice and get exam ready</h1>
+            <p class="sub" id="vendor-sub"></p>
+            <div class="disclaimer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-3.03L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p id="vendor-disclaimer"></p>
+            </div>
+          </div>
 
         <div class="layout">
           <aside class="filters">
@@ -269,7 +311,6 @@ data:
               <h3>Track</h3>
               <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="track" value="kubestronaut" /> Kubestronaut</span><span class="count">5</span></label>
               <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="track" value="golden" /> Golden Kubestronaut</span><span class="count">11</span></label>
-              <label class="filter-row"><span class="check"><input type="checkbox" checked data-filter="track" value="aws" /> AWS</span><span class="count">1</span></label>
             </div>
             <div class="filter-group">
               <h3>Type</h3>
@@ -285,9 +326,9 @@ data:
           </aside>
 
           <div>
-            <div class="results-bar"><span><b id="result-count">17</b> certifications</span></div>
+            <div class="results-bar"><span><b id="result-count">17</b> <span id="result-noun">certifications</span></span></div>
             <div class="grid" id="grid">
-              <a class="card" data-track="kubestronaut" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/kcna">
+              <a class="card" data-vendor="lf" data-track="kubestronaut" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/kcna">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/f28f1d88-428a-47f6-95b5-7da1dd6c1000/KCNA_badge.png" alt="KCNA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">KCNA</div>
@@ -296,7 +337,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="kubestronaut" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/kcsa">
+              <a class="card" data-vendor="lf" data-track="kubestronaut" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/kcsa">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/67dd8a95-8876-4051-9cb9-3d97c204f85a/image.png" alt="KCSA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">KCSA</div>
@@ -305,7 +346,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="kubestronaut" data-type="sim" data-status="live" href="https://cka.practiceexams.joysontech.com">
+              <a class="card" data-vendor="lf" data-track="kubestronaut" data-type="sim" data-status="live" href="https://cka.practiceexams.joysontech.com">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png" alt="CKA badge" /></div>
                 <span class="type-badge">Hands-on simulator</span>
                 <div class="card-acronym">CKA</div>
@@ -314,7 +355,7 @@ data:
                 <div class="card-meta"><span><b>25</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="kubestronaut" data-type="sim" data-status="live" href="https://ckad.practiceexams.joysontech.com">
+              <a class="card" data-vendor="lf" data-track="kubestronaut" data-type="sim" data-status="live" href="https://ckad.practiceexams.joysontech.com">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob" alt="CKAD badge" /></div>
                 <span class="type-badge">Hands-on simulator</span>
                 <div class="card-acronym">CKAD</div>
@@ -323,7 +364,7 @@ data:
                 <div class="card-meta"><span><b>18</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="kubestronaut" data-type="sim" data-status="live" href="https://cks.practiceexams.joysontech.com">
+              <a class="card" data-vendor="lf" data-track="kubestronaut" data-type="sim" data-status="live" href="https://cks.practiceexams.joysontech.com">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/9945dfcb-1cca-4529-85e6-db1be3782210/kubernetes-security-specialist-logo2.png" alt="CKS badge" /></div>
                 <span class="type-badge">Hands-on simulator</span>
                 <div class="card-acronym">CKS</div>
@@ -332,7 +373,7 @@ data:
                 <div class="card-meta"><span><b>18</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/pca">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/pca">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/c34436dc-1cfd-4125-a862-35f9c86ca17f/image.png" alt="PCA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">PCA</div>
@@ -341,7 +382,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/capa">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/capa">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/12624f9e-6b4a-43f0-b7a2-afb2c6cf8059/image.png" alt="CAPA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CAPA</div>
@@ -350,7 +391,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="sim" data-status="live" href="https://ica.practiceexams.joysontech.com">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="sim" data-status="live" href="https://ica.practiceexams.joysontech.com">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/d7d4ddc8-7df8-4c03-9343-507b51e0ef99/image.png" alt="ICA badge" /></div>
                 <span class="type-badge">Hands-on simulator</span>
                 <div class="card-acronym">ICA</div>
@@ -359,7 +400,7 @@ data:
                 <div class="card-meta"><span><b>22</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cgoa">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cgoa">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/7219d055-4e97-439c-b244-8fbe885fa06b/image.png" alt="CGOA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CGOA</div>
@@ -368,7 +409,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/kca">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/kca">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/2592935a-d8fa-405d-b40a-711a75454fc2/image.png" alt="KCA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">KCA</div>
@@ -377,7 +418,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="sim" data-status="live" href="https://lfcs.practiceexams.joysontech.com">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="sim" data-status="live" href="https://lfcs.practiceexams.joysontech.com">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/1677b995-9642-44e2-8961-026f84810bbc/blob" alt="LFCS badge" /></div>
                 <span class="type-badge">Hands-on simulator</span>
                 <div class="card-acronym">LFCS</div>
@@ -386,7 +427,7 @@ data:
                 <div class="card-meta"><span><b>17</b> tasks</span></div>
                 <div class="card-cta">Start Simulator <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cba">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cba">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/d84e4fb0-dc7f-4d79-b1eb-a8a973da4965/image.png" alt="CBA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CBA</div>
@@ -395,7 +436,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cnpa">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cnpa">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/bf3fc97e-a12c-4567-86ea-01639b9b15fb/blob" alt="CNPA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CNPA</div>
@@ -404,7 +445,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <div class="card soon" data-track="golden" data-type="sim" data-status="soon">
+              <div class="card soon" data-vendor="lf" data-track="golden" data-type="sim" data-status="soon">
                 <div class="card-badge-wrap"><span class="card-badge-big placeholder">CNPE</span></div>
                 <span class="type-badge">Coming soon</span>
                 <div class="card-acronym">CNPE</div>
@@ -412,7 +453,7 @@ data:
                 <p class="card-desc">Advanced platform engineering across CNCF.</p>
                 <span class="tag soon">Not yet available</span>
               </div>
-              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cca">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/cca">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/729367b3-0344-4b00-a6da-53e1807f808a/image.png" alt="CCA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">CCA</div>
@@ -421,7 +462,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/otca">
+              <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/otca">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/3d3f7131-83a4-4427-8a68-150ca90bcc23/blob" alt="OTCA badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">OTCA</div>
@@ -430,7 +471,7 @@ data:
                 <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
-              <a class="card" data-track="aws" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/dop-c02">
+              <a class="card" data-vendor="aws" data-track="certification" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/dop-c02">
                 <div class="card-badge-wrap"><img class="card-badge-big" src="https://images.credly.com/images/bd31ef42-d460-493e-8503-39592aaf0458/image.png" alt="DOP-C02 badge" /></div>
                 <span class="type-badge">Multiple choice</span>
                 <div class="card-acronym">DOP-C02</div>
@@ -441,6 +482,7 @@ data:
               </a>
             </div>
           </div>
+        </div>
         </div>
 
         <footer>
@@ -486,32 +528,97 @@ data:
         }).catch(function() {});
 
         var checkboxes = document.querySelectorAll('input[data-filter]');
-        var cards = document.querySelectorAll('#grid > [data-track]');
+        var cards = document.querySelectorAll('#grid > [data-vendor]');
+        var VENDORS = {
+          'linux-foundation': {
+            id: 'lf',
+            title: 'The Linux Foundation',
+            sub: 'Two paths: the Kubestronaut core certs, and everything beyond it toward Golden Kubestronaut.',
+            disclaimer: 'These questions and tasks are <b>not</b> original certification exam content. They\'re entirely based on public documentation, study notes, and personal experience preparing for these exams, intended to help you practice the underlying concepts rather than represent or replicate actual exam content from the CNCF or the Linux Foundation.'
+          },
+          'aws': {
+            id: 'aws',
+            title: 'AWS',
+            sub: 'Practice for AWS certifications.',
+            disclaimer: 'These questions are <b>not</b> original AWS certification exam content. They\'re based on public AWS documentation, study notes, and personal experience preparing for the exam, intended to help you practice the underlying concepts rather than represent or replicate actual exam content from AWS.'
+          }
+        };
+        var vendor = null;
+
+        function cardsFor(v) {
+          return Array.prototype.filter.call(cards, function(c) { return c.dataset.vendor === v.id; });
+        }
         function groups() {
           var g = {};
           checkboxes.forEach(function(cb) {
+            if (cb.closest('.filter-row').hidden) return;
             g[cb.dataset.filter] = g[cb.dataset.filter] || [];
             if (cb.checked) g[cb.dataset.filter].push(cb.value);
           });
           return g;
         }
         function applyFilters() {
+          if (!vendor) return;
           var g = groups();
           var visible = 0;
           cards.forEach(function(card) {
-            var match = ['track', 'type', 'status'].every(function(key) {
-              return g[key].indexOf(card.dataset[key]) !== -1;
+            var inVendor = card.dataset.vendor === vendor.id;
+            var match = inVendor && ['track', 'type', 'status'].every(function(key) {
+              return !g[key] || g[key].indexOf(card.dataset[key]) !== -1;
             });
             card.hidden = !match;
             if (match) visible++;
           });
           document.getElementById('result-count').textContent = visible;
+          document.getElementById('result-noun').textContent = visible === 1 ? 'certification' : 'certifications';
         }
+        // Filter rows and their counts reflect only the selected provider's exams.
+        function refreshFilters() {
+          var mine = cardsFor(vendor);
+          checkboxes.forEach(function(cb) {
+            var n = mine.filter(function(c) { return c.dataset[cb.dataset.filter] === cb.value; }).length;
+            var row = cb.closest('.filter-row');
+            row.querySelector('.count').textContent = n;
+            row.hidden = n === 0;
+            cb.checked = true;
+          });
+          document.querySelectorAll('.filter-group').forEach(function(group) {
+            var rows = group.querySelectorAll('.filter-row');
+            var anyVisible = Array.prototype.some.call(rows, function(r) { return !r.hidden; });
+            // A group with a single option has nothing to filter, so hide it.
+            var visibleRows = Array.prototype.filter.call(rows, function(r) { return !r.hidden; }).length;
+            group.hidden = !anyVisible || visibleRows < 2;
+          });
+          var noneLeft = !Array.prototype.some.call(document.querySelectorAll('.filter-group'), function(g) { return !g.hidden; });
+          document.querySelector('.filters').hidden = noneLeft;
+          document.querySelector('.layout').classList.toggle('nofilters', noneLeft);
+        }
+        function route() {
+          var key = location.hash.replace('#', '');
+          vendor = VENDORS[key] || null;
+          document.getElementById('providers-view').hidden = !!vendor;
+          document.getElementById('catalog-view').hidden = !vendor;
+          if (!vendor) { window.scrollTo(0, 0); return; }
+          document.getElementById('vendor-title').textContent = vendor.title;
+          document.getElementById('vendor-sub').textContent = vendor.sub;
+          document.getElementById('vendor-disclaimer').innerHTML = vendor.disclaimer;
+          refreshFilters();
+          applyFilters();
+          window.scrollTo(0, 0);
+        }
+        Object.keys(VENDORS).forEach(function(k) {
+          var v = VENDORS[k];
+          var el = document.querySelector('[data-provider-count="' + v.id + '"]');
+          var n = cardsFor(v).length;
+          el.textContent = n + (n === 1 ? ' exam' : ' exams');
+        });
         checkboxes.forEach(function(cb) { cb.addEventListener('change', applyFilters); });
         document.getElementById('reset-filters').addEventListener('click', function() {
           checkboxes.forEach(function(cb) { cb.checked = true; });
           applyFilters();
         });
+        window.addEventListener('hashchange', route);
+        route();
       </script>
     </body>
     </html>
