@@ -6,6 +6,10 @@ deployment:
 service:
   enabled: true
   type: LoadBalancer
+  spec:
+    # Preserve real client IPs so the internal-only ipAllowList middleware
+    # sees WAN clients as WAN (Cluster policy SNATs them to a 10.x node IP).
+    externalTrafficPolicy: Local
 
 # HTTP
 ports:
