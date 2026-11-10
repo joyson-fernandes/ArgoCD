@@ -91,7 +91,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rmm-server
-          image: ghcr.io/joyson-fernandes/rmm-server:f297150
+          image: ghcr.io/joyson-fernandes/rmm-server:41af9f6
           ports:
             - containerPort: 8080
               name: http
@@ -113,6 +113,8 @@ spec:
               value: https://rmm.joysontech.com
             - name: RMM_ENABLE_SHELL
               value: "true"
+            - name: RMM_GUACD_ADDR
+              value: "127.0.0.1:4822"
             - name: RMM_NATS_LISTEN
               value: ":4443"
             - name: RMM_NATS_PUBLIC_URL
@@ -156,7 +158,30 @@ spec:
               mountPath: /data
             - name: tmp
               mountPath: /tmp
+        # guacd (Apache Guacamole, Apache-2.0) speaks RDP for the Remote tab. It
+        # listens on loopback only, so nothing but the server container can use it.
+        - name: guacd
+          image: guacamole/guacd:1.5.5
+          command: ["/opt/guacamole/sbin/guacd"]
+          args: ["-b", "127.0.0.1", "-L", "info", "-f"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: guacd-tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
       volumes:
+        - name: guacd-tmp
+          emptyDir: {}
         - name: data
           persistentVolumeClaim:
             claimName: rmm-data
