@@ -1,0 +1,10 @@
+# Holds only the agent release signing key (a sealed secret). The RMM server
+# does not mount it: a compromise of the server must not be able to sign updates.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rmm-signing
+  labels:
+    app: rmm
+    team: platform
+    env: production
