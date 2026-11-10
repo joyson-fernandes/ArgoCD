@@ -91,7 +91,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rmm-server
-          image: ghcr.io/joyson-fernandes/rmm-server:2401403
+          image: ghcr.io/joyson-fernandes/rmm-server:bcabf68
           ports:
             - containerPort: 8080
               name: http
@@ -164,6 +164,10 @@ spec:
           image: guacamole/guacd:1.5.5
           command: ["/opt/guacamole/sbin/guacd"]
           args: ["-b", "127.0.0.1", "-L", "info", "-f"]
+          env:
+            # FreeRDP stores certificates under HOME; the root filesystem is read-only.
+            - name: HOME
+              value: /tmp
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
