@@ -111,6 +111,8 @@ spec:
               value: https://rmm.joysontech.com
             - name: RMM_ALLOWED_ORIGINS
               value: https://rmm.joysontech.com
+            - name: RMM_ENABLE_SHELL
+              value: "true"
             - name: RMM_NATS_LISTEN
               value: ":4443"
             - name: RMM_NATS_PUBLIC_URL
