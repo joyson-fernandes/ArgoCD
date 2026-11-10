@@ -1,0 +1,309 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+
+---
+# Dedicated Postgres for the RMM server (isolated from shared-postgres).
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: rmm-db
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.4
+  enableSuperuserAccess: false
+  bootstrap:
+    initdb:
+      database: rmm
+      owner: rmm
+      encoding: UTF8
+  storage:
+    storageClass: local-path
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+---
+# Holds the certificate authority key, generated TLS files and NATS JetStream
+# data. The CA key is irreplaceable: back this volume up (see docs).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rmm-data
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmm-server
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate   # single writer on the data volume
+  selector:
+    matchLabels:
+      app: rmm
+  template:
+    metadata:
+      labels:
+        app: rmm
+        team: platform
+        env: production
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: rmm-server
+          image: ghcr.io/joyson-fernandes/rmm-server:41cbdac
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 4443
+              name: agents
+          env:
+            - name: RMM_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-db-app
+                  key: uri
+            - name: RMM_DATA_DIR
+              value: /data
+            - name: RMM_HTTP_ADDR
+              value: ":8080"
+            - name: RMM_PUBLIC_URL
+              value: https://rmm.joysontech.com
+            - name: RMM_ALLOWED_ORIGINS
+              value: https://rmm.joysontech.com
+            - name: RMM_NATS_LISTEN
+              value: ":4443"
+            - name: RMM_NATS_PUBLIC_URL
+              value: wss://rmm-agents.joysontech.com
+            - name: RMM_STUB_TENANT_NAME
+              value: Joysontech
+            - name: RMM_STUB_EMAIL
+              value: admin@joysontech.com
+            - name: RMM_STUB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-stub-auth
+                  key: RMM_STUB_PASSWORD
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 4
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: rmm-data
+        - name: tmp
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmm-http
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  type: ClusterIP
+  selector:
+    app: rmm
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmm-agents
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  type: ClusterIP
+  selector:
+    app: rmm
+  ports:
+    - name: agents
+      port: 4443
+      targetPort: agents
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rmm-joysontech-com
+  namespace: rmm
+spec:
+  secretName: rmm-joysontech-com-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - rmm.joysontech.com
+
+---
+# Internal-only, same pattern as the other apps: DNS-01 certificate (no public
+# exposure needed), IP allowlist as a backstop, access control is the user's
+# split-horizon DNS.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: internal-only
+  namespace: rmm
+spec:
+  ipAllowList:
+    sourceRange:
+      - 10.0.0.0/8
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rmm
+  namespace: rmm
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`rmm.joysontech.com`)
+      middlewares:
+        - name: internal-only
+      services:
+        - name: rmm-http
+          port: 80
+  tls:
+    secretName: rmm-joysontech-com-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: rmm
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rmm-redirect
+  namespace: rmm
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`rmm.joysontech.com`)
+      middlewares:
+        - name: redirect-https
+      services:
+        - name: rmm-http
+          port: 80
+
+---
+# Agents connect with mutual TLS straight to the server, so Traefik passes the
+# TLS connection through untouched, selected by SNI on the normal 443 port.
+apiVersion: traefik.io/v1alpha1
+kind: MiddlewareTCP
+metadata:
+  name: internal-only-tcp
+  namespace: rmm
+spec:
+  ipAllowList:
+    sourceRange:
+      - 10.0.0.0/8
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: rmm-agents
+  namespace: rmm
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: HostSNI(`rmm-agents.joysontech.com`)
+      middlewares:
+        - name: internal-only-tcp
+      services:
+        - name: rmm-agents
+          port: 4443
+  tls:
+    passthrough: true
