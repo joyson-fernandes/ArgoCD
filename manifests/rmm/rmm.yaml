@@ -402,21 +402,26 @@ spec:
                 limits: {memory: 256Mi}
           containers:
             - name: upload
-              image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+              image: curlimages/curl:8.11.1
               command: ["/bin/sh", "-ec"]
               args:
                 - |
-                  export MC_CONFIG_DIR=/tmp/mc
-                  mc alias set store "http://10.0.1.54:9000" "$MINIO_USER" "$MINIO_PASSWORD" >/dev/null
-                  mc cp /work/rmm-backup-*.tar.enc store/rmm-backups/
-                  mc rm --recursive --force --older-than 30d store/rmm-backups/ || true
-                  mc ls store/rmm-backups/
+                  S3="http://10.0.1.54:9000/rmm-backups"
+                  sig="aws:amz:us-east-1:s3"
+                  for f in /work/rmm-backup-*.tar.enc; do
+                    curl -sSf --aws-sigv4 "$sig" -u "$MINIO_USER:$MINIO_PASSWORD" -T "$f" "$S3/$(basename "$f")"
+                    echo "uploaded $(basename "$f")"
+                  done
+                  cutoff=$(date -u -d "@$(( $(date +%s) - 2592000 ))" +%Y%m%d)
+                  curl -sSf --aws-sigv4 "$sig" -u "$MINIO_USER:$MINIO_PASSWORD" "$S3/" | grep -o 'rmm-backup-[0-9]*-[0-9]*\.tar\.enc' | sort -u | while read -r k; do
+                    d=${k#rmm-backup-}; d=${d%%-*}
+                    if [ "$d" -lt "$cutoff" ]; then curl -sSf --aws-sigv4 "$sig" -u "$MINIO_USER:$MINIO_PASSWORD" -X DELETE "$S3/$k" && echo "expired $k"; fi
+                  done
               env:
                 - {name: MINIO_USER, valueFrom: {secretKeyRef: {name: rmm-backup, key: MINIO_USER}}}
                 - {name: MINIO_PASSWORD, valueFrom: {secretKeyRef: {name: rmm-backup, key: MINIO_PASSWORD}}}
               volumeMounts:
                 - {name: work, mountPath: /work}
-                - {name: tmp, mountPath: /tmp}
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
@@ -427,4 +432,3 @@ spec:
           volumes:
             - {name: data, persistentVolumeClaim: {claimName: rmm-data}}
             - {name: work, emptyDir: {}}
-            - {name: tmp, emptyDir: {}}
