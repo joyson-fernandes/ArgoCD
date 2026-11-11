@@ -26,36 +26,87 @@ spec:
         # One runner kept warm so a job starts in seconds instead of minutes; up to three at once.
         minRunners: 1
         maxRunners: 3
-        # The Go tests start Postgres in Docker (testcontainers) and the image build
-        # needs a Docker daemon, so this runner brings its own (docker-in-docker).
-        containerMode:
-          type: "dind"
-        # A node-local build cache (Go, npm) shared by the runner pods on a node, so repeat builds
-        # skip compiling the standard library for every target from scratch.
+        # Docker-in-docker, written out in full (the chart's containerMode shortcut cannot be
+        # customised): the Go tests start Postgres in Docker and the image build needs a daemon.
+        # A node-local build cache (Go, npm) is shared by the runner pods on a node, so repeat
+        # builds skip compiling the standard library for every target from scratch.
         template:
           spec:
             initContainers:
+              - name: init-dind-externals
+                image: ghcr.io/actions/actions-runner:latest
+                command: ["cp", "-r", "/home/runner/externals/.", "/home/runner/tmpDir/"]
+                volumeMounts:
+                  - name: dind-externals
+                    mountPath: /home/runner/tmpDir
               - name: ci-cache-perms
                 image: busybox:1.36
                 command: ["sh", "-c", "mkdir -p /ci-cache && chmod 0777 /ci-cache"]
                 volumeMounts:
                   - name: ci-cache
                     mountPath: /ci-cache
+              - name: dind
+                image: docker:dind
+                args:
+                  - dockerd
+                  - --host=unix:///var/run/docker.sock
+                  - --group=$(DOCKER_GROUP_GID)
+                env:
+                  - name: DOCKER_GROUP_GID
+                    value: "123"
+                securityContext:
+                  privileged: true
+                restartPolicy: Always
+                startupProbe:
+                  exec:
+                    command: ["docker", "info"]
+                  initialDelaySeconds: 0
+                  failureThreshold: 24
+                  periodSeconds: 5
+                resources:
+                  requests:
+                    cpu: 500m
+                    memory: 512Mi
+                volumeMounts:
+                  - name: work
+                    mountPath: /home/runner/_work
+                  - name: dind-sock
+                    mountPath: /var/run
+                  - name: dind-externals
+                    mountPath: /home/runner/externals
             containers:
               - name: runner
                 image: ghcr.io/actions/actions-runner:latest
                 command: ["/home/runner/run.sh"]
                 env:
+                  - name: DOCKER_HOST
+                    value: unix:///var/run/docker.sock
+                  - name: RUNNER_WAIT_FOR_DOCKER_IN_SECONDS
+                    value: "120"
                   - name: GOCACHE
                     value: /ci-cache/go-build
                   - name: GOMODCACHE
                     value: /ci-cache/go-mod
                   - name: npm_config_cache
                     value: /ci-cache/npm
+                resources:
+                  requests:
+                    cpu: "1"
+                    memory: 1Gi
                 volumeMounts:
+                  - name: work
+                    mountPath: /home/runner/_work
+                  - name: dind-sock
+                    mountPath: /var/run
                   - name: ci-cache
                     mountPath: /ci-cache
             volumes:
+              - name: work
+                emptyDir: {}
+              - name: dind-sock
+                emptyDir: {}
+              - name: dind-externals
+                emptyDir: {}
               - name: ci-cache
                 hostPath:
                   path: /var/lib/rmm-ci-cache
