@@ -338,3 +338,93 @@ spec:
           port: 4443
   tls:
     passthrough: true
+
+---
+# Nightly encrypted backup of the certificate authority, server TLS files and
+# the database to off-cluster object storage (30-day retention).
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rmm-backup
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  schedule: "30 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: rmm
+            team: platform
+            env: production
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            fsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+          initContainers:
+            - name: bundle
+              image: ghcr.io/cloudnative-pg/postgresql:16.4
+              command: ["/bin/sh", "-ec"]
+              args:
+                - |
+                  cd /work
+                  tar -C /data -cf state.tar ca tls
+                  PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -Fc "$DB_NAME" > rmm.dump
+                  tar -cf - state.tar rmm.dump | openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -salt -pass env:BACKUP_PASSPHRASE -out "rmm-backup-$(date -u +%Y%m%d-%H%M%S).tar.enc"
+                  rm -f state.tar rmm.dump
+                  ls -l
+              env:
+                - {name: DB_HOST, valueFrom: {secretKeyRef: {name: rmm-db-app, key: host}}}
+                - {name: DB_USER, valueFrom: {secretKeyRef: {name: rmm-db-app, key: username}}}
+                - {name: DB_PASSWORD, valueFrom: {secretKeyRef: {name: rmm-db-app, key: password}}}
+                - {name: DB_NAME, valueFrom: {secretKeyRef: {name: rmm-db-app, key: dbname}}}
+                - {name: BACKUP_PASSPHRASE, valueFrom: {secretKeyRef: {name: rmm-backup, key: BACKUP_PASSPHRASE}}}
+              volumeMounts:
+                - {name: data, mountPath: /data, readOnly: true}
+                - {name: work, mountPath: /work}
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities: {drop: ["ALL"]}
+              resources:
+                requests: {cpu: 50m, memory: 64Mi}
+                limits: {memory: 256Mi}
+          containers:
+            - name: upload
+              image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+              command: ["/bin/sh", "-ec"]
+              args:
+                - |
+                  export MC_CONFIG_DIR=/tmp/mc
+                  mc alias set store "http://10.0.1.54:9000" "$MINIO_USER" "$MINIO_PASSWORD" >/dev/null
+                  mc cp /work/rmm-backup-*.tar.enc store/rmm-backups/
+                  mc rm --recursive --force --older-than 30d store/rmm-backups/ || true
+                  mc ls store/rmm-backups/
+              env:
+                - {name: MINIO_USER, valueFrom: {secretKeyRef: {name: rmm-backup, key: MINIO_USER}}}
+                - {name: MINIO_PASSWORD, valueFrom: {secretKeyRef: {name: rmm-backup, key: MINIO_PASSWORD}}}
+              volumeMounts:
+                - {name: work, mountPath: /work}
+                - {name: tmp, mountPath: /tmp}
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: {drop: ["ALL"]}
+              resources:
+                requests: {cpu: 50m, memory: 64Mi}
+                limits: {memory: 256Mi}
+          volumes:
+            - {name: data, persistentVolumeClaim: {claimName: rmm-data}}
+            - {name: work, emptyDir: {}}
+            - {name: tmp, emptyDir: {}}
