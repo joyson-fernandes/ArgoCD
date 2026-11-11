@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arc-runner-rmm
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: default
+
+  source:
+    repoURL: ghcr.io/actions/actions-runner-controller-charts
+    chart: gha-runner-scale-set
+    targetRevision: "0.14.2"
+    helm:
+      releaseName: rmm
+      valuesObject:
+        githubConfigUrl: https://github.com/joyson-fernandes/rmm
+        # The same GitHub App as the portfolio runner: it must be allowed to see this repository.
+        githubConfigSecret: arc-github-app-secret
+        controllerServiceAccount:
+          namespace: arc-systems
+          name: arc-controller-gha-rs-controller
+        runnerScaleSetName: rmm-k8s
+        minRunners: 0
+        maxRunners: 2
+        # The Go tests start Postgres in Docker (testcontainers) and the image build
+        # needs a Docker daemon, so this runner brings its own (docker-in-docker).
+        containerMode:
+          type: "dind"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arc-runners
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
