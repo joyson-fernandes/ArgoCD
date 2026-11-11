@@ -30,6 +30,36 @@ spec:
         # needs a Docker daemon, so this runner brings its own (docker-in-docker).
         containerMode:
           type: "dind"
+        # A node-local build cache (Go, npm) shared by the runner pods on a node, so repeat builds
+        # skip compiling the standard library for every target from scratch.
+        template:
+          spec:
+            initContainers:
+              - name: ci-cache-perms
+                image: busybox:1.36
+                command: ["sh", "-c", "mkdir -p /ci-cache && chmod 0777 /ci-cache"]
+                volumeMounts:
+                  - name: ci-cache
+                    mountPath: /ci-cache
+            containers:
+              - name: runner
+                image: ghcr.io/actions/actions-runner:latest
+                command: ["/home/runner/run.sh"]
+                env:
+                  - name: GOCACHE
+                    value: /ci-cache/go-build
+                  - name: GOMODCACHE
+                    value: /ci-cache/go-mod
+                  - name: npm_config_cache
+                    value: /ci-cache/npm
+                volumeMounts:
+                  - name: ci-cache
+                    mountPath: /ci-cache
+            volumes:
+              - name: ci-cache
+                hostPath:
+                  path: /var/lib/rmm-ci-cache
+                  type: DirectoryOrCreate
 
   destination:
     server: https://kubernetes.default.svc
