@@ -111,6 +111,20 @@ spec:
               value: https://rmm.joysontech.com
             - name: RMM_ALLOWED_ORIGINS
               value: https://rmm.joysontech.com
+            - name: RMM_SMTP_ADDR
+              value: email-smtp.eu-west-2.amazonaws.com:587
+            - name: RMM_SMTP_FROM
+              value: alerts@joysontech.com
+            - name: RMM_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-ses-smtp
+                  key: RMM_SMTP_USER
+            - name: RMM_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-ses-smtp
+                  key: RMM_SMTP_PASSWORD
             - name: RMM_TRUSTED_PROXIES
               value: 10.244.0.0/16
             - name: RMM_ENABLE_SHELL
