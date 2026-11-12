@@ -161,7 +161,7 @@ spec:
         # guacd (Apache Guacamole, Apache-2.0) speaks RDP for the Remote tab. It
         # listens on loopback only, so nothing but the server container can use it.
         - name: guacd
-          image: guacamole/guacd:1.5.5
+          image: guacamole/guacd:1.6.0
           command: ["/opt/guacamole/sbin/guacd"]
           args: ["-b", "127.0.0.1", "-L", "info", "-f"]
           env:
