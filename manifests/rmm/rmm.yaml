@@ -125,6 +125,17 @@ spec:
                 secretKeyRef:
                   name: rmm-ses-smtp
                   key: RMM_SMTP_PASSWORD
+            # The AWS identity the server signs in as to assume read-only roles in connected AWS accounts (Data sources).
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-aws-platform
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-aws-platform
+                  key: AWS_SECRET_ACCESS_KEY
             - name: RMM_TRUSTED_PROXIES
               value: 10.244.0.0/16
             - name: RMM_ENABLE_SHELL
