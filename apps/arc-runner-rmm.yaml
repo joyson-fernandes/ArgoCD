@@ -23,8 +23,9 @@ spec:
           namespace: arc-systems
           name: arc-controller-gha-rs-controller
         runnerScaleSetName: rmm-k8s
-        # One runner kept warm so a job starts in seconds instead of minutes; up to three at once.
-        minRunners: 1
+        # Two runners kept warm so two commits pushed close together don't queue behind each other
+        # waiting for a job to finish before the next can even start; up to three at once.
+        minRunners: 2
         maxRunners: 3
         # Docker-in-docker, written out in full (the chart's containerMode shortcut cannot be
         # customised): the Go tests start Postgres in Docker and the image build needs a daemon.
