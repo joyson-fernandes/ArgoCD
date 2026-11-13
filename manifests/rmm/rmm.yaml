@@ -136,6 +136,8 @@ spec:
                 secretKeyRef:
                   name: rmm-aws-platform
                   key: AWS_SECRET_ACCESS_KEY
+            - name: RMM_AWS_TEMPLATE_URL
+              value: https://rmm-role-template-061051257340.s3.eu-west-2.amazonaws.com/fleet-console-access-role.yaml
             - name: RMM_TRUSTED_PROXIES
               value: 10.244.0.0/16
             - name: RMM_ENABLE_SHELL
