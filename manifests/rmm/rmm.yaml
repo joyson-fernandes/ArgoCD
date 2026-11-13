@@ -91,7 +91,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rmm-server
-          image: ghcr.io/joyson-fernandes/rmm-server:c43646d
+          image: ghcr.io/joyson-fernandes/rmm-server:d55ba32
           ports:
             - containerPort: 8080
               name: http
