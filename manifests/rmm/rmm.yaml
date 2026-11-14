@@ -144,6 +144,8 @@ spec:
               value: "true"
             - name: RMM_GUACD_ADDR
               value: "127.0.0.1:4822"
+            - name: RMM_IAC_RUNNER_URL
+              value: "http://127.0.0.1:8099"
             - name: RMM_NATS_LISTEN
               value: ":4443"
             - name: RMM_NATS_PUBLIC_URL
