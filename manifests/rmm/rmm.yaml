@@ -212,6 +212,20 @@ spec:
             limits:
               cpu: "1"
               memory: 512Mi
+        # rmm-iac-runner clones a saved playbook's git repo and runs ansible-playbook against it. It listens on
+        # loopback only, so nothing but the server container can reach it. ansible-core, git and openssh-client all
+        # need a writable root filesystem for their own scratch/temp files, unlike every other container here.
+        - name: rmm-iac-runner
+          image: ghcr.io/joyson-fernandes/rmm-iac-runner:9e42e85
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
       volumes:
         - name: guacd-tmp
           emptyDir: {}
