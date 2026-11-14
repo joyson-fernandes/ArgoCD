@@ -91,7 +91,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rmm-server
-          image: ghcr.io/joyson-fernandes/rmm-server:9e42e85
+          image: ghcr.io/joyson-fernandes/rmm-server:d04cf6e
           ports:
             - containerPort: 8080
               name: http
@@ -218,7 +218,7 @@ spec:
         # loopback only, so nothing but the server container can reach it. ansible-core, git and openssh-client all
         # need a writable root filesystem for their own scratch/temp files, unlike every other container here.
         - name: rmm-iac-runner
-          image: ghcr.io/joyson-fernandes/rmm-iac-runner:9e42e85
+          image: ghcr.io/joyson-fernandes/rmm-iac-runner:d04cf6e
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
