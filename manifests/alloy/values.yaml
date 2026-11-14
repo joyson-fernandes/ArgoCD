@@ -4,6 +4,14 @@ controller:
 alloy:
   enableReporting: false
 
+  # Without a request the kernel picks alloy first when a node runs out of memory.
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+
   configMap:
     create: true
 
