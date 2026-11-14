@@ -64,10 +64,13 @@ spec:
                   initialDelaySeconds: 0
                   failureThreshold: 24
                   periodSeconds: 5
+                # Image builds run here. The limit stops one build from OOMing the whole node.
                 resources:
                   requests:
                     cpu: 250m
                     memory: 256Mi
+                  limits:
+                    memory: 2Gi
                 volumeMounts:
                   - name: work
                     mountPath: /home/runner/_work
@@ -94,6 +97,8 @@ spec:
                   requests:
                     cpu: 250m
                     memory: 768Mi
+                  limits:
+                    memory: 2Gi
                 volumeMounts:
                   - name: work
                     mountPath: /home/runner/_work
