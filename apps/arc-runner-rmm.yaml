@@ -24,7 +24,7 @@ spec:
           name: arc-controller-gha-rs-controller
         runnerScaleSetName: rmm-k8s
         # Two runners kept warm so two commits pushed close together don't queue behind each other
-        # waiting for a job to finish before the next can even start; up to three at once.
+        # waiting for a job to finish before the next can even start; at most two at once.
         minRunners: 2
         maxRunners: 2
         # Docker-in-docker, written out in full (the chart's containerMode shortcut cannot be
@@ -33,6 +33,23 @@ spec:
         # builds skip compiling the standard library for every target from scratch.
         template:
           spec:
+            # CI runs on prod-k8s-w02 (nearly idle). That node is tainted for kubevirt, so the runner pods tolerate
+            # the taint; the affinity is a preference, so CI can still fall back to another worker if w02 is down.
+            # It used to run on prod-k8s-w03, which dropped out (NodeNotReady) under parallel CI load.
+            tolerations:
+              - key: workload
+                operator: Equal
+                value: kubevirt
+                effect: NoSchedule
+            affinity:
+              nodeAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    preference:
+                      matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values: ["prod-k8s-w02"]
             initContainers:
               - name: init-dind-externals
                 image: ghcr.io/actions/actions-runner:latest
