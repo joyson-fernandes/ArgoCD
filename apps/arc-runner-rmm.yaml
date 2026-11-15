@@ -110,12 +110,14 @@ spec:
                     value: /ci-cache/go-mod
                   - name: npm_config_cache
                     value: /ci-cache/npm
+                # Go race tests, the VMware simulator and fake S3 need more than 2Gi (OOMKilled on 2026-11-15).
+                # 4Gi runner + 3Gi dind on a ~8Gi node: a test job and an image build can share w02.
                 resources:
                   requests:
                     cpu: 250m
-                    memory: 768Mi
+                    memory: 1Gi
                   limits:
-                    memory: 2Gi
+                    memory: 4Gi
                 volumeMounts:
                   - name: work
                     mountPath: /home/runner/_work
