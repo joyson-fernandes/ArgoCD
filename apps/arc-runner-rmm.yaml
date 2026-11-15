@@ -26,7 +26,7 @@ spec:
         # Two runners kept warm so two commits pushed close together don't queue behind each other
         # waiting for a job to finish before the next can even start; up to three at once.
         minRunners: 2
-        maxRunners: 3
+        maxRunners: 2
         # Docker-in-docker, written out in full (the chart's containerMode shortcut cannot be
         # customised): the Go tests start Postgres in Docker and the image build needs a daemon.
         # A node-local build cache (Go, npm) is shared by the runner pods on a node, so repeat
@@ -64,13 +64,13 @@ spec:
                   initialDelaySeconds: 0
                   failureThreshold: 24
                   periodSeconds: 5
-                # Image builds run here. The limit stops one build from OOMing the whole node. 4Gi: the server image build (npm, vite, go, buildx) was failing intermittently at 2Gi.
+                # Image builds run here. The limit stops one build from OOMing the whole node. 3Gi, and at most 2 runners: prod-k8s-w03 (8GB) dropped out (NodeNotReady) when parallel CI jobs starved it, killing the jobs on it.
                 resources:
                   requests:
                     cpu: 250m
                     memory: 256Mi
                   limits:
-                    memory: 4Gi
+                    memory: 3Gi
                 volumeMounts:
                   - name: work
                     mountPath: /home/runner/_work
