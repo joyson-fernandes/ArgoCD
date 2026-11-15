@@ -64,13 +64,13 @@ spec:
                   initialDelaySeconds: 0
                   failureThreshold: 24
                   periodSeconds: 5
-                # Image builds run here. The limit stops one build from OOMing the whole node.
+                # Image builds run here. The limit stops one build from OOMing the whole node. 4Gi: the server image build (npm, vite, go, buildx) was failing intermittently at 2Gi.
                 resources:
                   requests:
                     cpu: 250m
                     memory: 256Mi
                   limits:
-                    memory: 2Gi
+                    memory: 4Gi
                 volumeMounts:
                   - name: work
                     mountPath: /home/runner/_work
