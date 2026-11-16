@@ -194,13 +194,15 @@ metadata:
     team: platform
     env: production
 spec:
-  # CUT-OVER SHAPE (Stage B, first commit): Recreate + 1 replica, so the
-  # Deployment controller removes the stand-alone pod (scheduler + embedded
-  # NATS) before the first cluster copy starts. The follow-up commit switches to
-  # RollingUpdate (maxUnavailable 0, maxSurge 1) and 3 replicas.
-  replicas: 1
+  # Steady state (Stage B, second commit). The first cluster commit used
+  # Recreate + 1 replica so the stand-alone pod stopped before any copy started.
+  replicas: 3
+  # No copy goes down before its replacement is ready.
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: rmm
