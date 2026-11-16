@@ -425,7 +425,7 @@ spec:
               args:
                 - |
                   cd /work
-                  tar -C /data -cf state.tar ca tls
+                  tar -C /data -cf state.tar ca tls secrets.key
                   PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -Fc "$DB_NAME" > rmm.dump
                   tar -cf - state.tar rmm.dump | openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -salt -pass env:BACKUP_PASSPHRASE -out "rmm-backup-$(date -u +%Y%m%d-%H%M%S).tar.enc"
                   rm -f state.tar rmm.dump
