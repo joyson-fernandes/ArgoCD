@@ -9,6 +9,11 @@ metadata:
 
 ---
 # Dedicated Postgres for the RMM server (isolated from shared-postgres).
+# Three instances on three nodes: one primary, two standbys. A commit waits for
+# one standby (quorum), so a fail-over loses no committed data, yet writes go on
+# when a standby is down (dataDurability: preferred). RMM copies send request
+# traffic through the Pooler (rmm-db-pooler-rw) and use rmm-db-rw directly for
+# the leader lock, the list of copies and migrations.
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -19,14 +24,33 @@ metadata:
     team: platform
     env: production
 spec:
-  instances: 1
+  instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16.4
   enableSuperuserAccess: false
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
   bootstrap:
     initdb:
       database: rmm
       owner: rmm
       encoding: UTF8
+  postgresql:
+    synchronous:
+      method: any
+      number: 1
+      dataDurability: preferred
+  # One replica per worker (w01, w02, w03); w02 also runs practice VMs; when a
+  # worker is down, one replica waits (the other two keep quorum).
+  affinity:
+    enablePodAntiAffinity: true
+    podAntiAffinityType: required
+    topologyKey: kubernetes.io/hostname
+  inheritedMetadata:
+    labels:
+      app: rmm-db
+      team: platform
+      env: production
+  # Offsite database backups come later (R2 bucket).
   storage:
     storageClass: local-path
     size: 5Gi
@@ -36,6 +60,47 @@ spec:
       memory: 256Mi
     limits:
       memory: 512Mi
+
+---
+# PgBouncer in front of rmm-db for request traffic. Transaction pooling; pgx's
+# prepared statements are carried by PgBouncer's protocol-level support
+# (max_prepared_statements). Session features (the leader's advisory lock) use
+# the direct rmm-db-rw service instead.
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: rmm-db-pooler-rw
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  cluster:
+    name: rmm-db
+  instances: 2
+  type: rw
+  pgbouncer:
+    poolMode: transaction
+    parameters:
+      max_client_conn: "500"
+      default_pool_size: "20"
+      max_prepared_statements: "200"
+  template:
+    metadata:
+      labels:
+        app: rmm-db-pooler
+        team: platform
+        env: production
+    spec:
+      containers: []
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              cnpg.io/poolerName: rmm-db-pooler-rw
 
 ---
 # Holds the certificate authority key, generated TLS files and NATS JetStream

@@ -1,0 +1,78 @@
+# The IaC runner takes SSH keys and runs playbooks on request, with no sign-in of
+# its own: only RMM server copies may reach it. Egress stays open (git clones and
+# SSH to the customer's hosts).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rmm-iac-runner
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  podSelector:
+    matchLabels:
+      app: rmm-iac-runner
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: rmm
+              component: server
+      ports:
+        - protocol: TCP
+          port: 8099
+
+---
+# NATS (apps/nats-rmm.yaml): the client port only for RMM copies, routes only
+# between the NATS servers, the agent WebSocket only through Traefik
+# (TLS passthrough), metrics only for Prometheus. Kubelet probes on the monitor
+# port come from the node and are allowed by Cilium.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rmm-nats
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: nats
+      app.kubernetes.io/instance: rmm-nats
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: rmm
+              component: server
+      ports:
+        - protocol: TCP
+          port: 4222
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: nats
+              app.kubernetes.io/instance: rmm-nats
+      ports:
+        - protocol: TCP
+          port: 6222
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+      ports:
+        - protocol: TCP
+          port: 4443
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 7777

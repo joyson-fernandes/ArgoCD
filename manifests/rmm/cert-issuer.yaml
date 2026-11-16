@@ -1,0 +1,81 @@
+# The RMM certificate authority as a namespaced cert-manager Issuer. Agents trust
+# only this CA, so the NATS agent listener's certificate must come from it. The
+# CA itself lives in the Secret rmm-ca (SealedSecret rmm-ca-sealedsecret.yaml,
+# keys tls.crt and tls.key); RMM copies mount the same Secret read-only.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: rmm-ca
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  ca:
+    secretName: rmm-ca
+
+---
+# Agent WebSocket listener on NATS (wss://rmm-agents.joysontech.com). NATS
+# reloads it on renewal (config reloader sidecar).
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rmm-agents-tls
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  secretName: rmm-agents-tls
+  issuerRef:
+    name: rmm-ca
+    kind: Issuer
+  commonName: rmm-agents.joysontech.com
+  dnsNames:
+    - rmm-agents.joysontech.com
+  duration: 2160h      # 90 days
+  renewBefore: 720h    # 30 days
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  usages:
+    - server auth
+    - digital signature
+
+---
+# NATS client port (RMM copies) and routes between the NATS servers. Routes use
+# mutual TLS, so the certificate is valid for client auth as well.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rmm-nats-tls
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  secretName: rmm-nats-tls
+  issuerRef:
+    name: rmm-ca
+    kind: Issuer
+  commonName: rmm-nats.rmm.svc
+  dnsNames:
+    - rmm-nats
+    - rmm-nats.rmm
+    - rmm-nats.rmm.svc
+    - rmm-nats.rmm.svc.cluster.local
+    - "*.rmm-nats-headless.rmm.svc.cluster.local"
+  duration: 2160h
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  usages:
+    - server auth
+    - client auth
+    - digital signature

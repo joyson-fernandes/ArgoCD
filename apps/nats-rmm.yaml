@@ -1,0 +1,234 @@
+# NATS cluster for RMM (always-on): 3 servers, JetStream file storage, the agent
+# WebSocket listener (mutual TLS against the RMM CA) and the auth callout that RMM
+# copies answer. Runs in the rmm namespace so it can use the namespaced RMM CA
+# Issuer (manifests/rmm/cert-issuer.yaml) and the rmm-agents IngressRouteTCP.
+#
+# Needs, before the first sync: the SealedSecret rmm-nats-auth (public keys only,
+# see scripts/seal-rmm-keys.sh) and the Certificates rmm-agents-tls and
+# rmm-nats-tls from the rmm app.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nats-rmm
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://nats-io.github.io/k8s/helm/charts/
+    chart: nats
+    targetRevision: 2.15.2
+    helm:
+      releaseName: rmm-nats
+      values: |
+        global:
+          labels:
+            app: rmm-nats
+            team: platform
+            env: production
+
+        # Every TLS block (client port, routes, agent WebSocket) trusts only the
+        # RMM CA. cert-manager writes the CA certificate (never its key) into
+        # each issued Secret as ca.crt.
+        tlsCA:
+          enabled: true
+          secretName: rmm-nats-tls
+          key: ca.crt
+
+        config:
+          cluster:
+            enabled: true
+            replicas: 3
+            routeURLs:
+              useFQDN: true
+            # Routes between the servers use mutual TLS with the internal certificate.
+            tls:
+              enabled: true
+              secretName: rmm-nats-tls
+              merge:
+                verify: true
+                min_version: "1.3"
+
+          jetstream:
+            enabled: true
+            fileStore:
+              enabled: true
+              pvc:
+                enabled: true
+                size: 10Gi
+                storageClassName: local-path
+              maxSize: 8GB
+            memoryStore:
+              enabled: false
+
+          # Client port: only RMM copies connect here (NetworkPolicy
+          # rmm-nats in manifests/rmm/network-policies.yaml). TLS with the
+          # internal certificate; RMM must trust the RMM CA for it
+          # (RMM_NATS_CA_FILE, see the Task 12 report).
+          nats:
+            port: 4222
+            tls:
+              enabled: true
+              secretName: rmm-nats-tls
+              merge:
+                min_version: "1.3"
+
+          # Agent listener. Traefik passes rmm-agents.joysontech.com:443 through
+          # untouched (IngressRouteTCP rmm-agents), so NATS terminates TLS and
+          # verifies every agent's client certificate against the RMM CA.
+          websocket:
+            enabled: true
+            port: 4443
+            tls:
+              enabled: true
+              secretName: rmm-agents-tls
+              merge:
+                verify: true
+                min_version: "1.3"
+            merge:
+              handshake_timeout: << 5s >>
+
+          monitor:
+            enabled: true
+            port: 8222
+
+          merge:
+            max_payload: << 1MB >>
+            system_account: SYS
+            accounts:
+              SYS: {}
+              # Agents land here through the callout; the RMM service user also
+              # lives here, so one connection both answers the callout and
+              # carries ingest and commands.
+              AGENTS:
+                jetstream: enabled
+                users:
+                  - nkey: << $RMM_SERVICE_USER >>
+            authorization:
+              timeout: 3
+              auth_callout:
+                issuer: << $CALLOUT_ISSUER >>
+                account: AGENTS
+                auth_users:
+                  - << $RMM_SERVICE_USER >>
+
+        container:
+          env:
+            # Public keys only (not secret); kept in a SealedSecret so the
+            # sealing script can generate them together with their seeds.
+            CALLOUT_ISSUER:
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-nats-auth
+                  key: CALLOUT_ISSUER
+            RMM_SERVICE_USER:
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-nats-auth
+                  key: RMM_SERVICE_USER
+            GOMEMLIMIT: 900MiB
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          merge:
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: [ALL]
+
+        reloader:
+          enabled: true
+          merge:
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: [ALL]
+
+        promExporter:
+          enabled: true
+          podMonitor:
+            enabled: true
+            merge:
+              metadata:
+                labels:
+                  release: kube-prometheus-stack
+          merge:
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: [ALL]
+
+        service:
+          ports:
+            nats:
+              enabled: true
+            websocket:
+              enabled: true
+            leafnodes:
+              enabled: false
+            mqtt:
+              enabled: false
+            monitor:
+              enabled: false
+
+        podTemplate:
+          terminationGracePeriodSeconds: 60
+          merge:
+            spec:
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                fsGroup: 1000
+                seccompProfile:
+                  type: RuntimeDefault
+              # One replica per worker (w01, w02, w03); w02 also runs practice
+              # VMs; when a worker is down, one replica waits (the other two
+              # keep quorum).
+              affinity:
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - topologyKey: kubernetes.io/hostname
+                      labelSelector:
+                        matchLabels:
+                          app.kubernetes.io/name: nats
+                          app.kubernetes.io/instance: rmm-nats
+          # Honor taints: tainted masters and a down worker (unreachable taint)
+          # are not counted as empty domains.
+          topologySpreadConstraints:
+            kubernetes.io/hostname:
+              maxSkew: 1
+              whenUnsatisfiable: DoNotSchedule
+              nodeTaintsPolicy: Honor
+
+        # One server at a time may be down (R3 streams keep quorum).
+        podDisruptionBudget:
+          enabled: true
+          merge:
+            spec:
+              maxUnavailable: 1
+
+        # nats-box would need its own credentials; operators use a port-forward
+        # with the service user instead.
+        natsBox:
+          enabled: false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rmm
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
