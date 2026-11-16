@@ -103,8 +103,10 @@ spec:
               cnpg.io/poolerName: rmm-db-pooler-rw
 
 ---
-# Holds the certificate authority key, generated TLS files and NATS JetStream
-# data. The CA key is irreplaceable: back this volume up (see docs).
+# The stand-alone server's volume (CA, generated TLS, embedded NATS, releases).
+# Cluster copies no longer mount it. KEEP it until the cut-over is proven and the
+# CA and secrets key are sealed (rollout step 4 removes it): with local-path the
+# reclaim policy is Delete, so pruning it destroys the only copy of /data.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -122,6 +124,66 @@ spec:
       storage: 2Gi
 
 ---
+# Database migrations run once per deploy, before any copy rolls (native ArgoCD
+# PreSync hook). Migrations must stay backwards compatible for one release,
+# because old and new copies run side by side during a roll.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rmm-migrate
+  namespace: rmm
+  labels:
+    app: rmm-migrate
+    team: platform
+    env: production
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 900
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: rmm-migrate
+        team: platform
+        env: production
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: ghcr.io/joyson-fernandes/rmm-server:6e61d3a
+          args: ["migrate"]
+          env:
+            # Direct connection: migrations queue on an advisory lock.
+            - name: RMM_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-db-app
+                  key: uri
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -132,9 +194,13 @@ metadata:
     team: platform
     env: production
 spec:
+  # CUT-OVER SHAPE (Stage B, first commit): Recreate + 1 replica, so the
+  # Deployment controller removes the stand-alone pod (scheduler + embedded
+  # NATS) before the first cluster copy starts. The follow-up commit switches to
+  # RollingUpdate (maxUnavailable 0, maxSurge 1) and 3 replicas.
   replicas: 1
   strategy:
-    type: Recreate   # single writer on the data volume
+    type: Recreate
   selector:
     matchLabels:
       app: rmm
@@ -142,11 +208,16 @@ spec:
     metadata:
       labels:
         app: rmm
+        component: server
         team: platform
         env: production
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
+      automountServiceAccountToken: false
+      # Must exceed preStop (10s) + the server's cluster-mode shutdown grace
+      # (RMM_SHUTDOWN_GRACE, default 55s), with margin, or a draining copy is killed.
+      terminationGracePeriodSeconds: 90
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -154,22 +225,74 @@ spec:
         fsGroup: 65532
         seccompProfile:
           type: RuntimeDefault
+      # Spread over the workers (w01, w02, w03); w02 also runs practice VMs;
+      # when a worker is down, the copies run on the other two.
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          nodeTaintsPolicy: Honor
+          labelSelector:
+            matchLabels:
+              app: rmm
+              component: server
       containers:
         - name: rmm-server
           image: ghcr.io/joyson-fernandes/rmm-server:6e61d3a
           ports:
             - containerPort: 8080
               name: http
-            - containerPort: 4443
-              name: agents
           env:
+            # --- cluster mode -------------------------------------------------
+            - name: RMM_CLUSTER
+              value: "true"
+            - name: RMM_COPY_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: RMM_CA_DIR
+              value: /etc/rmm/ca
+            - name: RMM_SECRETS_KEY_FILE
+              value: /etc/rmm/secrets/secrets.key
+            # The NATS client port presents a certificate from the RMM CA.
+            # RMM_NATS_CA_FILE needs an RMM image at or after the always-on merge
+            # (older images ignore it and cannot verify NATS over tls://).
+            - name: RMM_NATS_URL
+              value: tls://rmm-nats.rmm.svc.cluster.local:4222
+            - name: RMM_NATS_CA_FILE
+              value: /etc/rmm/ca/ca.crt
+            - name: RMM_NATS_CREDS
+              value: /etc/rmm/nats/service.nk
+            - name: RMM_NATS_CALLOUT_SEED
+              value: /etc/rmm/nats/callout.seed
+            - name: RMM_NATS_PUBLIC_URL
+              value: wss://rmm-agents.joysontech.com
+            - name: RMM_RELEASES_FROM_DB
+              value: "true"
+            # Required by the settings check; a copy writes nothing to it.
+            - name: RMM_DATA_DIR
+              value: /tmp/rmm
+            # --- database -----------------------------------------------------
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-db-app
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-db-app
+                  key: password
+            # Request traffic through PgBouncer.
             - name: RMM_DATABASE_URL
+              value: postgresql://$(DB_USER):$(DB_PASSWORD)@rmm-db-pooler-rw.rmm.svc:5432/rmm?sslmode=require
+            # Leader lock, list of copies: straight to the primary.
+            - name: RMM_DATABASE_DIRECT_URL
               valueFrom:
                 secretKeyRef:
                   name: rmm-db-app
                   key: uri
-            - name: RMM_DATA_DIR
-              value: /data
+            # --- unchanged --------------------------------------------------------
             - name: RMM_HTTP_ADDR
               value: ":8080"
             - name: RMM_PUBLIC_URL
@@ -209,12 +332,9 @@ spec:
               value: "true"
             - name: RMM_GUACD_ADDR
               value: "127.0.0.1:4822"
+            # The IaC runner is its own Deployment, so an RMM deploy does not stop a running playbook.
             - name: RMM_IAC_RUNNER_URL
-              value: "http://127.0.0.1:8099"
-            - name: RMM_NATS_LISTEN
-              value: ":4443"
-            - name: RMM_NATS_PUBLIC_URL
-              value: wss://rmm-agents.joysontech.com
+              value: "http://rmm-iac-runner.rmm.svc.cluster.local:8099"
             - name: RMM_STUB_TENANT_NAME
               value: Joysontech
             - name: RMM_STUB_EMAIL
@@ -236,22 +356,37 @@ spec:
             limits:
               cpu: 500m
               memory: 512Mi
+          # Ready = database reachable and messaging connected.
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /readyz
               port: http
             initialDelaySeconds: 5
-            periodSeconds: 10
+            periodSeconds: 5
+            failureThreshold: 2
+          # Alive = the process answers. Not /healthz: a database or NATS outage
+          # must take copies out of the load balancer, not restart all of them.
           livenessProbe:
-            httpGet:
-              path: /healthz
+            tcpSocket:
               port: http
             initialDelaySeconds: 30
-            periodSeconds: 30
-            failureThreshold: 4
+            periodSeconds: 20
+            failureThreshold: 3
+          lifecycle:
+            # Let Traefik and the Service drop this copy before shutdown starts.
+            preStop:
+              sleep:
+                seconds: 10
           volumeMounts:
-            - name: data
-              mountPath: /data
+            - name: ca
+              mountPath: /etc/rmm/ca
+              readOnly: true
+            - name: secrets-key
+              mountPath: /etc/rmm/secrets
+              readOnly: true
+            - name: nats-keys
+              mountPath: /etc/rmm/nats
+              readOnly: true
             - name: tmp
               mountPath: /tmp
         # guacd (Apache Guacamole, Apache-2.0) speaks RDP for the Remote tab. It
@@ -269,6 +404,10 @@ spec:
             readOnlyRootFilesystem: true
             capabilities:
               drop: [ALL]
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: 10
           volumeMounts:
             - name: guacd-tmp
               mountPath: /tmp
@@ -279,28 +418,48 @@ spec:
             limits:
               cpu: "1"
               memory: 512Mi
-        # rmm-iac-runner clones a saved playbook's git repo and runs ansible-playbook against it. It listens on
-        # loopback only, so nothing but the server container can reach it. ansible-core, git and openssh-client all
-        # need a writable root filesystem for their own scratch/temp files, unlike every other container here.
-        - name: rmm-iac-runner
-          image: ghcr.io/joyson-fernandes/rmm-iac-runner:6e61d3a
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: false
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              memory: 512Mi
       volumes:
-        - name: guacd-tmp
-          emptyDir: {}
-        - name: data
-          persistentVolumeClaim:
-            claimName: rmm-data
+        # The RMM CA (same Secret the cert-manager Issuer uses), as ca.crt/ca.key.
+        - name: ca
+          secret:
+            secretName: rmm-ca
+            defaultMode: 0440
+            items:
+              - key: tls.crt
+                path: ca.crt
+              - key: tls.key
+                path: ca.key
+        - name: secrets-key
+          secret:
+            secretName: rmm-secrets-key
+            defaultMode: 0440
+        - name: nats-keys
+          secret:
+            secretName: rmm-nats-keys
+            defaultMode: 0440
         - name: tmp
           emptyDir: {}
+        - name: guacd-tmp
+          emptyDir: {}
+
+---
+# One copy at a time may be evicted (node drains, cluster upgrades). Works with
+# the single cut-over copy and with 3 copies.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rmm-server
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: rmm
+      component: server
 
 ---
 apiVersion: v1
@@ -316,29 +475,106 @@ spec:
   type: ClusterIP
   selector:
     app: rmm
+    component: server
   ports:
     - name: http
       port: 80
       targetPort: http
 
 ---
+# rmm-iac-runner clones a saved playbook's git repo and runs ansible-playbook
+# against it. Its own Deployment, so restarting or rolling RMM copies does not
+# touch a running playbook; copies follow its output over HTTP. One replica:
+# runs live in its memory. Only RMM copies may reach it (NetworkPolicy
+# rmm-iac-runner). CI bumps this image on every release, so the runner itself is
+# replaced on deploys.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmm-iac-runner
+  namespace: rmm
+  labels:
+    app: rmm-iac-runner
+    team: platform
+    env: production
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: rmm-iac-runner
+  template:
+    metadata:
+      labels:
+        app: rmm-iac-runner
+        team: platform
+        env: production
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      automountServiceAccountToken: false
+      # Time for running playbooks to finish when the runner is replaced. Only
+      # effective with an RMM image at or after the always-on merge, whose runner
+      # stops taking new runs on SIGTERM and finishes the running ones; older
+      # runners exit at once.
+      terminationGracePeriodSeconds: 900
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        # ansible-core, git and openssh-client need a writable root filesystem
+        # for their own scratch files, unlike every other container here.
+        - name: rmm-iac-runner
+          image: ghcr.io/joyson-fernandes/rmm-iac-runner:6e61d3a
+          env:
+            - name: RMM_IAC_RUNNER_ADDR
+              value: "0.0.0.0:8099"
+          ports:
+            - containerPort: 8099
+              name: runner
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: [ALL]
+          readinessProbe:
+            tcpSocket:
+              port: runner
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: runner
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rmm-agents
+  name: rmm-iac-runner
   namespace: rmm
   labels:
-    app: rmm
+    app: rmm-iac-runner
     team: platform
     env: production
 spec:
   type: ClusterIP
   selector:
-    app: rmm
+    app: rmm-iac-runner
   ports:
-    - name: agents
-      port: 4443
-      targetPort: agents
+    - name: runner
+      port: 8099
+      targetPort: runner
 
 ---
 apiVersion: cert-manager.io/v1
@@ -418,8 +654,9 @@ spec:
           port: 80
 
 ---
-# Agents connect with mutual TLS straight to the server, so Traefik passes the
-# TLS connection through untouched, selected by SNI on the normal 443 port.
+# Agents connect with mutual TLS to the NATS cluster (apps/nats-rmm.yaml), so
+# Traefik passes the TLS connection through untouched, selected by SNI on the
+# normal 443 port. Same public address as before: agents need no change.
 apiVersion: traefik.io/v1alpha1
 kind: MiddlewareTCP
 metadata:
@@ -444,21 +681,24 @@ spec:
       middlewares:
         - name: internal-only-tcp
       services:
-        - name: rmm-agents
+        - name: rmm-nats
           port: 4443
   tls:
     passthrough: true
 
 ---
-# Nightly encrypted backup of the certificate authority, server TLS files and
-# the database to off-cluster object storage (30-day retention).
+# Nightly encrypted backup of the certificate authority, the stored-secrets key
+# and the database to off-cluster object storage (30-day retention). In cluster
+# mode the keys come from their Secrets, not from /data. The archive layout
+# (state.tar with ca/ and secrets.key, plus rmm.dump) is unchanged, so the
+# restore procedure is too. Offsite database backups come later (R2 bucket).
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: rmm-backup
   namespace: rmm
   labels:
-    app: rmm
+    app: rmm-backup
     team: platform
     env: production
 spec:
@@ -472,11 +712,12 @@ spec:
       template:
         metadata:
           labels:
-            app: rmm
+            app: rmm-backup
             team: platform
             env: production
         spec:
           restartPolicy: OnFailure
+          automountServiceAccountToken: false
           securityContext:
             runAsNonRoot: true
             runAsUser: 65532
@@ -490,19 +731,25 @@ spec:
               args:
                 - |
                   cd /work
-                  tar -C /data -cf state.tar ca tls secrets.key
+                  mkdir -p state/ca
+                  cp /keys/ca/ca.crt /keys/ca/ca.key state/ca/
+                  cp /keys/secrets/secrets.key state/secrets.key
+                  tar -C state -cf state.tar ca secrets.key
+                  rm -rf state
                   PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -Fc "$DB_NAME" > rmm.dump
                   tar -cf - state.tar rmm.dump | openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -salt -pass env:BACKUP_PASSPHRASE -out "rmm-backup-$(date -u +%Y%m%d-%H%M%S).tar.enc"
                   rm -f state.tar rmm.dump
                   ls -l
               env:
+                # Direct to the primary (rmm-db-rw): pg_dump needs one session.
                 - {name: DB_HOST, valueFrom: {secretKeyRef: {name: rmm-db-app, key: host}}}
                 - {name: DB_USER, valueFrom: {secretKeyRef: {name: rmm-db-app, key: username}}}
                 - {name: DB_PASSWORD, valueFrom: {secretKeyRef: {name: rmm-db-app, key: password}}}
                 - {name: DB_NAME, valueFrom: {secretKeyRef: {name: rmm-db-app, key: dbname}}}
                 - {name: BACKUP_PASSPHRASE, valueFrom: {secretKeyRef: {name: rmm-backup, key: BACKUP_PASSPHRASE}}}
               volumeMounts:
-                - {name: data, mountPath: /data, readOnly: true}
+                - {name: ca, mountPath: /keys/ca, readOnly: true}
+                - {name: secrets-key, mountPath: /keys/secrets, readOnly: true}
                 - {name: work, mountPath: /work}
               securityContext:
                 allowPrivilegeEscalation: false
@@ -540,5 +787,15 @@ spec:
                 requests: {cpu: 50m, memory: 64Mi}
                 limits: {memory: 256Mi}
           volumes:
-            - {name: data, persistentVolumeClaim: {claimName: rmm-data}}
+            - name: ca
+              secret:
+                secretName: rmm-ca
+                defaultMode: 0440
+                items:
+                  - {key: tls.crt, path: ca.crt}
+                  - {key: tls.key, path: ca.key}
+            - name: secrets-key
+              secret:
+                secretName: rmm-secrets-key
+                defaultMode: 0440
             - {name: work, emptyDir: {}}
