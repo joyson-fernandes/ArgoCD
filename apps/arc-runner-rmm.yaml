@@ -23,10 +23,11 @@ spec:
           namespace: arc-systems
           name: arc-controller-gha-rs-controller
         runnerScaleSetName: rmm-k8s
-        # Two runners kept warm so two commits pushed close together don't queue behind each other
-        # waiting for a job to finish before the next can even start; at most two at once.
+        # Two runners kept warm so two commits pushed close together don't queue behind each other;
+        # up to four at once so one CI run's parallel jobs don't wait for each other (CI prefers w02 but
+        # may spread to other workers).
         minRunners: 2
-        maxRunners: 2
+        maxRunners: 4
         # Docker-in-docker, written out in full (the chart's containerMode shortcut cannot be
         # customised): the Go tests start Postgres in Docker and the image build needs a daemon.
         # A node-local build cache (Go, npm) is shared by the runner pods on a node, so repeat
