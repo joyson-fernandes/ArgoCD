@@ -81,13 +81,13 @@ spec:
                   initialDelaySeconds: 0
                   failureThreshold: 24
                   periodSeconds: 5
-                # Image builds run here. The limit stops one build from OOMing the whole node. 3Gi, and at most 2 runners: prod-k8s-w03 (8GB) dropped out (NodeNotReady) when parallel CI jobs starved it, killing the jobs on it.
+                # Image builds run here. The limit stops one build from OOMing the whole node. 4Gi (prod-k8s-w02 has 16GB since 2026-11-16), and at most 2 runners: prod-k8s-w03 (8GB) dropped out (NodeNotReady) when parallel CI jobs starved it, killing the jobs on it.
                 resources:
                   requests:
                     cpu: 250m
                     memory: 256Mi
                   limits:
-                    memory: 3Gi
+                    memory: 4Gi
                 volumeMounts:
                   - name: work
                     mountPath: /home/runner/_work
@@ -110,14 +110,14 @@ spec:
                     value: /ci-cache/go-mod
                   - name: npm_config_cache
                     value: /ci-cache/npm
-                # Go race tests, the VMware simulator and fake S3 need more than 2Gi (OOMKilled on 2026-11-15).
+                # Go race tests, the VMware simulator and fake S3 need more than 2Gi (OOMKilled on 2026-11-15); 6Gi since W02 went to 16GB.
                 # 4Gi runner + 3Gi dind on a ~8Gi node: a test job and an image build can share w02.
                 resources:
                   requests:
                     cpu: 250m
                     memory: 1Gi
                   limits:
-                    memory: 4Gi
+                    memory: 6Gi
                 volumeMounts:
                   - name: work
                     mountPath: /home/runner/_work
