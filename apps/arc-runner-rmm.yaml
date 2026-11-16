@@ -33,14 +33,8 @@ spec:
         # builds skip compiling the standard library for every target from scratch.
         template:
           spec:
-            # CI runs on prod-k8s-w02 (nearly idle). That node is tainted for kubevirt, so the runner pods tolerate
-            # the taint; the affinity is a preference, so CI can still fall back to another worker if w02 is down.
-            # It used to run on prod-k8s-w03, which dropped out (NodeNotReady) under parallel CI load.
-            tolerations:
-              - key: workload
-                operator: Equal
-                value: kubevirt
-                effect: NoSchedule
+            # CI prefers prod-k8s-w02; the affinity is a preference, so CI can still fall back to another worker if w02
+            # is down. It used to run on prod-k8s-w03, which dropped out (NodeNotReady) under parallel CI load.
             affinity:
               nodeAffinity:
                 preferredDuringSchedulingIgnoredDuringExecution:

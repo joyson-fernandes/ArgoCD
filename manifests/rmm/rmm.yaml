@@ -234,6 +234,8 @@ spec:
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: DoNotSchedule
           nodeTaintsPolicy: Honor
+          # Count only pods of the same version, so a roll never stacks two new copies on one worker.
+          matchLabelKeys: [pod-template-hash]
           labelSelector:
             matchLabels:
               app: rmm
