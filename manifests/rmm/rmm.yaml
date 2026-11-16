@@ -339,6 +339,10 @@ spec:
             # The IaC runner is its own Deployment, so an RMM deploy does not stop a running playbook.
             - name: RMM_IAC_RUNNER_URL
               value: "http://rmm-iac-runner.rmm.svc.cluster.local:8099"
+            # Cloud tab template checks go to their own checks-only pod. Setting this switches Cloud on for servers at or
+            # after the Cloud merge; older images ignore it.
+            - name: RMM_TEMPLATE_CHECK_URL
+              value: "http://rmm-cloud-checks.rmm.svc.cluster.local:8099"
             - name: RMM_STUB_TENANT_NAME
               value: Joysontech
             - name: RMM_STUB_EMAIL
@@ -579,6 +583,92 @@ spec:
     - name: runner
       port: 8099
       targetPort: runner
+
+---
+# rmm-cloud-checks lints and rule-checks the CloudFormation templates the Cloud tab deploys (cfn-lint, cfn-guard). The
+# same image as rmm-iac-runner, started in checks-only mode: it serves POST /check and refuses playbook runs. It is
+# its own pod so a template never shares a process space with playbook runs and their SSH keys, and it has no service
+# account token and no egress (NetworkPolicy rmm-cloud-checks). CI bumps the image together with rmm-iac-runner.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmm-cloud-checks
+  namespace: rmm
+  labels:
+    app: rmm-cloud-checks
+    team: platform
+    env: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rmm-cloud-checks
+  template:
+    metadata:
+      labels:
+        app: rmm-cloud-checks
+        team: platform
+        env: production
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: rmm-cloud-checks
+          image: ghcr.io/joyson-fernandes/rmm-iac-runner:2903df0
+          env:
+            - name: RMM_RUNNER_MODE
+              value: "checks"
+            - name: RMM_IAC_RUNNER_ADDR
+              value: "0.0.0.0:8099"
+          ports:
+            - containerPort: 8099
+              name: checks
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: [ALL]
+          readinessProbe:
+            tcpSocket:
+              port: checks
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: checks
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmm-cloud-checks
+  namespace: rmm
+  labels:
+    app: rmm-cloud-checks
+    team: platform
+    env: production
+spec:
+  type: ClusterIP
+  selector:
+    app: rmm-cloud-checks
+  ports:
+    - name: checks
+      port: 8099
+      targetPort: checks
 
 ---
 apiVersion: cert-manager.io/v1

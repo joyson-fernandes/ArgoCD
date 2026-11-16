@@ -26,6 +26,34 @@ spec:
           port: 8099
 
 ---
+# The template-check pod runs untrusted CloudFormation templates through cfn-lint and cfn-guard: only RMM server copies
+# may reach it, and it may reach nothing (no egress rule, so DNS and everything else is denied).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rmm-cloud-checks
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  podSelector:
+    matchLabels:
+      app: rmm-cloud-checks
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: rmm
+              component: server
+      ports:
+        - protocol: TCP
+          port: 8099
+  egress: []
+
+---
 # NATS (apps/nats-rmm.yaml): the client port only for RMM copies, routes only
 # between the NATS servers, the agent WebSocket only through Traefik
 # (TLS passthrough), metrics only for Prometheus. Kubelet probes on the monitor
