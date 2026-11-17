@@ -103,6 +103,43 @@ spec:
               cnpg.io/poolerName: rmm-db-pooler-rw
 
 ---
+# The AI agent runner's checkpoint database and its own login on rmm-db
+# (docs/runbooks/ai-agents-first-live-check.md, section A). The role owns only
+# rmm_agents and has no grant on rmm. Password: SealedSecret rmm-agent-runner-db.
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: rmm-agent-runner
+  namespace: rmm
+  labels:
+    app: rmm-agent-runner
+    team: platform
+    env: production
+spec:
+  name: rmm_agent_runner
+  cluster:
+    name: rmm-db
+  login: true
+  passwordSecret:
+    name: rmm-agent-runner-db
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: rmm-agents
+  namespace: rmm
+  labels:
+    app: rmm-agent-runner
+    team: platform
+    env: production
+spec:
+  name: rmm_agents
+  owner: rmm_agent_runner
+  cluster:
+    name: rmm-db
+
+---
 # The stand-alone server's volume (CA, generated TLS, embedded NATS, releases).
 # Cluster copies no longer mount it. KEEP it until the cut-over is proven and the
 # CA and secrets key are sealed (rollout step 4 removes it): with local-path the
