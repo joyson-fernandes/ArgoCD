@@ -162,7 +162,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: migrate
-          image: ghcr.io/joyson-fernandes/rmm-server:8f88a14
+          image: ghcr.io/joyson-fernandes/rmm-server:aa8e3f0
           args: ["migrate"]
           env:
             # Direct connection: migrations queue on an advisory lock.
@@ -242,7 +242,7 @@ spec:
               component: server
       containers:
         - name: rmm-server
-          image: ghcr.io/joyson-fernandes/rmm-server:8f88a14
+          image: ghcr.io/joyson-fernandes/rmm-server:aa8e3f0
           ports:
             - containerPort: 8080
               name: http
@@ -537,7 +537,7 @@ spec:
         # ansible-core, git and openssh-client need a writable root filesystem
         # for their own scratch files, unlike every other container here.
         - name: rmm-iac-runner
-          image: ghcr.io/joyson-fernandes/rmm-iac-runner:8f88a14
+          image: ghcr.io/joyson-fernandes/rmm-iac-runner:aa8e3f0
           env:
             - name: RMM_IAC_RUNNER_ADDR
               value: "0.0.0.0:8099"
@@ -621,7 +621,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rmm-cloud-checks
-          image: ghcr.io/joyson-fernandes/rmm-iac-runner:8f88a14
+          image: ghcr.io/joyson-fernandes/rmm-iac-runner:aa8e3f0
           env:
             - name: RMM_RUNNER_MODE
               value: "checks"
