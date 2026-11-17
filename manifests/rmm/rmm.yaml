@@ -527,6 +527,30 @@ spec:
       targetPort: http
 
 ---
+# The server's second listener, for the AI agent runner's calls back (model,
+# tools, step reports). Its own Service so the runner's policy can name it, and
+# so no Ingress or Traefik route can point at it. Endpoints appear once the
+# server's container exposes the agent-api port (RMM_AGENT_API_ADDR set).
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmm-agent-api
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  type: ClusterIP
+  selector:
+    app: rmm
+    component: server
+  ports:
+    - name: agent-api
+      port: 8097
+      targetPort: agent-api
+
+---
 # rmm-iac-runner clones a saved playbook's git repo and runs ansible-playbook
 # against it. Its own Deployment, so restarting or rolling RMM copies does not
 # touch a running playbook; copies follow its output over HTTP. One replica:

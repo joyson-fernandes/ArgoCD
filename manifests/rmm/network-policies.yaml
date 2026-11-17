@@ -113,6 +113,40 @@ spec:
           port: 5432
 
 ---
+# The server's agent listener (8097) is for the AI agent runner only. A policy
+# that selects the server pods isolates ALL their ingress, so the web port keeps
+# its old openness (Traefik, kubelet probes and the cluster reach 8080 as
+# before; the pods serve nothing else off loopback) and only 8097 is narrowed.
+# If the console breaks after this syncs, delete this policy: the runner's own
+# policy and the token still protect 8097.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rmm-server-agent-api
+  namespace: rmm
+  labels:
+    app: rmm
+    team: platform
+    env: production
+spec:
+  podSelector:
+    matchLabels:
+      app: rmm
+      component: server
+  policyTypes: [Ingress]
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8080
+    - from:
+        - podSelector:
+            matchLabels:
+              app: rmm-agent-runner
+      ports:
+        - protocol: TCP
+          port: 8097
+
+---
 # NATS (apps/nats-rmm.yaml): the client port only for RMM copies, routes only
 # between the NATS servers, the agent WebSocket only through Traefik
 # (TLS passthrough), metrics only for Prometheus. Kubelet probes on the monitor
