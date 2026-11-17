@@ -708,6 +708,136 @@ spec:
       targetPort: checks
 
 ---
+# rmm-agent-runner runs the AI agents' graphs (LangGraph) for RMM copies
+# (docs/runbooks/ai-agents-first-live-check.md, section C). It holds no secret
+# but its own token and checkpoint key, has no internet access and may call
+# only RMM's agent listener and its checkpoint database (NetworkPolicy
+# rmm-agent-runner). One replica: the checkpoint tables are created without a
+# lock, and RMM's follower resumes work after a restart. CI bumps the image
+# together with rmm-server.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmm-agent-runner
+  namespace: rmm
+  labels:
+    app: rmm-agent-runner
+    team: platform
+    env: production
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: rmm-agent-runner
+  template:
+    metadata:
+      labels:
+        app: rmm-agent-runner
+        team: platform
+        env: production
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      automountServiceAccountToken: false
+      # On SIGTERM the runner stops taking runs and lets each graph reach its
+      # next step for up to 60 s, so the pod needs more than that.
+      terminationGracePeriodSeconds: 90
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: rmm-agent-runner
+          image: ghcr.io/joyson-fernandes/rmm-agent-runner:ebf391c
+          ports:
+            - containerPort: 8098
+              name: runner
+          env:
+            - name: RMM_AGENT_RUNNER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-agent-runner-token
+                  key: token
+            - name: RMM_AGENT_CHECKPOINT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-agent-runner-checkpoint-key
+                  key: key
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-agent-runner-db
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-agent-runner-db
+                  key: password
+            # Straight to the primary (rmm-db-rw), not through PgBouncer: the
+            # checkpointer uses session features.
+            - name: RMM_AGENT_CHECKPOINT_DSN
+              value: postgresql://$(DB_USER):$(DB_PASSWORD)@rmm-db-rw.rmm.svc:5432/rmm_agents?sslmode=require
+            - name: RUNNER_MAX_RUNS
+              value: "4"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          # Ready = started and the checkpoint database answers. Alive = the process answers.
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: runner
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 4  # /readyz gives the database 3 seconds; the default 1 s would fail it first
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: runner
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmm-agent-runner
+  namespace: rmm
+  labels:
+    app: rmm-agent-runner
+    team: platform
+    env: production
+spec:
+  type: ClusterIP
+  selector:
+    app: rmm-agent-runner
+  ports:
+    - name: runner
+      port: 8098
+      targetPort: runner
+
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
