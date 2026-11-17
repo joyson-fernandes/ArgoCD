@@ -283,6 +283,11 @@ spec:
           ports:
             - containerPort: 8080
               name: http
+            # The AI agent runner's calls back. Not on any Ingress or Traefik
+            # route; the Service rmm-agent-api and NetworkPolicy
+            # rmm-server-agent-api are the only ways in.
+            - containerPort: 8097
+              name: agent-api
           env:
             # --- cluster mode -------------------------------------------------
             - name: RMM_CLUSTER
@@ -380,6 +385,21 @@ spec:
             # after the Cloud merge; older images ignore it.
             - name: RMM_TEMPLATE_CHECK_URL
               value: "http://rmm-cloud-checks.rmm.svc.cluster.local:8099"
+            # --- AI agents (all three of URL, token and API address, or the feature stays off) ---
+            - name: RMM_AGENT_RUNNER_URL
+              value: "http://rmm-agent-runner.rmm.svc.cluster.local:8098"
+            - name: RMM_AGENT_RUNNER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: rmm-agent-runner-token
+                  key: token
+            - name: RMM_AGENT_API_ADDR
+              value: ":8097"
+            # Where the runner calls back (the Service rmm-agent-api).
+            - name: RMM_AGENT_API_URL
+              value: "http://rmm-agent-api.rmm.svc.cluster.local:8097"
+            # RMM_AGENT_MS_CLIENT_ID (the Microsoft app's client ID for the Outlook
+            # sign-in) is left unset until the Entra app is registered.
             - name: RMM_STUB_TENANT_NAME
               value: Joysontech
             - name: RMM_STUB_EMAIL
