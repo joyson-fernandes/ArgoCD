@@ -24,10 +24,11 @@ spec:
           name: arc-controller-gha-rs-controller
         runnerScaleSetName: rmm-k8s
         # Two runners kept warm so two commits pushed close together don't queue behind each other;
-        # up to four at once so one CI run's parallel jobs don't wait for each other (CI prefers w02 but
-        # may spread to other workers).
+        # up to five at once so one CI run's parallel jobs don't wait for each other. Runners may use w02 and w03 only
+        # (never w01, which hosts the RMM database primary, and never the control-plane nodes). w03 has 8 GB, so five is the
+        # ceiling until its VM gets more memory; raise to 8 after that (2026-11-18 ESXI02 upgrade).
         minRunners: 2
-        maxRunners: 4
+        maxRunners: 5
         # Docker-in-docker, written out in full (the chart's containerMode shortcut cannot be
         # customised): the Go tests start Postgres in Docker and the image build needs a daemon.
         # A node-local build cache (Go, npm) is shared by the runner pods on a node, so repeat
@@ -38,6 +39,12 @@ spec:
             # is down. It used to run on prod-k8s-w03, which dropped out (NodeNotReady) under parallel CI load.
             affinity:
               nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values: ["prod-k8s-w02", "prod-k8s-w03"]
                 preferredDuringSchedulingIgnoredDuringExecution:
                   - weight: 100
                     preference:
@@ -109,8 +116,8 @@ spec:
                 # 4Gi runner + 3Gi dind on a ~8Gi node: a test job and an image build can share w02.
                 resources:
                   requests:
-                    cpu: 250m
-                    memory: 1Gi
+                    cpu: "1"
+                    memory: 3Gi
                   limits:
                     memory: 6Gi
                 volumeMounts:
