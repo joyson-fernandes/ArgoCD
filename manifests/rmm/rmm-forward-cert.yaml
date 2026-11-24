@@ -1,0 +1,14 @@
+# Wildcard certificate for the Kubernetes port-forward domain (joysontech.uk, dedicated to forwards: nothing else is
+# served under it). The route and the server setting come with the server release that has the feature.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rmm-forward-joysontech-uk
+  namespace: rmm
+spec:
+  secretName: rmm-forward-joysontech-uk-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.joysontech.uk"
