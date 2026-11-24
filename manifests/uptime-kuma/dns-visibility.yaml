@@ -1,0 +1,23 @@
+# Routes DNS through Cilium's DNS proxy so Hubble shows DNS flows and
+# hubble_dns_* metrics. All other egress stays allowed (toEntities: all).
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: dns-visibility
+  namespace: uptime-kuma
+spec:
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toEntities:
+        - all
