@@ -459,7 +459,7 @@ data:
                 <div class="card-acronym">CCA</div>
                 <div class="card-name">Cilium Certified Associate</div>
                 <p class="card-desc">eBPF-based networking and observability.</p>
-                <div class="card-meta"><span><b>60</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
+                <div class="card-meta"><span><b>68</b> Q</span><span><b>90</b> min</span><span><b>75%</b> pass</span></div>
                 <div class="card-cta">Start Quiz <span class="arrow">→</span></div>
               </a>
               <a class="card" data-vendor="lf" data-track="golden" data-type="quiz" data-status="live" href="https://quiz.practiceexams.joysontech.com/otca">
